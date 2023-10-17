@@ -4,10 +4,9 @@ import shlex
 import traceback
 import logging
 import time
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
-
-import sys
 
 CLIENT_NAME = "xxxxxxxxxx"
 RESOURCE_GROUP_LOCATION = "xxxxxxxxxx"
@@ -17,7 +16,7 @@ NSG_STORAGE_ACCOUNT_NAME = f"cyngularnsg{CLIENT_NAME}xxxxxxxxxx"
 
 PRINCIPAL_NAME = "CyngularSP"
 RESOURCE_GROUP = "CyngularRG"
-ACTIVITY_FILE_NAME = "ActivityLog.bicep"
+ACTIVITY_FILE_NAME = "activity-logs.bicep"
 
 LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 AUDIT_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
@@ -41,7 +40,7 @@ def azcli(cli_args, verbose=True):
         exit_code = process.returncode
         if exit_code and exit_code != 0:
             # raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
-            raise ValueError(str(err) + '  "' + " ".join(cli_args) + ' in => ' + sys._getframe(1).f_code.co_name + '"')
+            raise ValueError(str(err) + '  "' + ' in => ' + sys._getframe(1).f_code.co_name + " ".join(cli_args) + '"')
 
         elif len(out) == 0:
             return out
