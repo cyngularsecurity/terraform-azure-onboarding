@@ -6,7 +6,7 @@ import logging
 import time
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import wait
+from concurrent.futures import wait                             
 
 CLIENT_NAME = "xxxxxxxxxx"
 RESOURCE_GROUP_LOCATION = "xxxxxxxxxx"
@@ -17,6 +17,7 @@ NSG_STORAGE_ACCOUNT_NAME = f"cyngularnsg{CLIENT_NAME}xxxxxxxxxx"
 PRINCIPAL_NAME = "CyngularSP"
 RESOURCE_GROUP = "CyngularRG"
 ACTIVITY_FILE_NAME = "activity-logs.bicep"
+CYNGULAR_PUBLIC_KEY=".local/CyngularPublic.key"
 
 LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 AUDIT_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
@@ -39,20 +40,19 @@ def azcli(cli_args, verbose=True):
         out, err = process.communicate()
         exit_code = process.returncode
         if exit_code and exit_code != 0:
-            # raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
-            raise ValueError(str(err) + '  "' + ' in => ' + sys._getframe(1).f_code.co_name + " ".join(cli_args) + '"')
+            raise ValueError(str(err) + '  "' + ' in => ' + sys._getframe(1).f_code.co_name + "\n" + " ".join(cli_args) + '"')
 
         elif len(out) == 0:
             return out
         else:
             return json.loads(out)
     except Exception:
-        # if("was not found" in traceback.format_exc()):
-        #     return
-        # elif("does not support diagnostic settings" in traceback.format_exc()):
-        #     return
-        # elif("could not be found" in traceback.format_exc()):
-        #     return
+        if("was not found" in traceback.format_exc()):
+            return
+        elif("does not support diagnostic settings" in traceback.format_exc()):
+            return
+        elif("could not be found" in traceback.format_exc()):
+            return
         # elif("'AuditEvent' is not supported" in traceback.format_exc()):
         #     return
         if verbose:
@@ -63,29 +63,29 @@ def azcli(cli_args, verbose=True):
 def add_account_extension():
     try:
         logging.info("Adding extension named account")
-        print("Adding extension named account")
+        print("Adding 'az account' extension")
 
         cli_args = "az extension add --name account"
         return azcli(cli_args)
-    except Exception as e:
-        raise Exception(str(e))
-    
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
+
 def import_public_key():
     try:
         logging.info("Importing public key")
         print("Importing public key")
 
-        cli_args = "gpg --import CyngularPublic.key"
+        cli_args = f"gpg --import {CYNGULAR_PUBLIC_KEY}"
         return azcli(cli_args)
-    except Exception as e:
-        raise Exception(str(e))
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def delete_data_file(data_file_name):
     try:
         cli_args = f"rm {data_file_name}"
         return azcli(cli_args)
-    except Exception as e:
-        raise Exception(str(e))
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def encrypt_data(data_file_name):
     try:
@@ -94,8 +94,8 @@ def encrypt_data(data_file_name):
 
         cli_args = f"gpg --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
         return azcli(cli_args)
-    except Exception as e:
-        raise Exception(str(e))
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
     
 def get_subscription_lst():
     try:
@@ -104,18 +104,8 @@ def get_subscription_lst():
 
         cli_args = "az account subscription list --query [].subscriptionId"
         return azcli(cli_args)
-    except Exception as e:
-        raise Exception(str(e))
-
-# def get_available_locations():
-#     try:
-#         cli_args = "az account list-locations --output table | awk 'NR > 2 {print $2}'"
-#         region_list = azcli(cli_args)
-#         # lines = output.split("\n")[2:]  # Skip header and separator lines
-#         # names = [line.split()[1] for line in lines]
-#         return region_list
-#     except Exception:
-#         logging.critical(f"{traceback.format_exc()}")
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def create_cyngular_service_principal():
     try:
@@ -128,10 +118,11 @@ def create_cyngular_service_principal():
         principal_password = res["password"]
         principal_tenant = res["tenant"]
 
+        print(f"got: \n\tapp id => {principal_app_id}")
+        logging.info(f"got: \n\tapp id => {principal_app_id}")
         return principal_app_id, principal_password, principal_tenant
-    except Exception as e:
-        raise Exception(str(e))
-
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def set_subscription(subscription_id: str):
     try:
@@ -142,12 +133,13 @@ def set_subscription(subscription_id: str):
 
 def get_principal_object_id(principal_app_id: str):
     try:
+        print(f"looking for id in app: \n\tapp id => {principal_app_id}")
+        logging.info(f"got: \n\tapp id => {principal_app_id}")
         cli_args = f"az ad sp show --id {principal_app_id} --query id"
         principal_object_id = azcli(cli_args)
         return principal_object_id
-    except Exception as e:
-        raise Exception(str(e))
-
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def assign_subscription_role(subscription_id: str, principal_object_id: str, role: str):
     try:
@@ -155,7 +147,6 @@ def assign_subscription_role(subscription_id: str, principal_object_id: str, rol
         _ = azcli(cli_args)
     except Exception:
         logging.critical(f"{traceback.format_exc()}")
-
 
 def create_resource_group_with_subscription(subscription: str, resource_group_location: str, resource_group_name: str):
     try:
@@ -183,7 +174,6 @@ def create_resource_group(resource_group_location: str, resource_group_name: str
         else:
             logging.critical(f"{traceback.format_exc()}")
 
-
 def create_audit_storage_account(audit_storage_account_name: str, company_region: str):
     try:
         logging.info("Creating audit storage account")
@@ -196,9 +186,8 @@ def create_audit_storage_account(audit_storage_account_name: str, company_region
             audit_storage_account_id = azcli(cli_args)["id"]
             return audit_storage_account_id
 
-    except Exception as e:
-        raise Exception(str(e))
-
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def create_nsg_storage_account(nsg_storage_account_name: str, company_region: str):
     try:
@@ -211,9 +200,8 @@ def create_nsg_storage_account(nsg_storage_account_name: str, company_region: st
             cli_args = f"az storage account create -n {nsg_storage_account_name} -g {RESOURCE_GROUP} -l {company_region} --sku Standard_LRS"
             nsg_storage_account_id = azcli(cli_args)["id"]
             return nsg_storage_account_id
-    except Exception as e:
-        raise Exception(str(e))
-
+    except Exception:
+        logging.critical(f"{traceback.format_exc()}")
 
 def get_storage_accounts_connection_string(audit_storage_account_name: str, nsg_storage_account_name: str):
     try:
@@ -266,7 +254,6 @@ def get_resource_groups(subscription: str):
     except Exception:
         logging.critical(f"{traceback.format_exc()}")
 
-
 def get_network_interfaces(subscription_resource_group: str, subscription: str):
     try:
         logging.info(f"Collecting nsg flow logs from resource group: {subscription_resource_group}")
@@ -301,7 +288,6 @@ def network_watcher_configure(subscription: str, location: str):
     except Exception as e:
         if "NetworkWatcherCountLimitReached" not in str(e):
             logging.critical(f"{traceback.format_exc()}")
-        # logging.critical(f"{traceback.format_exc()}")
 
 def create_nsg_flowlog(location: str, network_interface_id: str, nsg_storage_account_id: str, subscription: str):
     try:
@@ -452,7 +438,7 @@ def main():
         import_public_key()
         encrypt_data(data_file_name)
         #delete_data_file(data_file_name)
-        
+
         print("ON-BOARDING FINISHED")
         t1 = time.time()
         print(f"onbooarding took:\t {t1-t0}")
@@ -461,3 +447,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# def get_available_locations():
+#     try:
+#         cli_args = "az account list-locations --output table | awk 'NR > 2 {print $2}'"
+#         region_list = azcli(cli_args)
+#         # lines = output.split("\n")[2:]  # Skip header and separator lines
+#         # names = [line.split()[1] for line in lines]
+#         return region_list
+#     except Exception:
+#         logging.critical(f"{traceback.format_exc()}")

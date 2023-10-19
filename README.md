@@ -5,11 +5,12 @@
     * generates:
       * nsg_storage_account_name
       * audit_storage_account_name
+    * add account extension
 
     * List Subscriptions for current tennant
     * Create for Cyngular -
       * service principle
-      * cyngular resource group
+      * cyngular resource group in client location
         * audit_storage_account
         * nsg_storage_account
     
@@ -33,9 +34,6 @@
         * list network interfaces
           * Loop throgh `RGs` in `subscription`:
           * if `net watcher` not in `net interface location` - configure network_watcher
-
-          * if `net interface location` is `northeurope` - create_nsg_flowlog
-
     
     * Import diagnostic settings
       * audit_storage_account_id
