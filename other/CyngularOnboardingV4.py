@@ -8,12 +8,6 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import List, Dict, Any
 
-CLIENT_NAME = "xxxxxxxxxx"
-RESOURCE_GROUP_LOCATION = "xxxxxxxxxx"
-
-AUDIT_STORAGE_ACCOUNT_NAME = f"cyngularaudit{CLIENT_NAME}"
-NSG_STORAGE_ACCOUNT_NAME = f"cyngularnsg{CLIENT_NAME}xxxxxxxxxx"
-
 PRINCIPAL_NAME = "cyngularSP"
 RESOURCE_GROUP = "cyngularRG"
 ACTIVITY_FILE = "activity-logs.bicep"
@@ -71,7 +65,9 @@ def add_account_extension():
     logging.info("Adding extension named account")
     print("Adding 'az account' extension")
     args = "az extension add --name account"
-    return cli(args)
+    acc_ext = cli(args)
+    print(f"added acc ext: \n{acc_ext}\n")
+    return acc_ext
 
 @handle_exception
 def import_public_key():
@@ -94,10 +90,12 @@ def encrypt_data(data_file_name):
     
 @handle_exception
 def get_subscription_lst():
-    logging.info("Collecting client subscriptions id")
-    print("Collecting client subscriptions id")
+    logging.info("Listing client subscription ids")
+    print("Listing client subscription ids")
     args = "az account subscription list --query [].subscriptionId"
-    return cli(args)
+    sub_list = cli(args)
+    print(f"found sunscriptions: \n{sub_list}\n")
+    return sub_list
 
 @handle_exception
 def create_cyngular_service_principal():
@@ -109,17 +107,21 @@ def create_cyngular_service_principal():
     principal_app_id = res["appId"]
     principal_password = res["password"]
     principal_tenant = res["tenant"]
+    print(f"principle properties: \n{res}\n")
     return principal_app_id, principal_password, principal_tenant
 
 @handle_exception
 def set_subscription(subscription_id: str):
     args = f"az account set --subscription {subscription_id}"
-    _ = cli(args)
+    curr_sub = cli(args)
+    print(f"current subscription: \n{curr_sub}\n")
+
 
 @handle_exception
 def get_principal_object_id(principal_app_id: str):
     args = f"az ad sp show --id {principal_app_id} --query id"
     principal_object_id = cli(args)
+    print(f"principal object id: \n{principal_object_id}\n")
     return principal_object_id
 
 @handle_exception
@@ -177,7 +179,7 @@ def get_storage_accounts_connection_string(audit_storage_account_name: str, nsg_
 def export_activity_logs(subscription: str, audit_storage_account_id: str, company_region: str):
     logging.info(f"Exporting activity logs from subscription: {subscription}")
     print(f"Exporting activity logs from subscription: {subscription}")
-    args = f"az deployment sub create --location {company_region} --template-file {ACTIVITY_FILE} --parameters settingName=CyngularDiagnostic storageAccountId={audit_storage_account_id} --subscription {subscription}"
+    args = f"az deployment sub create --location {company_region} --template-file {ACTIVITY_FILE} --parameters settingName=cyngularDiagnostic storageAccountId={audit_storage_account_id} --subscription {subscription}"
     _ = cli(args)
 
 @handle_exception
@@ -216,7 +218,7 @@ def is_network_watcher_in_location(subscription: str, location: str) -> bool:
 # @handle_exception
 def network_watcher_configure(subscription: str, location: str):
     try:
-        args = f"az network watcher configure -g NetworkWatcherRG --enabled true -l {location} --subscription {subscription}"
+        args = f"az network watcher configure -g NetworkWatcherRG -l {location} --subscription {subscription} --enabled true"
         cli(args)
     except Exception as e:
         if "NetworkWatcherCountLimitReached" not in str(e):

@@ -1,0 +1,132 @@
+2023-10-20 23:19:13,108 - INFO - STARTING CYNGULAR ONBOARING PROCESS
+2023-10-20 23:19:19,791 - INFO - Adding extension named account
+2023-10-20 23:19:43,955 - INFO - Collecting client subscriptions id
+2023-10-20 23:19:45,037 - INFO - Creating cyngular service principal
+2023-10-20 23:20:09,788 - INFO - Creating cyngularRG resource group
+2023-10-20 23:20:12,631 - INFO - Creating audit storage account
+2023-10-20 23:20:37,335 - INFO - Creating nsg storage account
+2023-10-20 23:21:05,111 - INFO - Getting the storage accounts connection strings
+2023-10-20 23:21:09,091 - INFO - The current subscription is: b682a811-395f-4eae-828b-b099faf3fe44
+2023-10-20 23:21:09,092 - INFO - The current subscription is: a40cfbac-9172-4609-841e-76f520567845
+2023-10-20 23:21:09,092 - INFO - The current subscription is: 373cb248-9e3b-4f65-8174-c72d253103ea
+2023-10-20 23:21:10,051 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az role assignment create --assignee-object-id c6be030f-5a47-4511-a3f2-b16dde66612d --assignee-principal-type ServicePrincipal --role Reader --scope /subscriptions/a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:10,937 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az role assignment create --assignee-object-id c6be030f-5a47-4511-a3f2-b16dde66612d --assignee-principal-type ServicePrincipal --role Disk Pool Operator --scope /subscriptions/a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:11,742 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az role assignment create --assignee-object-id c6be030f-5a47-4511-a3f2-b16dde66612d --assignee-principal-type ServicePrincipal --role Data Operator for Managed Disks --scope /subscriptions/a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:12,897 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az role assignment create --assignee-object-id c6be030f-5a47-4511-a3f2-b16dde66612d --assignee-principal-type ServicePrincipal --role Disk Snapshot Contributor --scope /subscriptions/a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:13,669 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Authorization/roleDefinitions/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az role assignment create --assignee-object-id c6be030f-5a47-4511-a3f2-b16dde66612d --assignee-principal-type ServicePrincipal --role Microsoft Sentinel Reader --scope /subscriptions/a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:13,669 - INFO - Exporting activity logs from subscription: a40cfbac-9172-4609-841e-76f520567845
+2023-10-20 23:21:18,553 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: An error occurred reading file. Could not find file '/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/activity-log.bicep'.\n"  "az deployment sub create --location eastus2 --template-file activity-log.bicep --parameters settingName=cyngularDiagnostic storageAccountId=/subscriptions/b682a811-395f-4eae-828b-b099faf3fe44/resourceGroups/cyngularRG/providers/Microsoft.Storage/storageAccounts/cyngularauditjokers --subscription a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:18,553 - INFO - Creating NetworkWatcherRG resource group using subscription
+2023-10-20 23:21:19,508 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Resources/subscriptions/resourcegroups/write' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845/resourcegroups/NetworkWatcherRG' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Resources/subscriptions/resourcegroups/write' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845/resourcegroups/NetworkWatcherRG' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az group create -l eastus2 -n NetworkWatcherRG --subscription a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:35,345 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: (AuthorizationFailed) The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Resources/subscriptions/resourcegroups/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\nCode: AuthorizationFailed\nMessage: The client 'dvirg@azuresandboxcyngularsecurit.onmicrosoft.com' with object id 'ea69e391-c73e-4119-9281-7168117a2758' does not have authorization to perform action 'Microsoft.Resources/subscriptions/resourcegroups/read' over scope '/subscriptions/a40cfbac-9172-4609-841e-76f520567845' or the scope is invalid. If access was recently granted, please refresh your credentials.\n"  "az group list --subscription a40cfbac-9172-4609-841e-76f520567845"
+
+2023-10-20 23:21:35,345 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 249, in get_resource_groups
+    for group in res:
+TypeError: 'NoneType' object is not iterable
+
+2023-10-20 23:21:35,345 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 371, in subscription_manager
+    for subscription_resource_group in resource_groups:
+TypeError: 'NoneType' object is not iterable
+
+2023-10-20 23:21:35,713 - INFO - Exporting activity logs from subscription: 373cb248-9e3b-4f65-8174-c72d253103ea
+2023-10-20 23:21:36,894 - INFO - Exporting activity logs from subscription: b682a811-395f-4eae-828b-b099faf3fe44
+2023-10-20 23:21:38,627 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: An error occurred reading file. Could not find file '/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/activity-log.bicep'.\n"  "az deployment sub create --location eastus2 --template-file activity-log.bicep --parameters settingName=cyngularDiagnostic storageAccountId=/subscriptions/b682a811-395f-4eae-828b-b099faf3fe44/resourceGroups/cyngularRG/providers/Microsoft.Storage/storageAccounts/cyngularauditjokers --subscription 373cb248-9e3b-4f65-8174-c72d253103ea"
+
+2023-10-20 23:21:38,627 - INFO - Creating NetworkWatcherRG resource group using subscription
+2023-10-20 23:21:39,674 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"ERROR: An error occurred reading file. Could not find file '/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/activity-log.bicep'.\n"  "az deployment sub create --location eastus2 --template-file activity-log.bicep --parameters settingName=cyngularDiagnostic storageAccountId=/subscriptions/b682a811-395f-4eae-828b-b099faf3fe44/resourceGroups/cyngularRG/providers/Microsoft.Storage/storageAccounts/cyngularauditjokers --subscription b682a811-395f-4eae-828b-b099faf3fe44"
+
+2023-10-20 23:21:39,675 - INFO - Creating NetworkWatcherRG resource group using subscription
+2023-10-20 23:21:42,290 - INFO - Collecting nsg flow logs from resource group: testResourceGroup
+2023-10-20 23:21:42,290 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-EUS
+2023-10-20 23:21:42,291 - INFO - Collecting nsg flow logs from resource group: cloud-shell-storage-westeurope
+2023-10-20 23:21:42,291 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-EUS2
+2023-10-20 23:21:42,293 - INFO - Collecting nsg flow logs from resource group: cyngularRG
+2023-10-20 23:21:42,294 - INFO - Collecting nsg flow logs from resource group: NetworkWatcherRG
+2023-10-20 23:21:42,732 - INFO - Collecting nsg flow logs from resource group: cloud-shell-storage-westeurope
+2023-10-20 23:21:42,733 - INFO - Collecting nsg flow logs from resource group: cyngular-northcentralus
+2023-10-20 23:21:42,734 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-NCUS
+2023-10-20 23:21:42,742 - INFO - Collecting nsg flow logs from resource group: DeleteToday
+2023-10-20 23:21:42,749 - INFO - Collecting nsg flow logs from resource group: sandbox
+2023-10-20 23:21:42,758 - INFO - Collecting nsg flow logs from resource group: NetworkWatcherRG
+2023-10-20 23:21:42,772 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-CUS
+2023-10-20 23:21:42,804 - INFO - Collecting nsg flow logs from resource group: eastus_cyngular_prod
+2023-10-20 23:21:42,854 - INFO - Collecting nsg flow logs from resource group: cloud-shell-storage-eastus
+2023-10-20 23:21:42,884 - INFO - Collecting nsg flow logs from resource group: arad_eden_staging_resource_group
+2023-10-20 23:22:00,818 - INFO - Collecting nsg flow logs from resource group: VM-clientx-splunk-service_group
+2023-10-20 23:22:00,892 - INFO - Collecting nsg flow logs from resource group: cyngularGroup
+2023-10-20 23:22:01,045 - INFO - Collecting nsg flow logs from resource group: cyngularGroupTest
+2023-10-20 23:22:01,662 - INFO - Collecting nsg flow logs from resource group: examplefunctionapp
+2023-10-20 23:22:01,987 - INFO - Collecting nsg flow logs from resource group: cloud-shell-storage-northeurope
+2023-10-20 23:22:10,282 - INFO - Importing diagnostic settings
+2023-10-20 23:22:12,135 - INFO - Collecting nsg flow logs from resource group: leshem-test
+2023-10-20 23:22:15,446 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-WUS
+2023-10-20 23:22:16,294 - INFO - Collecting nsg flow logs from resource group: check6
+2023-10-20 23:22:16,394 - INFO - Collecting nsg flow logs from resource group: api_group
+2023-10-20 23:22:16,641 - INFO - Collecting nsg flow logs from resource group: vns3-peoplevpn_group
+2023-10-20 23:22:18,053 - INFO - Collecting nsg flow logs from resource group: peoplevpn_group
+2023-10-20 23:22:18,083 - INFO - Collecting nsg flow logs from resource group: vpnserver_group
+2023-10-20 23:22:28,171 - INFO - Collecting nsg flow logs from resource group: opnsense_group
+2023-10-20 23:22:30,328 - INFO - Collecting nsg flow logs from resource group: SoftEther_group
+2023-10-20 23:22:32,855 - INFO - Collecting nsg flow logs from resource group: proxy-server_group
+2023-10-20 23:22:34,223 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-EUS
+2023-10-20 23:22:39,980 - INFO - Collecting nsg flow logs from resource group: tal-functionapp_group
+2023-10-20 23:22:40,059 - INFO - Collecting nsg flow logs from resource group: raphi-rg
+2023-10-20 23:22:41,551 - INFO - Collecting nsg flow logs from resource group: MC_tal-functionapp_group_tal-test_eastus
+2023-10-20 23:22:42,930 - INFO - Collecting nsg flow logs from resource group: yogev_rg
+2023-10-20 23:22:46,049 - INFO - Collecting nsg flow logs from resource group: Workspace-rg
+2023-10-20 23:22:46,356 - INFO - Collecting nsg flow logs from resource group: DefaultResourceGroup-WEU
+2023-10-20 23:22:55,660 - INFO - Importing diagnostic settings
+2023-10-20 23:22:58,189 - INFO - FINISHED ONBOARDING
+2023-10-20 23:22:58,190 - INFO - Importing public key
+2023-10-20 23:22:58,216 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"gpg: WARNING: unsafe ownership on homedir '/Users/dvirgross/.gnupg'\ngpg: failed to create temporary file '/Users/dvirgross/.gnupg/.#lk0x000060000244ca50.Dvirs-MacBook-Air.local.86329': Permission denied\ngpg: keyblock resource '/Users/dvirgross/.gnupg/pubring.kbx': Permission denied\ngpg: can't open 'cyngular_public.key': No such file or directory\ngpg: Total number processed: 0\n"  "gpg --import cyngular_public.key"
+
+2023-10-20 23:22:58,216 - INFO - Encrypting jokers_data.txt file with public key
+2023-10-20 23:22:58,230 - CRITICAL - Traceback (most recent call last):
+  File "/Users/dvirgross/projects/Infra/Azure/azure-client-onboarding/CyngularOnboardingV2.py", line 37, in azcli
+    raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
+ValueError: b"gpg: WARNING: unsafe ownership on homedir '/Users/dvirgross/.gnupg'\ngpg: failed to create temporary file '/Users/dvirgross/.gnupg/.#lk0x0000600001a94b10.Dvirs-MacBook-Air.local.86330': Permission denied\ngpg: keyblock resource '/Users/dvirgross/.gnupg/pubring.kbx': Permission denied\ngpg: failed to create temporary file '/Users/dvirgross/.gnupg/.#lk0x0000600001a9c1e0.Dvirs-MacBook-Air.local.86330': Permission denied\ngpg: can't connect to the dirmngr: Permission denied\ngpg: error retrieving 'cyngularsecurity@gmail.com' via WKD: No dirmngr\ngpg: cyngularsecurity@gmail.com: skipped: No dirmngr\ngpg: jokers_data.txt: encryption failed: No dirmngr\n"  "gpg --encrypt --armor -r cyngularsecurity@gmail.com jokers_data.txt"
+
+2023-10-20 23:24:27,594 - INFO - STARTING CYNGULAR ONBOARING PROCESS
+2023-10-21 01:27:59,261 - INFO - STARTING CYNGULAR ONBOARING PROCESS

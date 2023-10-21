@@ -386,9 +386,6 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
     except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
-
-
-
 def main():
     try:
         logging.info("STARTING CYNGULAR ONBOARING PROCESS")

@@ -1,10 +1,12 @@
+targetScope = 'subscription'
+
 @description('The name of the diagnostic setting.')
 param settingName string
 
 @description('The resource Id for the storage account.')
 param storageAccountId string
 
-resource CyngularDiadnostic 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource CyngularDiagnostic 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: settingName
   properties: {
     storageAccountId: storageAccountId
