@@ -4,26 +4,20 @@ import shlex
 import traceback
 import logging
 import time
-import sys
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import wait                             
+from concurrent.futures import ThreadPoolExecutor, wait
 
+PRINCIPAL_NAME = "cyngularSP"
 CLIENT_NAME = "xxxxxxxxxx"
+RESOURCE_GROUP = "cyngularRG"
 RESOURCE_GROUP_LOCATION = "xxxxxxxxxx"
-
 AUDIT_STORAGE_ACCOUNT_NAME = f"cyngularaudit{CLIENT_NAME}"
 NSG_STORAGE_ACCOUNT_NAME = f"cyngularnsg{CLIENT_NAME}xxxxxxxxxx"
-
-PRINCIPAL_NAME = "CyngularSP"
-RESOURCE_GROUP = "CyngularRG"
 ACTIVITY_FILE_NAME = "activity-logs.bicep"
-CYNGULAR_PUBLIC_KEY=".local/CyngularPublic.key"
 
 LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 AUDIT_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 NETWORK_SERCURITY_SETTINGS = "\"[{category:NetworkSecurityGroupEvent,enabled:true,retention-policy:{enabled:false,days:30}},{category:NetworkSecurityGroupRuleCounter,enabled:true,retention-policy:{enabled:false,days:30}}]\""
-ALL_LOGS_SETTING = "\"[{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
-
+ALLLOGS_SETTING = "\"[{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 logging.basicConfig(
     filename="CyngularOnboarding.log",
     filemode="a",
@@ -40,8 +34,7 @@ def azcli(cli_args, verbose=True):
         out, err = process.communicate()
         exit_code = process.returncode
         if exit_code and exit_code != 0:
-            raise ValueError(str(err) + '  "' + ' in => ' + sys._getframe(1).f_code.co_name + "\n" + " ".join(cli_args) + '"')
-
+            raise ValueError(str(err) + '  "' + " ".join(cli_args) + '"')
         elif len(out) == 0:
             return out
         else:
@@ -53,8 +46,8 @@ def azcli(cli_args, verbose=True):
             return
         elif("could not be found" in traceback.format_exc()):
             return
-        # elif("'AuditEvent' is not supported" in traceback.format_exc()):
-        #     return
+        elif("'AuditEvent' is not supported" in traceback.format_exc()):
+            return
         if verbose:
             logging.critical(traceback.format_exc())
         else:
@@ -63,29 +56,32 @@ def azcli(cli_args, verbose=True):
 def add_account_extension():
     try:
         logging.info("Adding extension named account")
-        print("Adding 'az account' extension")
+        print("Adding extension named account")
 
-        cli_args = "az extension add --name account"
+        cli_args = f"az extension add --name account"
         return azcli(cli_args)
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+    
 
 def import_public_key():
     try:
         logging.info("Importing public key")
         print("Importing public key")
 
-        cli_args = f"gpg --import {CYNGULAR_PUBLIC_KEY}"
+        cli_args = "gpg --import cyngular_public.key"
         return azcli(cli_args)
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+
 
 def delete_data_file(data_file_name):
     try:
         cli_args = f"rm {data_file_name}"
         return azcli(cli_args)
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+    
 
 def encrypt_data(data_file_name):
     try:
@@ -94,8 +90,9 @@ def encrypt_data(data_file_name):
 
         cli_args = f"gpg --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
         return azcli(cli_args)
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+    
     
 def get_subscription_lst():
     try:
@@ -104,55 +101,57 @@ def get_subscription_lst():
 
         cli_args = "az account subscription list --query [].subscriptionId"
         return azcli(cli_args)
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+
 
 def create_cyngular_service_principal():
     try:
         logging.info("Creating cyngular service principal")
         print("Creating cyngular service principal")
         cli_args = f"az ad sp create-for-rbac --name {PRINCIPAL_NAME}"
-        
         res = azcli(cli_args)
         principal_app_id = res["appId"]
         principal_password = res["password"]
         principal_tenant = res["tenant"]
 
-        print(f"got: \n\tapp id => {principal_app_id}")
-        logging.info(f"got: \n\tapp id => {principal_app_id}")
         return principal_app_id, principal_password, principal_tenant
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+
 
 def set_subscription(subscription_id: str):
     try:
         cli_args = f"az account set --subscription {subscription_id}"
-        _ = azcli(cli_args)
-    except Exception:
+        res = azcli(cli_args)
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
+
 
 def get_principal_object_id(principal_app_id: str):
     try:
-        print(f"looking for id in app: \n\tapp id => {principal_app_id}")
-        logging.info(f"got: \n\tapp id => {principal_app_id}")
         cli_args = f"az ad sp show --id {principal_app_id} --query id"
         principal_object_id = azcli(cli_args)
         return principal_object_id
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+
 
 def assign_subscription_role(subscription_id: str, principal_object_id: str, role: str):
     try:
-        cli_args = (f'az role assignment create --assignee-object-id {principal_object_id} --assignee-principal-type ServicePrincipal --role "{role}" --scope /subscriptions/{subscription_id}')
-        _ = azcli(cli_args)
-    except Exception:
+        cli_args = f'az role assignment create --assignee-object-id {principal_object_id} --assignee-principal-type ServicePrincipal --role "{role}" --scope /subscriptions/{subscription_id}'
+        res = azcli(cli_args)
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
+
 
 def create_resource_group_with_subscription(subscription: str, resource_group_location: str, resource_group_name: str):
     try:
         logging.info(f"Creating {resource_group_name} resource group using subscription")
         print(f"Creating {resource_group_name} resource group using subscription")
-        cli_args = (f"az group create -l {resource_group_location} -n {resource_group_name} --subscription {subscription}")
+        cli_args = (
+            f"az group create -l {resource_group_location} -n {resource_group_name} --subscription {subscription}"
+        )
         azcli(cli_args)
     except Exception as e:
         if resource_group_name == RESOURCE_GROUP:
@@ -174,6 +173,7 @@ def create_resource_group(resource_group_location: str, resource_group_name: str
         else:
             logging.critical(f"{traceback.format_exc()}")
 
+
 def create_audit_storage_account(audit_storage_account_name: str, company_region: str):
     try:
         logging.info("Creating audit storage account")
@@ -186,8 +186,9 @@ def create_audit_storage_account(audit_storage_account_name: str, company_region
             audit_storage_account_id = azcli(cli_args)["id"]
             return audit_storage_account_id
 
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+
 
 def create_nsg_storage_account(nsg_storage_account_name: str, company_region: str):
     try:
@@ -200,8 +201,9 @@ def create_nsg_storage_account(nsg_storage_account_name: str, company_region: st
             cli_args = f"az storage account create -n {nsg_storage_account_name} -g {RESOURCE_GROUP} -l {company_region} --sku Standard_LRS"
             nsg_storage_account_id = azcli(cli_args)["id"]
             return nsg_storage_account_id
-    except Exception:
-        logging.critical(f"{traceback.format_exc()}")
+    except Exception as e:
+        raise Exception(str(e))
+
 
 def get_storage_accounts_connection_string(audit_storage_account_name: str, nsg_storage_account_name: str):
     try:
@@ -211,16 +213,17 @@ def get_storage_accounts_connection_string(audit_storage_account_name: str, nsg_
         cli_args = f"az storage account show-connection-string -g {RESOURCE_GROUP} -n {nsg_storage_account_name} --query connectionString"
         nsg_connection_string = azcli(cli_args)
         return audit_connection_string, nsg_connection_string
-    except Exception:
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
+
 
 def export_activity_logs(subscription: str, audit_storage_account_id: str, company_region: str):
     try:
         logging.info(f"Exporting activity logs from subscription: {subscription}")
         print(f"Exporting activity logs from subscription: {subscription}")
-        cli_args = f"az deployment sub create --location {company_region} --template-file {ACTIVITY_FILE_NAME} --parameters settingName=cyngularDiagnostic storageAccountId={audit_storage_account_id} --subscription {subscription}"
-        _ = azcli(cli_args)
-    except Exception:
+        cli_args = f"az deployment sub create --location {company_region} --template-file {ACTIVITY_FILE_NAME}  --parameters settingName=cyngularDiagnostic storageAccountId={audit_storage_account_id} --subscription {subscription}"
+        audit_connection_string = azcli(cli_args)
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 def import_diagnostic_settings(resource: str, audit_storage_account_id: str):
@@ -230,11 +233,11 @@ def import_diagnostic_settings(resource: str, audit_storage_account_id: str):
         if("flexibleServers" in resource or "publicIPAddresses" in resource or "vaults" in resource or "namespaces" in resource or "workspaces" in resource):
             cli_args = f"az monitor diagnostic-settings create --name cyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {AUDIT_LOG_SETTINGS}"
         elif("networkSecurityGroups" in resource or "bastionHosts" in resource or "components" in resource):
-            cli_args = f"az monitor diagnostic-settings create --name cyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {ALL_LOGS_SETTING}"
+            cli_args = f"az monitor diagnostic-settings create --name cyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {ALLLOGS_SETTING}"
         else:
             cli_args = f"az monitor diagnostic-settings create --name cyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {LOG_SETTINGS}"
-        _ = azcli(cli_args)
-    except Exception:
+        audit_connection_string = azcli(cli_args)
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 def get_resource_groups(subscription: str):
@@ -251,14 +254,19 @@ def get_resource_groups(subscription: str):
             }
             resource_groups.append(resource_group)
         return resource_groups
-    except Exception:
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
+
 
 def get_network_interfaces(subscription_resource_group: str, subscription: str):
     try:
-        logging.info(f"Collecting nsg flow logs from resource group: {subscription_resource_group}")
-        print(f"Collecting nsg flow logs from resource group: {subscription_resource_group}")
-        
+        logging.info(
+            f"Collecting nsg flow logs from resource group: {subscription_resource_group}"
+        )
+        print(
+            f"Collecting nsg flow logs from resource group: {subscription_resource_group}"
+        )
+
         cli_args = f"az network nsg list --resource-group {subscription_resource_group} --subscription {subscription}"
         res = azcli(cli_args)
 
@@ -269,8 +277,9 @@ def get_network_interfaces(subscription_resource_group: str, subscription: str):
                 network_interfaces_lst.append(network_interface)
         return network_interfaces_lst
 
-    except Exception:
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
+
 
 def is_network_watcher_in_location(subscription: str, location: str):
     try:
@@ -278,22 +287,24 @@ def is_network_watcher_in_location(subscription: str, location: str):
         if azcli(cli_args) == None:
             return True
         return False
-    except Exception:
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
+
 
 def network_watcher_configure(subscription: str, location: str):
     try:
-        cli_args = f"az network watcher configure -g NetworkWatcherRG --enabled true -l {location} --subscription {subscription}"
+        cli_args = f"az network watcher configure -g NetworkWatcherRG  -l {location} --enabled true --subscription {subscription}"
         azcli(cli_args)
     except Exception as e:
         if "NetworkWatcherCountLimitReached" not in str(e):
             logging.critical(f"{traceback.format_exc()}")
 
+
 def create_nsg_flowlog(location: str, network_interface_id: str, nsg_storage_account_id: str, subscription: str):
     try:
-        cli_args = f"az network watcher flow-log create --name cyngular --nsg {network_interface_id} --storage-account {nsg_storage_account_id} --location {location} --subscription {subscription}"
+        cli_args = f"az network watcher flow-log create --location {location} --name cyngular --nsg {network_interface_id} --storage-account {nsg_storage_account_id} --subscription {subscription}"
         azcli(cli_args)
-    except Exception:
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 def configure_and_create_nsg_flowlog(subscription, network_interface ,company_region ,nsg_storage_account_id):
@@ -304,7 +315,7 @@ def configure_and_create_nsg_flowlog(subscription, network_interface ,company_re
         # creating nsg flow log
         if network_interface["location"] == company_region:
            create_nsg_flowlog(network_interface["location"], network_interface["id"], nsg_storage_account_id, subscription)
-    except Exception:
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 def create_network_integration(subscription: str, subscription_resource_group: str, nsg_storage_account_id: str, company_region: str):
@@ -321,10 +332,10 @@ def create_network_integration(subscription: str, subscription_resource_group: s
             for network_interface in network_interface_lst:
                 try:
                     future.append(executor.submit(configure_and_create_nsg_flowlog,subscription, network_interface,company_region,nsg_storage_account_id))
-                except Exception:
+                except Exception as e:
                     logging.critical(f"{traceback.format_exc()}")
-            _ = wait(future)
-    except Exception:
+            res = wait(future)
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 def subscription_manager(company_region, subscription, principal_object_id, audit_storage_account_id, nsg_storage_account_id):
@@ -332,7 +343,6 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
         logging.info(f"The current subscription is: {subscription}")
         print(f"The current subscription is: {subscription}")
 
-        # assigning cyngular service princicpal the required roles in the
         assign_subscription_role(subscription, principal_object_id, "Reader")
         assign_subscription_role(
             subscription, principal_object_id, "Disk Pool Operator"
@@ -359,7 +369,7 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
         with ThreadPoolExecutor(max_workers=10) as executor:
             for subscription_resource_group in resource_groups:
                 future.append(executor.submit(create_network_integration, subscription, subscription_resource_group, nsg_storage_account_id, company_region))
-            _ = wait(future)    
+            res = wait(future)    
         #importing diagnostic settings for the resource
         logging.info("Importing diagnostic settings")
         print("Importing diagnostic settings")
@@ -370,8 +380,8 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
         with ThreadPoolExecutor(max_workers=10) as executor:
             for resource in resource_ids:
                  future.append(executor.submit(import_diagnostic_settings, resource ,audit_storage_account_id))
-            _ = wait(future)
-    except Exception:
+            res = wait(future)
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 def main():
@@ -393,7 +403,8 @@ def main():
                 if(len(nsg_storage_account_name) > 24):
                     company_name = input("\n*Your company name is too long\nPlease re-Enter your company name here: ")
 
-        audit_storage_account_name = "cyngularaudit" + company_name
+        audit_storage_account_name = "cyngularaudit" + company_name 
+
         t0 = time.time()
         
         # adding extension library named account
@@ -421,11 +432,11 @@ def main():
             nsg_connection_string,
         ) = get_storage_accounts_connection_string(audit_storage_account_name, nsg_storage_account_name)
 
-        # creating thread pool in subscriptions iteration
+        # creating thread pool for all the subscriptions
         with ThreadPoolExecutor(max_workers=10) as executor:
             for subscription in subscriptions_lst:
                 executor.submit(subscription_manager, company_region, subscription, principal_object_id, audit_storage_account_id, nsg_storage_account_id)        
-        
+
         logging.info("FINISHED ONBOARDING")
         print("FINISHED ONBOARDING")
         data_file_name = f"{company_name}_data.txt"
@@ -438,22 +449,11 @@ def main():
         import_public_key()
         encrypt_data(data_file_name)
         #delete_data_file(data_file_name)
-
         print("ON-BOARDING FINISHED")
         t1 = time.time()
-        print(f"onbooarding took:\t {t1-t0}")
-    except Exception:
+        print(f"onbooarding took:\t {t1-t0} sec")
+    except Exception as e:
         logging.critical(f"{traceback.format_exc()}")
 
 if __name__ == "__main__":
     main()
-
-# def get_available_locations():
-#     try:
-#         cli_args = "az account list-locations --output table | awk 'NR > 2 {print $2}'"
-#         region_list = azcli(cli_args)
-#         # lines = output.split("\n")[2:]  # Skip header and separator lines
-#         # names = [line.split()[1] for line in lines]
-#         return region_list
-#     except Exception:
-#         logging.critical(f"{traceback.format_exc()}")
