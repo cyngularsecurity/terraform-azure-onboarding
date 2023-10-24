@@ -1,18 +1,15 @@
 # OnBoarding Workflow
 
-0. _Main_
+1. Main
     * input company name & region
-    * generates:
-      * nsg_storage_account_name
-      * audit_storage_account_name
     * add account extension
+    * create service principle
+    * for current mgmt azure subscription
+      * create cyngular resource group in client region
+        * create audit logs storage account
+        * create ngs storage account for nsg flow logs
 
-    * List Subscriptions for current tennant
-    * Create for Cyngular -
-      * service principle
-      * cyngular resource group in client location
-        * audit_storage_account
-        * nsg_storage_account
+    * List Subscriptions for current tennant - directory
     
     * Loop throgh Subscriptions:
       * run subscription manager on each:
@@ -23,18 +20,26 @@
         * Disk Snapshot Contributor
         * Microsoft Sentinel Reader
       * export activity logs
+        * with a diagnostic settings bicep deployment
         * from subscription and region
         * to audit_storage_account
 
       * create NetworkWatcherRG resource group
       * List resource groups
       * Loop throgh RGs in subscription:
-        * if net watcher not in resource group location - configure network_watcher
+        * if net watcher not in resource group location - configure (enable) network_watcher
 
-        * list network interfaces
-          * Loop throgh `RGs` in `subscription`:
-          * if `net watcher` not in `net interface location` - configure network_watcher
+        * list network interfaces / nsgs
+          * Loop through `NSGs` in `subscription`:
+          * if `net watcher` not in `NSG` - configure network_watcher
+          * if NSG location is as client loaction: create flow logs for that NSG / Net Interface
     
-    * Import diagnostic settings
-      * audit_storage_account_id
-      * region
+      * list all resources in curr subscription and in client location
+      * loop through Resources
+        * Export diagnostic settings
+          * from a resource
+          * with a specific type of log settings
+          * to audit_storage_account_id
+
+    * write sensitive data to a file, encrypt and send to cyngular
+      * option to upload to cyngular key vault

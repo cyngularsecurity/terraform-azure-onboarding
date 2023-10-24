@@ -209,7 +209,7 @@ def get_network_interfaces(subscription_resource_group: str, subscription: str):
 @handle_exception
 def is_network_watcher_in_location(subscription: str, location: str) -> bool:
     args = f"az network watcher list --query \"[?location=='{location}'].id\" --subscription {subscription}"
-    if cli(args) == None:
+    if cli(args) is None:
         return True
     return False
 
@@ -229,7 +229,7 @@ def create_nsg_flowlog(location: str, network_interface_id: str, nsg_storage_acc
 @handle_exception
 def configure_and_create_nsg_flowlog(subscription, network_interface ,company_region ,nsg_storage_account_id, net_watch_rg: str):
     # configurating network watcher on network interface location
-    if (is_network_watcher_in_location(subscription, network_interface["location"])== False):
+    if  not is_network_watcher_in_location(subscription, network_interface["location"]):
         network_watcher_configure(subscription, network_interface["location"], net_watch_rg)
     # creating nsg flow log
     if network_interface["location"] == company_region:
@@ -239,7 +239,7 @@ def configure_and_create_nsg_flowlog(subscription, network_interface ,company_re
 @handle_exception
 def create_network_integration(subscription: str, subscription_resource_group: Dict[str, Any], nsg_storage_account_id: str, company_region: str, net_watch_rg: str):
     network_interface_lst = get_network_interfaces(subscription_resource_group["name"], subscription)
-    if (is_network_watcher_in_location(subscription, subscription_resource_group["location"]) == False):
+    if not is_network_watcher_in_location(subscription, subscription_resource_group["location"]):
         network_watcher_configure(subscription, subscription_resource_group["location"], net_watch_rg)
 
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -284,7 +284,7 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
             for subscription_resource_group in resource_groups:
                 future.append(executor.submit(create_network_integration, subscription, subscription_resource_group, nsg_storage_account_id, company_region, net_watch_rg))
             _ = wait(future)    
-        #importing diagnostic settings for the resource
+        #exporting diagnostic settings for the resource
         logging.info("Importing diagnostic settings")
         print("Importing diagnostic settings")
         resource_ids_cli = f"az resource list --location {company_region} --query \"[].id\" --subscription {subscription}"
