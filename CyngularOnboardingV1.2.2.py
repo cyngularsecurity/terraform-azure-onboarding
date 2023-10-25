@@ -1,7 +1,12 @@
 from concurrent.futures import ThreadPoolExecutor, wait
-import time, sys, logging, subprocess
 from typing import List, Dict, Any
-import traceback, shlex, json
+import subprocess
+import traceback
+import time
+import sys
+import logging
+import shlex
+import json
 
 blue = "\033[1;34m"
 red = "\033[1;91m"
@@ -52,7 +57,6 @@ def cli(args, verbose=True):
             logging.critical(error_msg)
         raise Exception(error_msg)
 
-# Error Handling Wrapper
 def handle_exception(func):
     def wrapper(*args, **kwargs):
         try:
@@ -84,7 +88,8 @@ def delete_data_file(data_file_name):
 def encrypt_data(data_file_name):
     logging.info(f"Encrypting {data_file_name} file with public key")
     print(f"Encrypting {data_file_name} file with public key")
-    args = f"gpg --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
+    # args = f"gpg --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
+    args = f"gpg --trust-model always --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
     return cli(args)
     
 @handle_exception
@@ -121,8 +126,8 @@ def get_principal_object_id(principal_app_id: str):
 
 @handle_exception
 def assign_subscription_role(subscription_id: str, principal_object_id: str, role: str):
-    args = (f'az role assignment create --assignee-object-id {principal_object_id} --assignee-principal-type ServicePrincipal --role "{role}" --scope /subscriptions/{subscription_id}')
-    res = cli(args)
+    args = (f"az role assignment create --assignee-object-id {principal_object_id} --assignee-principal-type ServicePrincipal --role \"{role}\" --scope /subscriptions/{subscription_id}")
+    cli(args)
 
 @handle_exception
 def create_resource_group_with_subscription(subscription: str, resource_group_location: str, resource_group_name: str):
@@ -175,21 +180,19 @@ def export_activity_logs(subscription: str, audit_storage_account_id: str, compa
     logging.info(f"Exporting activity logs from subscription: {subscription}")
     print(f"Exporting activity logs from subscription: {subscription}")
     args = f"az deployment sub create --location {company_region} --template-file {ACTIVITY_FILE} --parameters settingName=cyngularDiagnostic storageAccountId={audit_storage_account_id} --subscription {subscription}"
-    _ = cli(args)
+    cli(args)
 
 @handle_exception
 def export_diagnostic_settings(resource: str, audit_storage_account_id: str):
-    if("storageAccounts" in resource or "virtualMachines" in resource or "networkInterfaces" in resource or "disks" in resource or "virtualNetworks" in resource or "sshPublicKeys" in resource or "serverFarms" in resource or "sites" in resource):
-        return
-    if any(r in resource for r in ["storageAccounts", "virtualMachines", "networkInterfaces", "disks", "virtualNetworks", "sshPublicKeys", "serverFarms", "sites"]):
-        return
+    if any(r in resource for r in ["storageAccounts", "virtualMachines", "networkInterfaces", "disks", "virtualNetworks", "sshPublicKeys", "serverFarms", "sites", "networkwatchers", "snapshots"]):
+        return # since r does not support diagnostic settings
     if("flexibleServers" in resource or "publicIPAddresses" in resource or "vaults" in resource or "namespaces" in resource or "workspaces" in resource):
         args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {AUDIT_LOG_SETTINGS}"
     elif("networkSecurityGroups" in resource or "bastionHosts" in resource or "components" in resource):
         args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {ALL_LOGS_SETTING}"
     else:
         args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {LOG_SETTINGS}"
-    _ = cli(args)
+    cli(args)
 
 @handle_exception
 def get_resource_groups(subscription: str) -> List[Dict[str, Any]]:
@@ -235,7 +238,6 @@ def configure_and_create_nsg_flowlog(subscription, network_interface ,company_re
     if network_interface["location"] == company_region:
        create_nsg_flowlog(network_interface["location"], network_interface["id"], nsg_storage_account_id, subscription)
 
-
 @handle_exception
 def create_network_integration(subscription: str, subscription_resource_group: Dict[str, Any], nsg_storage_account_id: str, company_region: str, net_watch_rg: str):
     network_interface_lst = get_network_interfaces(subscription_resource_group["name"], subscription)
@@ -257,22 +259,14 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
 
         # assigning cyngular service princicpal the required roles in the
         assign_subscription_role(subscription, principal_object_id, "Reader")
-        assign_subscription_role(
-            subscription, principal_object_id, "Disk Pool Operator"
-        )
-        assign_subscription_role(
-            subscription, principal_object_id, "Data Operator for Managed Disks"
-        )
-        assign_subscription_role(
-            subscription, principal_object_id, "Disk Snapshot Contributor"
-        )
-        assign_subscription_role(
-            subscription, principal_object_id, "Microsoft Sentinel Reader"
-        )
+        assign_subscription_role(subscription, principal_object_id, "Disk Pool Operator")
+        assign_subscription_role(subscription, principal_object_id, "Data Operator for Managed Disks")
+        assign_subscription_role(subscription, principal_object_id, "Disk Snapshot Contributor")
+        assign_subscription_role(subscription, principal_object_id, "Microsoft Sentinel Reader")
 
         # exporting activity logs from the subscription
         export_activity_logs(subscription, audit_storage_account_id, company_region)
-        
+
         net_watch_rg = "CyngularNetWatcherRG"
         # create network watcher resource group
         create_resource_group_with_subscription(subscription, company_region, net_watch_rg)
@@ -283,7 +277,7 @@ def subscription_manager(company_region, subscription, principal_object_id, audi
         with ThreadPoolExecutor(max_workers=10) as executor:
             for subscription_resource_group in resource_groups:
                 future.append(executor.submit(create_network_integration, subscription, subscription_resource_group, nsg_storage_account_id, company_region, net_watch_rg))
-            _ = wait(future)    
+            _ = wait(future)
         #exporting diagnostic settings for the resource
         logging.info("Importing diagnostic settings")
         print("Importing diagnostic settings")
@@ -310,8 +304,8 @@ def main():
         \____/\__, /_/ /_/\__, /\__,_/_/\__,_/_/      /____/\___/\___/\__,_/_/  /_/\__/\__, /  
              /____/      /____/                                                       /____/
 
-              """
-            + white
+        """
+        + white
     )
     print("\n")
     logging.info(" STARTING CYNGULAR ONBOARING PROCESS")
@@ -349,7 +343,7 @@ def main():
         audit_connection_string,
         nsg_connection_string,
     ) = get_storage_accounts_connection_string(audit_storage_account_name, nsg_storage_account_name)
-    
+
     # getting the client subscription ids
     subscriptions_lst = get_subscription_lst()
     # creating thread pool in subscriptions iteration
@@ -364,8 +358,8 @@ def main():
         file.write(f"Service Principal App ID: {principal_app_id}\n")
         file.write(f"Service Principal Password: {principal_password}\n")
         file.write(f"Service Principal Tenant: {principal_tenant}\n")
-        file.write(f"Service Principal Audit Storage Account Connection String: {audit_connection_string}\n")
-        file.write(f"Service Principal NSG Storage Account Connection String: {nsg_connection_string}\n")
+        file.write(f"Audit Storage Account Connection String: {audit_connection_string}\n")
+        file.write(f"Storage Account Connection String: {nsg_connection_string}\n")
     import_public_key()
     encrypt_data(data_file_name)
     #delete_data_file(data_file_name)
