@@ -1,18 +1,20 @@
 # OnBoarding Workflow
 
 1. Main
-    * input company name & region
+    * input `company name` & `region`
     * add account extension
-    * create service principle
-    * for current mgmt azure subscription
-      * create cyngular resource group in client region
-        * create audit logs storage account
-        * create ngs storage account for nsg flow logs
+    * create `Service Principle`
+      * get SP object id from app id
+    * for current (mgmt / default) azure subscription
+      * create `CyngularRG resource group` in client region
+        * create `audit logs` storage account
+        * create nsg storage account for `nsg flow logs`
+      * get storage accounts `connection strings`
 
-    * List Subscriptions for current tennant - directory
+    * List Subscriptions for logged in tennant / directory
     
     * Loop throgh Subscriptions:
-      * run subscription manager on each:
+      * per subscription:
       * assign roles to cyngular service principle in subscription scope:
         * Reader
         * Disk Pool Operator
@@ -21,12 +23,12 @@
         * Microsoft Sentinel Reader
       * export activity logs
         * with a diagnostic settings bicep deployment
-        * from subscription and region
+        * from subscription and client region
         * to audit_storage_account
 
       * create NetworkWatcherRG resource group
       * List resource groups
-      * Loop throgh RGs in subscription:
+      * per RG:
         * if net watcher not in resource group location - configure (enable) network_watcher
 
         * list network interfaces / nsgs
