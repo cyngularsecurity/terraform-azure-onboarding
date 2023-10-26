@@ -26,8 +26,8 @@ RESOURCE_GROUP = "CyngularRG"
 ACTIVITY_FILE = "activity-logs.bicep"
 CYNGULAR_PUBLIC_KEY=".local/cyngularPublic.key"
 
-LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
-AUDIT_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
+AUDIT_AND_ALL_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
+AUDIT_EVENT_LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 ALL_LOGS_SETTING = "\"[{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 # NETWORK_SERCURITY_SETTINGS = "\"[{category:NetworkSecurityGroupEvent,enabled:true,retention-policy:{enabled:false,days:30}},{category:NetworkSecurityGroupRuleCounter,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 
@@ -37,21 +37,22 @@ def cli(args, verbose=True):
         process = subprocess.Popen(
             args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
+        # if wait:
+        #     process.wait()
         out, err = process.communicate()
         exit_code = process.returncode
         if exit_code != 0:
             raise ValueError(str(err) + '  "' + ' in => ' + sys._getframe(1).f_code.co_name + "\n" + " ".join(args) + '"')
-
         return json.loads(out) if out else out
     except Exception:
-        # if("was not found" in traceback.format_exc()):
-        #     return
-        # elif("does not support diagnostic settings" in traceback.format_exc()):
-        #     return
-        # elif("could not be found" in traceback.format_exc()):
-        #     return
-        # elif("'AuditEvent' is not supported" in traceback.format_exc()):
-        #     return
+        if("was not found" in traceback.format_exc()):
+            return
+        elif("does not support diagnostic settings" in traceback.format_exc()):
+            return
+        elif("could not be found" in traceback.format_exc()):
+            return
+        elif("'AuditEvent' is not supported" in traceback.format_exc()):
+            return
         error_msg = traceback.format_exc()
         if verbose:
             logging.critical(error_msg)
@@ -105,7 +106,7 @@ def create_cyngular_service_principal():
     logging.info("Creating cyngular service principal")
     print("Creating cyngular service principal")
     args = f"az ad sp create-for-rbac --name {PRINCIPAL_NAME}"
-    
+
     res = cli(args)
     principal_app_id = res["appId"]
     principal_password = res["password"]
@@ -154,6 +155,8 @@ def create_audit_storage_account(audit_storage_account_name: str, company_region
         args = f"az storage account create -n {audit_storage_account_name} -g {RESOURCE_GROUP} -l {company_region} --sku Standard_LRS --default-action Allow --bypass Logging Metrics AzureServices"
         audit_storage_account_id = cli(args)["id"]
         return audit_storage_account_id
+        # Stock Keeping Unit - locally redundant storage
+        # network access is allowed
 
 @handle_exception
 def create_nsg_storage_account(nsg_storage_account_name: str, company_region: str):
@@ -187,11 +190,11 @@ def export_diagnostic_settings(resource: str, audit_storage_account_id: str):
     if any(r in resource for r in ["storageAccounts", "virtualMachines", "networkInterfaces", "disks", "virtualNetworks", "sshPublicKeys", "serverFarms", "sites", "networkwatchers", "snapshots"]):
         return # since r does not support diagnostic settings
     if("flexibleServers" in resource or "publicIPAddresses" in resource or "vaults" in resource or "namespaces" in resource or "workspaces" in resource):
-        args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {AUDIT_LOG_SETTINGS}"
+        args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {AUDIT_AND_ALL_LOG_SETTINGS}"
     elif("networkSecurityGroups" in resource or "bastionHosts" in resource or "components" in resource):
         args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {ALL_LOGS_SETTING}"
     else:
-        args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {LOG_SETTINGS}"
+        args = f"az monitor diagnostic-settings create --name CyngularDiagnostic --resource {resource} --storage-account {audit_storage_account_id} --logs {AUDIT_EVENT_LOG_SETTINGS}"
     cli(args)
 
 @handle_exception
@@ -370,4 +373,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
