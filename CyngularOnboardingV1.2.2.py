@@ -362,7 +362,7 @@ def main():
         file.write(f"Service Principal Password: {principal_password}\n")
         file.write(f"Service Principal Tenant: {principal_tenant}\n")
         file.write(f"Audit Storage Account Connection String: {audit_connection_string}\n")
-        file.write(f"Storage Account Connection String: {nsg_connection_string}\n")
+        file.write(f"NSG Storage Account Connection String: {nsg_connection_string}\n")
     import_public_key()
     encrypt_data(data_file_name)
     #delete_data_file(data_file_name)
