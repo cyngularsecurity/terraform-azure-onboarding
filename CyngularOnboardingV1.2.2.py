@@ -21,7 +21,7 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-PRINCIPAL_NAME = "CyngularSPonboardingtest8"
+# PRINCIPAL_NAME = "CyngularSPonboardingtest8"
 RESOURCE_GROUP = "CyngularRG"
 ACTIVITY_FILE = "activity-logs.bicep"
 CYNGULAR_PUBLIC_KEY=".local/cyngularPublic.key"
@@ -81,15 +81,15 @@ def add_account_extension():
     _ = cli(args)
 
 @handle_exception
+def delete_data_file(data_file_name):
+    args = f"rm {data_file_name}"
+    return cli(args)
+
+@handle_exception
 def import_public_key():
     logging.info("Importing public key")
     print("Importing public key")
     args = f"gpg --import {CYNGULAR_PUBLIC_KEY}"
-    return cli(args)
-
-@handle_exception
-def delete_data_file(data_file_name):
-    args = f"rm {data_file_name}"
     return cli(args)
 
 @handle_exception
@@ -319,7 +319,6 @@ def configure_network_watcher_if_not_exist(company_region, net_watch_rg, subscri
         args = f"az network watcher configure -l {company_region} --resource-group {net_watch_rg} --enabled true --subscription {subscription}"
         cli(args)
     
-
 @handle_exception      
 def get_nsg_in_region(company_region, subscription):
     args = f"az network nsg list --subscription {subscription} --query \"[?location=='{company_region}'].id\""
@@ -399,8 +398,6 @@ def subscription_manager(region_and_sa_id_dictionary, subscription, principal_ob
 
             print("\n\n---------------------------------------------------------------\n")
     
-        
-        
             #exporting diagnostic settings for the resource
             logging.info("exporting diagnostic settings")
             print("exporting diagnostic settings")

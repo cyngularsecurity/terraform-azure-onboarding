@@ -18,6 +18,7 @@ LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:f
 AUDIT_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 NETWORK_SERCURITY_SETTINGS = "\"[{category:NetworkSecurityGroupEvent,enabled:true,retention-policy:{enabled:false,days:30}},{category:NetworkSecurityGroupRuleCounter,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 ALLLOGS_SETTING = "\"[{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
+
 logging.basicConfig(
     filename="CyngularOnboarding.log",
     filemode="a",
