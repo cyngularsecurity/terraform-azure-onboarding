@@ -94,7 +94,6 @@ def delete_data_file(data_file_name):
 def encrypt_data(data_file_name):
     logging.info(f"Encrypting {data_file_name} file with public key")
     print(f"Encrypting {data_file_name} file with public key")
-    # args = f"gpg --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
     args = f"gpg --trust-model always --encrypt --armor -r cyngularsecurity@gmail.com {data_file_name}"
     return cli(args)
     
