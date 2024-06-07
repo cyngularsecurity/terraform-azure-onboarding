@@ -8,21 +8,27 @@ import logging
 import shlex
 import json
 
-CLIENT_NAME = "gibson"
-PRINCIPAL_NAME = f"CyngularSP-{CLIENT_NAME}"
-RESOURCE_GROUP = f"CyngularRG-{CLIENT_NAME}"
-RESOURCE_GROUP_LOCATION = "westus"
-AUDIT_STORAGE_ACCOUNT_NAME = f"cyngularaudit{CLIENT_NAME}"
-NSG_STORAGE_ACCOUNT_NAME = f"cyngularnsg{CLIENT_NAME}"
-ACTIVITY_FILE_NAME = "activity-logs.bicep"
-
-CYNGULAR_PUBLIC_KEY=".local/cyngularPublic.key"
-
 blue = "\033[1;34m"
 red = "\033[1;91m"
 magenta = "\033[1;35m"
 green = "\033[1;92m"
 white = "\x1b[0m"
+
+CLIENT_NAME = "hotrod"
+RESOURCE_GROUP_LOCATION = "westus2"
+
+PRINCIPAL_NAME = f"CyngularSP-{CLIENT_NAME}"
+RESOURCE_GROUP = f"CyngularRG-{CLIENT_NAME}"
+AUDIT_STORAGE_ACCOUNT_NAME = f"cyngularaudit{CLIENT_NAME}" # add creation of visibility container
+NSG_STORAGE_ACCOUNT_NAME = f"cyngularnsg{CLIENT_NAME}"
+
+ACTIVITY_FILE_NAME = "activity-logs.bicep"
+CYNGULAR_PUBLIC_KEY=".local/cyngularPublic.key"
+
+AUDIT_AND_ALL_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
+AUDIT_EVENT_LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
+ALL_LOGS_SETTING = "\"[{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
+# NETWORK_SERCURITY_SETTINGS = "\"[{category:NetworkSecurityGroupEvent,enabled:true,retention-policy:{enabled:false,days:30}},{category:NetworkSecurityGroupRuleCounter,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 
 logging.basicConfig(
     filename="CyngularOnboarding.log",
@@ -30,11 +36,6 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
-
-AUDIT_AND_ALL_LOG_SETTINGS = "\"[{categoryGroup:audit,enabled:true,retention-policy:{enabled:false,days:30}},{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
-AUDIT_EVENT_LOG_SETTINGS = "\"[{category:AuditEvent,enabled:true,retention-policy:{enabled:false,days:30}}]\""
-ALL_LOGS_SETTING = "\"[{categoryGroup:allLogs,enabled:true,retention-policy:{enabled:false,days:30}}]\""
-# NETWORK_SERCURITY_SETTINGS = "\"[{category:NetworkSecurityGroupEvent,enabled:true,retention-policy:{enabled:false,days:30}},{category:NetworkSecurityGroupRuleCounter,enabled:true,retention-policy:{enabled:false,days:30}}]\""
 
 def cli(args, verbose=True):
     try:
