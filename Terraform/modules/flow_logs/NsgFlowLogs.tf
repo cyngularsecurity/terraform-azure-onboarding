@@ -12,7 +12,7 @@ resource "azurerm_network_watcher_flow_log" "cyngular_flow_logs" {
     for nsg in local.sub_nsgs_without_flow_logs : "${nsg.resource_group}-${nsg.nsg_name}" => nsg
   } : {}
 
-  name                 = "cyngular-${each.key}"
+  name                 = "cyngular-${var.client_name}-${each.value.nsg_name}-fl"
   network_watcher_name = "NetworkWatcher_${each.value.nsg_location}"
 
   resource_group_name = each.value.nsg_location != "" ? (

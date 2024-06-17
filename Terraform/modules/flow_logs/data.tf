@@ -15,5 +15,6 @@ data "external" "nsgs_without_flow_logs" {
     subscription_id  = var.subscription
     resource_group   = each.value
     client_locations = join(",", var.client_locations)
+    exclude_cyngular = "cyngular-${var.client_name}"
   }
 }

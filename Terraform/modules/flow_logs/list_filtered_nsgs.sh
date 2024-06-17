@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-eval "$(jq -r '@sh "SUBSCRIPTION_ID=\(.subscription_id) CLIENT_LOCATIONS=\(.client_locations) RESOURCE_GROUP=\(.resource_group)"')"
+eval "$(jq -r '@sh "SUBSCRIPTION_ID=\(.subscription_id) CLIENT_LOCATIONS=\(.client_locations) RESOURCE_GROUP=\(.resource_group) EXCLUDE_CYNGULAR=\(.exclude_cyngular)"')"
 IFS=',' read -r -a locations <<< "$CLIENT_LOCATIONS"
 
 fetch_deny_assignments() {
@@ -37,25 +37,33 @@ for location in "${locations[@]}"; do
   sleep 3
 
   nsgs=$(echo "$nsg_output" | jq -c '. // []')
-  flow_logs=$(echo "$flow_log_output" | jq -c '. // []')
+  # flow_logs=$(echo "$flow_log_output" | jq -c '. // []')
   if [[ -z "$nsgs" ]]; then
     continue
   fi
 
-  flow_log_nsg_ids=$(echo "$flow_logs" | jq -r '.[].targetResourceId // empty' | sort | uniq || echo "")
-  excluded_flow_log_nsg_ids=$(echo "$flow_logs" | jq -r --arg pattern "cyngular" '
-    map(select(.name | test($pattern))) | .[].targetResourceId // empty' | sort | uniq || echo "")
+  flow_log_nsg_ids=$(echo "$flow_log_output" | jq -r '.[].targetResourceId')
+  excluded_flow_log_nsg_ids=$(echo "$flow_log_output" | jq -r --arg pattern "$EXCLUDE_CYNGULAR" '
+    .[] | select(.name | test($pattern)) | .targetResourceId')
+
+  # flow_log_nsg_ids=$(echo "$flow_logs" | jq -r '.[].targetResourceId // empty' | sort | uniq || echo "")
+  # excluded_flow_log_nsg_ids=$(echo "$flow_logs" | jq -r --arg pattern "$EXCLUDE_CYNGULAR" '
+  #   map(select(.name | test($pattern))) | .[].targetResourceId // empty' | sort | uniq || echo "")
 
   for nsg in $(echo "$nsgs" | jq -r '.[] | @base64'); do
     nsg_id=$(echo "$nsg" | base64 --decode | jq -r '.id')
     nsg_name=$(echo "$nsg" | base64 --decode | jq -r '.name')
 
-    if echo "$flow_log_nsg_ids" | grep -q "$nsg_id"; then
-      if ! echo "$excluded_flow_log_nsg_ids" | grep -q "$nsg_id"; then
-        continue
-      fi
-      # continue
+    if [[ " $flow_log_nsg_ids " == *"$nsg_id"* ]] && [[ " $excluded_flow_log_nsg_ids " != *"$nsg_id"* ]]; then
+      continue
     fi
+
+
+    # if echo "$flow_log_nsg_ids" | grep -q "$nsg_id"; then
+    #   if ! echo "$excluded_flow_log_nsg_ids" | grep -q "$nsg_id"; then
+    #     continue
+    #   fi
+    # fi
 
     deny_assignment_match=false
     for deny_scope in $deny_assignment_scopes; do
