@@ -3,29 +3,14 @@ variable "client_name" {
   type        = string
 }
 
-variable "tenant_id" {
-  description = "Tenant ID to fetch all subscriptions"
+variable "subscription" {
+  description = "the sub ID"
   type        = string
 }
 
-variable "application_id" {
-  description = "Application ID for the multi-tenant service principal"
-  type        = string
-}
-
-variable "locations" {
-  description = "List of locations to create storage accounts"
+variable "client_locations" {
+  description = "List of locations the client operates in"
   type        = list(string)
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "A map of the tags to use for the resources that are deployed."
-}
-
-variable "roles_json" {
-  description = "JSON list of roles to assign"
-  type        = string
 }
 
 variable "enable_audit_events_logs" {

@@ -23,20 +23,27 @@ variable "default_storage_accounts" {
   type        = map(string)
 }
 
-# variable "network_security_group_storage_accounts" {
-#   description = "Map of storage accounts for network security groups by location"
-# type        = map(string)
-#   default = {}
-# }
+variable "enable_audit_events_logs" {
+  description = "create diagnostic settings for audit events - on resources scope"
+  type        = bool
+  default     = true
+}
 
-# variable "storage_accounts_storage_accounts" {
-#   description = "Map of storage accounts for storage accounts by location"
-# type        = map(string)
-#   default = {}
-# }
+variable "enable_activity_logs" {
+  description = "create diagnostic settings for activity logs - on sub scope"
+  type        = bool
+  default     = true
+}
 
-# variable "sql_servers_storage_accounts" {
-#   description = "Map of storage accounts for SQL servers by location"
-# type        = map(string)
-#   default = {}
+# variable "sub_resources_ids" {
+#   description = "ids of sub scope resources"
+#   type        = list(string)
+# }
+# variable "sub_resources_locations" {
+#   description = "locations of sub scope resources"
+#   type        = list(string)
+# }
+# variable "sub_resources_types" {
+#   description = "types of sub scope resources"
+#   type        = list(string)
 # }
