@@ -1,4 +1,4 @@
-resource "azurerm_policy_definition" "aks_diagnostic_settings_policy" {
+resource "azurerm_policy_definition" "aks_diagnostic_settings" {
   name         = "require-aks-diagnostic-settings"
   policy_type  = "Custom"
   mode         = "Indexed"
@@ -52,17 +52,3 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings_policy" {
     }
   })
 }
-
-# resource "azurerm_subscription_policy_assignment" "aks_diagnostic_settings_policy_assignment" {
-#   name                 = "require-aks-diagnostic-settings-assignment"
-#   policy_definition_id = azurerm_policy_definition.aks_diagnostic_settings_policy.id
-#   subscription_id      = "/subscriptions/${var.subscription}"
-
-#   display_name         = "Require Diagnostic Settings for AKS Clusters"
-
-  # parameters = jsonencode({
-  #   storageAccountIds = {
-  #     value = values(var.location_storage_account_map)
-  #   }
-  # })
-# }
