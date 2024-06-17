@@ -1,6 +1,6 @@
 output "client_rg" {
   description = "regional resource group to put all client resources in"
-  value       = azurerm_resource_group.cyngular_client
+  value       = azurerm_resource_group.cyngular_client.name
 }
 
 output "sp_id" {
