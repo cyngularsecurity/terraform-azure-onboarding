@@ -26,10 +26,36 @@ variable "tags" {
   type        = map(string)
   description = "A map of the tags to use for the resources that are deployed."
 }
+
 variable "default_storage_accounts" {
   description = "Map of default storage accounts by location"
   type        = map(string)
 }
+
+variable "enable_audit_events_logs" {
+  description = "create diagnostic settings for audit events - on resources scope"
+  type        = bool
+  default     = true
+}
+
+variable "enable_activity_logs" {
+  description = "create diagnostic settings for activity logs - on sub scope"
+  type        = bool
+  default     = true
+}
+
+variable "enable_flow_logs" {
+  description = "config flow logs for nsgs without - on nsgs scope"
+  type        = bool
+  default     = true
+}
+
+variable "enable_aks_logs" {
+  description = "config aks logs for aks clusters - on cluster scope"
+  type        = bool
+  default     = true
+}
+
 # variable "sub_resource_group_names" {
 #   description = "Name list of resource groups in the sub"
 #   type        = list(string)
