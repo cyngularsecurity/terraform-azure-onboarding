@@ -10,10 +10,10 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
       allOf = [
         {
           field = "type"
-          in = "[parameters('resourceTypes')]"
+          in    = "[parameters('resourceTypes')]"
         },
         {
-          field = "location"
+          field  = "location"
           equals = "[parameters('location')]"
         }
       ]
@@ -40,7 +40,7 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
               }
             }
             template = {
-              "$schema" = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+              "$schema"      = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
               contentVersion = "1.0.0.0"
               parameters = {
                 resourceName = {
@@ -55,16 +55,16 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
               }
               resources = [
                 {
-                  type = "Microsoft.Insights/diagnosticSettings"
+                  type       = "Microsoft.Insights/diagnosticSettings"
                   apiVersion = "2017-05-01-preview"
-                  name = "[concat(parameters('resourceName'), '-diagnostics')]"
-                  location = "[parameters('location')]"
+                  name       = "[concat(parameters('resourceName'), '-diagnostics')]"
+                  location   = "[parameters('location')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
                     logs = [
                       {
                         category = "AllLogs"
-                        enabled = true
+                        enabled  = true
                       }
                     ]
                   }
@@ -99,8 +99,8 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
     storageAccountID = {
       type = "String"
       metadata = {
-        displayName = "Storage Account"
-        description = "storage account ID"
+        displayName  = "Storage Account"
+        description  = "storage account ID"
         defaultValue = "/subscriptions/b6c14413-fb13-4063-acd5-d47e2537a7ba/resourceGroups/cyngular-asos-rg/providers/Microsoft.Storage/storageAccounts/cyngularasoswesteurope"
       }
     }
