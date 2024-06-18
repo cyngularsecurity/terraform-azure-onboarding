@@ -13,6 +13,8 @@ enable_audit_events_logs = false
 enable_activity_logs     = false
 enable_flow_logs         = false
 
+# enable_aks_logs = false
+
 tags = {
   Owner = "Cyngular"
 }

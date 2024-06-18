@@ -7,7 +7,7 @@ resource "azurerm_user_assigned_identity" "policy_assignment_identity" {
 
 resource "azurerm_role_definition" "policy_assignment" {
   name        = format("%s-policy-def", var.client_name)
-  scope       =  "/subscriptions/${var.subscription}"
+  scope       = "/subscriptions/${var.subscription}"
   description = "cyngular main"
 
   permissions {
@@ -38,9 +38,9 @@ resource "azurerm_role_definition" "policy_assignment" {
 }
 
 resource "azurerm_role_assignment" "policy_assigment_main_custom" {
-  scope        = "/subscriptions/${var.subscription}"
+  scope = "/subscriptions/${var.subscription}"
 
-  principal_id = azurerm_user_assigned_identity.policy_assignment_identity.principal_id
+  principal_id       = azurerm_user_assigned_identity.policy_assignment_identity.principal_id
   role_definition_id = azurerm_role_definition.policy_assignment.role_definition_resource_id
 }
 

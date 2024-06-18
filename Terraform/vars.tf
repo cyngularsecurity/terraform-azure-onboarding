@@ -45,3 +45,9 @@ variable "enable_flow_logs" {
   type        = bool
   default     = true
 }
+
+variable "enable_aks_logs" {
+  description = "config aks logs for aks clusters - on cluster scope"
+  type        = bool
+  default     = true
+}

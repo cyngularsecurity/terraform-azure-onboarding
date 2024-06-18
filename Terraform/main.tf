@@ -31,64 +31,69 @@ module "role_assignment" {
   service_principal_id = module.main.sp_id
 }
 
-module "middler" {
-  source   = "./modules/middler"
+# module "middler" {
+#   source   = "./modules/middler"
+#   for_each = local.subscriptions
+#   depends_on = [
+#     module.role_assignment,
+#     module.main,
+#   ]
+
+#   subscription     = each.value
+#   client_name      = var.client_name
+#   client_locations = var.locations
+# }
+
+# module "diagnostic_settings" {
+#   source     = "./modules/diagnostic_settings"
+#   for_each   = var.enable_activity_logs || var.enable_audit_events_logs ? local.subscriptions : []
+#   depends_on = [module.role_assignment]
+
+#   subscription     = each.value
+#   client_name      = var.client_name
+#   client_locations = var.locations
+
+#   enable_activity_logs     = var.enable_activity_logs
+#   enable_audit_events_logs = var.enable_audit_events_logs
+#   default_storage_accounts = module.main.storage_accounts_ids
+
+#   sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
+# }
+
+# module "nsg_flow_logs" {
+#   source   = "./modules/flow_logs"
+#   for_each = var.enable_flow_logs ? local.subscriptions : []
+
+#   subscription             = each.value
+#   prefix           = local.resource_prefix
+#   tags             = var.tags
+#   main_location    = local.main_location
+#   cyngular_rg_name = module.main.client_rg
+
+#   client_name      = var.client_name
+#   client_locations = var.locations
+
+#   sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
+#   default_storage_accounts = module.main.storage_accounts_ids
+# }
+
+module "policy_assigments" {
+  source   = "./modules/policies"
   for_each = local.subscriptions
-  depends_on = [
-    module.role_assignment,
-    module.main,
-  ]
 
   subscription     = each.value
-  client_name      = var.client_name
-  client_locations = var.locations
-}
+  prefix           = local.resource_prefix
+  tags             = var.tags
+  main_location    = local.main_location
+  cyngular_rg_name = module.main.client_rg
 
-module "diagnostic_settings" {
-  source     = "./modules/diagnostic_settings"
-  for_each   = var.enable_activity_logs || var.enable_audit_events_logs ? local.subscriptions : []
-  depends_on = [module.role_assignment]
-
-  subscription     = each.value
   client_name      = var.client_name
   client_locations = var.locations
 
   enable_activity_logs     = var.enable_activity_logs
   enable_audit_events_logs = var.enable_audit_events_logs
-  default_storage_accounts = module.main.storage_accounts_ids
-
-  sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
-}
-
-module "nsg_flow_logs" {
-  source   = "./modules/flow_logs"
-  for_each = var.enable_flow_logs ? local.subscriptions : []
-
-  subscription             = each.value
-  prefix           = local.resource_prefix
-  tags             = var.tags
-  main_location    = local.main_location
-  cyngular_rg_name = module.main.client_rg
-
-  client_name      = var.client_name
-  client_locations = var.locations
-
-  sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
-  default_storage_accounts = module.main.storage_accounts_ids
-}
-
-module "policy_assigments" {
-  source = "./modules/policies"
-  for_each = local.subscriptions
-
-  subscription             = each.value
-  prefix           = local.resource_prefix
-  tags             = var.tags
-  main_location    = local.main_location
-  cyngular_rg_name = module.main.client_rg
-
-  client_name      = var.client_name
-  client_locations = var.locations
+  enable_flow_logs         = var.enable_flow_logs
+  enable_aks_logs          = var.enable_aks_logs
 
   # sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
   default_storage_accounts = module.main.storage_accounts_ids

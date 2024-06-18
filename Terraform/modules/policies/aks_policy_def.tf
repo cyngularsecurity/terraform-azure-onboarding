@@ -1,5 +1,6 @@
 resource "azurerm_policy_definition" "aks_diagnostic_settings" {
-  name         = "cyngular-aks-diagnostic-settings"
+  count        = var.enable_aks_logs ? 1 : 0
+  name         = "cyngular-${var.client_name}-aks-diagnostic-settings-def"
   policy_type  = "Custom"
   mode         = "Indexed"
   display_name = "Cyngular ${var.client_name} AKS - Require Diagnostic Settings for Clusters"
@@ -42,7 +43,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
         },
         {
           not = {
-            field = "location"
+            field  = "location"
             equals = "disabled"
           }
         }
@@ -72,7 +73,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               equals = "true"
             },
             {
-              field = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+              field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
               exists = true
             }
           ]
@@ -85,7 +86,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                 value = "[field('name')]"
               }
               resourceId = {
-              value = "[field('id')]"
+                value = "[field('id')]"
               }
               location = {
                 value = "[field('location')]"
@@ -119,15 +120,15 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                   type = "Microsoft.Insights/diagnosticSettings"
                   # apiVersion = "2017-05-01-preview"
                   apiVersion = "2021-05-01-preview"
-                  name = "[concat(parameters('resourceName'), '-AKS-DS')]"
-                  scope = "[parameters('resourceId')]"
+                  name       = "[concat(parameters('resourceName'), '-AKS-DS')]"
+                  scope      = "[parameters('resourceId')]"
                   # location = "[parameters('location')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
                     logs = [
                       {
                         category = "kube-audit"
-                        enabled = true
+                        enabled  = true
                       }
                     ]
                   }
