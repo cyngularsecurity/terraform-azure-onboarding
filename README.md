@@ -1,5 +1,12 @@
 # OnBoarding Workflow
 
+## Prerequisites:
+  - cli tools
+    - terraform
+    - azcli
+    - yq
+    - jq
+    - makefile (?)
 1. Main
     * input `company name` & `region`
     * add account extension

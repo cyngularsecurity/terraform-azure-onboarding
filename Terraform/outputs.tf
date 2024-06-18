@@ -24,9 +24,9 @@ output "nsgs_without_flow_logs" {
 output "sub_resource_ids" {
   value = {
     for sub in local.subscriptions :
-      sub => flatten([
-        for r in try(module.diagnostic_settings[sub].sub_resource_ids, []) : r
-      ])
+    sub => flatten([
+      for r in try(module.diagnostic_settings[sub].sub_resource_ids, []) : r
+    ])
   }
 }
 
