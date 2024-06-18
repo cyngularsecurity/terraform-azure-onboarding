@@ -24,6 +24,9 @@ resource "azurerm_role_definition" "policy_assignment" {
       # "Microsoft.Insights/diagnosticSettings/delete",
 
       "Microsoft.ContainerService/managedClusters/read",
+      "Microsoft.Resources/deployments/*",
+      "Microsoft.Resources/subscriptions/resourceGroups/read",
+      "Microsoft.Resources/subscriptions/resourceGroups/deployments/*",
 
     ]
     not_actions = []
@@ -33,12 +36,12 @@ resource "azurerm_role_definition" "policy_assignment" {
   ]
 }
 
-# resource "azurerm_role_assignment" "policy_assigment_main_custom" {
-#   principal_id = azurerm_user_assigned_identity.policy_assignment.principal_id
-#   scope        = local.main_sub
+resource "azurerm_role_assignment" "policy_assigment_main_custom" {
+  principal_id = azurerm_user_assigned_identity.policy_assignment.principal_id
+  scope        = local.main_sub
 
-#   role_definition_id = azurerm_role_definition.policy_assignment.role_definition_resource_id
-# }
+  role_definition_id = azurerm_role_definition.policy_assignment.role_definition_resource_id
+}
 
 resource "azurerm_role_assignment" "policy_assigment_monitor_contributor" {
   principal_id = azurerm_user_assigned_identity.policy_assignment.principal_id
