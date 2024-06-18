@@ -2,9 +2,9 @@ variable "client_name" {
   description = "Company name"
   type        = string
 }
-variable "subscriptions" {
+variable "subscription" {
   description = "list of sub IDs"
-  type        = list(string)
+  type        = string
 }
 variable "client_locations" {
   description = "List of locations the client operates in"

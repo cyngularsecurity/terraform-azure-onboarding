@@ -64,6 +64,7 @@ module "nsg_flow_logs" {
   source   = "./modules/flow_logs"
   for_each = var.enable_flow_logs ? local.subscriptions : []
 
+  subscription             = each.value
   prefix           = local.resource_prefix
   tags             = var.tags
   main_location    = local.main_location
@@ -72,14 +73,15 @@ module "nsg_flow_logs" {
   client_name      = var.client_name
   client_locations = var.locations
 
-  subscription             = each.value
   sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
   default_storage_accounts = module.main.storage_accounts_ids
 }
 
 module "policy_assigments" {
   source = "./modules/policies"
+  for_each = local.subscriptions
 
+  subscription             = each.value
   prefix           = local.resource_prefix
   tags             = var.tags
   main_location    = local.main_location
@@ -88,7 +90,6 @@ module "policy_assigments" {
   client_name      = var.client_name
   client_locations = var.locations
 
-  subscriptions            = local.subscriptions
   # sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
   default_storage_accounts = module.main.storage_accounts_ids
 }
