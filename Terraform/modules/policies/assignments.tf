@@ -18,9 +18,6 @@ resource "azurerm_subscription_policy_assignment" "aks_diagnostic_settings" {
   parameters = jsonencode({
     storageAccountIds = {
       value = var.default_storage_accounts
-      // {
-      #   for location, sa in var.default_storage_accounts : location => sa
-      # }
     }
     allowedLocations = {
       value = var.client_locations

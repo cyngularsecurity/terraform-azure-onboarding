@@ -24,6 +24,82 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
     }
   })
 
+  policy_rule = jsonencode({
+    if = {
+      allOf = [
+        {
+          field  = "type"
+          equals = "Microsoft.ContainerService/managedClusters"
+        },
+        {
+          field = "location"
+          in    = "[parameters('allowedLocations')]"
+        }
+      ]
+    },
+    then = {
+      effect = "DeployIfNotExists"
+      details = {
+        type = "Microsoft.Insights/diagnosticSettings"
+        # roleDefinitionIds = [
+        #   "/providers/Microsoft.Authorization/roleDefinitions/yourRoleDefinitionId" # Replace with appropriate Role Definition ID
+        # ]
+        deployment = {
+          properties = {
+            mode = "incremental"
+            parameters = {
+              storageAccountId = {
+                value = "[parameters('storageAccountIds')[field('location')]]"
+              }
+            }
+            template = {
+              "$schema" = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+              contentVersion = "1.4.3.2"
+              parameters = {
+                storageAccountId = {
+                  type = "string"
+                }
+              }
+              resources = [
+                {
+                  type = "Microsoft.Insights/diagnosticSettings"
+                  apiVersion = "2021-05-01-preview"
+                  name = "[concat(field('name'), '-diagnosticSettings')]"
+                  # location = "[field('location')]"
+                  properties = {
+                    logs = [
+                      {
+                        category = "kube-audit"
+                        enabled = true
+                      }
+                    ]
+                    storageAccountId = "[parameters('storageAccountId')]"
+                    # storageAccountId = "[parameters('storageAccountIds')[field('location')]]"
+                  }
+                }
+              ]
+            }
+          }
+        }
+        existenceCondition = {
+          allOf = [
+            {
+              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+              equals = "kube-audit"
+            },
+            {
+              field  = "Microsoft.Insights/diagnosticSettings/logs.enabled"
+              equals = "true"
+            },
+            {
+              field = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+              exists = true
+            }
+          ]
+        }
+      }
+    }
+  })
   # policy_rule = jsonencode({
   #   if = {
   #     allOf = [
@@ -62,78 +138,4 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
   #     }
   #   }
   # })
-  policy_rule = jsonencode({
-    if = {
-      allOf = [
-        {
-          field  = "type"
-          equals = "Microsoft.ContainerService/managedClusters"
-        },
-        {
-          field = "location"
-          in    = "[parameters('allowedLocations')]"
-        }
-      ]
-    },
-    then = {
-      effect = "DeployIfNotExists"
-      details = {
-        type = "Microsoft.Insights/diagnosticSettings"
-        # roleDefinitionIds = [
-        #   "/providers/Microsoft.Authorization/roleDefinitions/yourRoleDefinitionId" # Replace with appropriate Role Definition ID
-        # ]
-        deployment = {
-          properties = {
-            mode = "incremental"
-            parameters = {
-              storageAccountIds = {
-                type = "string"
-                metadata = {
-                  description = "The name of the AKS cluster."
-                  defaultValue = "[parameters('storageAccountIds')]"
-                }
-              }
-            }
-            template = {
-              "$schema" = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
-              contentVersion = "1.0.0.0"
-              resources = [
-                {
-                  type = "Microsoft.Insights/diagnosticSettings"
-                  apiVersion = "2017-05-01-preview"
-                  name = "[concat(field('name'), '-diagnosticSettings')]"
-                  location = "[field('location')]"
-                  properties = {
-                    logs = [
-                      {
-                        category = "kube-audit"
-                        enabled = true
-                      }
-                    ]
-                    storageAccountId = "[parameters('storageAccountIds')[field('location')]]"
-                  }
-                }
-              ]
-            }
-          }
-        }
-        existenceCondition = {
-          allOf = [
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "kube-audit"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs.enabled"
-              equals = "true"
-            },
-            {
-              field = "Microsoft.Insights/diagnosticSettings/storageAccountId"
-              exists = true
-            }
-          ]
-        }
-      }
-    }
-  })
 }
