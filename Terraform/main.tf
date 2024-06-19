@@ -90,10 +90,15 @@ module "policy_assigments" {
   client_name      = var.client_name
   client_locations = var.locations
 
-  enable_activity_logs     = var.enable_activity_logs
-  enable_audit_events_logs = var.enable_audit_events_logs
-  enable_flow_logs         = var.enable_flow_logs
-  enable_aks_logs          = var.enable_aks_logs
+  enable_activity_logs     = "true"
+  enable_audit_events_logs = "true"
+  enable_flow_logs         = "true"
+  enable_aks_logs          = "true"
+
+  # enable_activity_logs     = var.enable_activity_logs
+  # enable_audit_events_logs = var.enable_audit_events_logs
+  # enable_flow_logs         = var.enable_flow_logs
+  # enable_aks_logs          = var.enable_aks_logs
 
   # sub_resource_group_names = flatten([for rg in module.middler[each.value].resource_groups : rg])
   default_storage_accounts = module.main.storage_accounts_ids

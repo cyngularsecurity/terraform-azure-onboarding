@@ -1,9 +1,11 @@
 
 resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
-  name         = "cyngular-activity-logs"
+  count                = var.enable_activity_logs ? 1 : 0
+
+  name         = "cyngular-${var.client_name}-activity-logs-diagnostic-settings-def"
   policy_type  = "Custom"
-  mode         = "All"
-  display_name = "Cyngular ${var.client_name} subscription Activity logs"
+  mode         = "Indexed"
+  display_name = "Cyngular ${var.client_name} Activity logs - over subscription"
   description  = "cyngular diagnostic settings deployment for subscription Activity logs"
 
   metadata = jsonencode({ category = "Monitoring" })
@@ -73,10 +75,10 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
             }
           ]
         },
-        # roleDefinitionIds = [
-        #   "/providers/Microsoft.Authorization/roleDefinitions/StorageAccountContributor",
-        #   "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238" // monitoring contributor
-        # ]
+        roleDefinitionIds = [
+          "/providers/Microsoft.Authorization/roleDefinitions/StorageAccountContributor",
+          "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238" // monitoring contributor
+        ]
         deployment = {
           properties = {
             mode = "incremental"
@@ -113,7 +115,6 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
                   location   = "[parameters('location')]"
                   properties = {
                     StorageAccountID = "[parameters('StorageAccountID')]"
-                    # StorageAccountID = "[parameters('storageAccounts')[field('location')][0]]"
                     logs = [
                       {
                         category = "Recommendation"

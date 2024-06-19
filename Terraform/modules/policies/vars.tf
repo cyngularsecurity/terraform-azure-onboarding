@@ -32,14 +32,14 @@ variable "default_storage_accounts" {
   type        = map(string)
 }
 
-variable "enable_audit_events_logs" {
-  description = "create diagnostic settings for audit events - on resources scope"
+variable "enable_activity_logs" {
+  description = "create diagnostic settings for activity logs - on sub scope"
   type        = bool
   default     = true
 }
 
-variable "enable_activity_logs" {
-  description = "create diagnostic settings for activity logs - on sub scope"
+variable "enable_audit_events_logs" {
+  description = "create diagnostic settings for audit events - on resources scope"
   type        = bool
   default     = true
 }
