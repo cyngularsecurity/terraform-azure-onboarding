@@ -45,11 +45,10 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
         # type = "Microsoft.Insights/diagnosticSettings"
         # # deploymentScope = "subscription"
         # existenceScope = "resourceGroup"
-        # roleDefinitionIds = [
-        #   "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // monitoring contributor
-        #   "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab", // storage account contributor
-        #   # "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c" // reader
-        # ]
+        roleDefinitionIds = [
+          "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // monitoring contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab", // storage account contributor
+        ]
         existenceCondition = {
           allOf = [
             {
@@ -79,13 +78,9 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               location = {
                 value = "[field('location')]"
               }
-              ClientLocations = {
-                value = "[parameters('ClientLocations')]"
-              }
               storageAccountId = {
                 value = "[parameters('StorageAccountIds')[field('location')]]"
                 # value = "[if(contains(parameters('StorageAccountIds'), field('location')), parameters('StorageAccountIds')[field('location')], 'disabled')]"
-                # value = "[if(contains(parameters('storageAccountIds'), field('location')), parameters('storageAccountIds')[field('location')], 'not-applicable')]"
               }
             }
             template = {
@@ -101,9 +96,6 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                 location = {
                   type = "string"
                 }
-                ClientLocations = {
-                  type = "array"
-                }
                 storageAccountId = {
                   type = "string"
                 }
@@ -111,7 +103,6 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               resources = [
                 {
                   type = "Microsoft.Insights/diagnosticSettings"
-                  # apiVersion = "2017-05-01-preview"
                   apiVersion = "2021-05-01-preview"
                   name       = "[concat(parameters('resourceName'), '-AKS-DS')]"
                   scope      = "[parameters('resourceId')]"
@@ -125,11 +116,6 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                         enabled  = true
                       }
                     ]
-                  }
-                    # "condition": "[contains(parameters('allowedLocations'), field('location'))]"
-                  condition = {
-                    field = "location"
-                    in    = "[parameters('ClientLocations')]"
                   }
                 }
               ]
