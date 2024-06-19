@@ -4,19 +4,12 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
 
   name         = "cyngular-${var.client_name}-activity-logs-diagnostic-settings-def"
   policy_type  = "Custom"
-  mode         = "Indexed"
+  mode         = "All"
   display_name = "Cyngular ${var.client_name} Activity logs - over subscription"
   description  = "cyngular diagnostic settings deployment for subscription Activity logs"
 
   metadata = jsonencode({ category = "Monitoring" })
   parameters = jsonencode({
-    subscription = {
-      type = "String"
-      metadata = {
-        displayName = "Subscription ID"
-        description = "Id of subscription scope the policy will be assigned to"
-      }
-    }
     StorageAccountID = {
       type = "String"
       metadata = {
@@ -76,15 +69,15 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
           ]
         },
         roleDefinitionIds = [
-          "/providers/Microsoft.Authorization/roleDefinitions/StorageAccountContributor",
-          "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238" // monitoring contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238",  // Monitoring Contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"   // Storage Account Contributor
         ]
         deployment = {
           properties = {
             mode = "incremental"
             parameters = {
               subscription = {
-                value = "[parameters('subscription')]"
+                value = "[subscription().subscriptionId]"
               }
               location = {
                 value = "[field('location')]"
@@ -95,7 +88,7 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
             }
             template = {
               "$schema"      = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
-              contentVersion = "1.0.0.0"
+              contentVersion = "1.3.0.0"
               parameters = {
                 subscription = {
                   type = "string"
@@ -110,7 +103,7 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
               resources = [
                 {
                   type       = "Microsoft.Insights/diagnosticSettings"
-                  apiVersion = "2017-05-01-preview"
+                  apiVersion = "2021-05-01-preview"
                   name       = "[concat(parameters('subscription'), '-activity-logs')]"
                   location   = "[parameters('location')]"
                   properties = {
