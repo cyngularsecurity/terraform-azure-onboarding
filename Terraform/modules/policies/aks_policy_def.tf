@@ -109,7 +109,6 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                   # location = "[parameters('location')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
-                    # storageAccountId = "[if(equals(parameters('storageAccountId'), 'not-applicable'), '', parameters('storageAccountId'))]"
                     logs = [
                       {
                         category = "kube-audit"
