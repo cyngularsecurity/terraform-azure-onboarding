@@ -20,29 +20,89 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
     ClientLocations = {
       type = "Array"
       metadata = {
-        description = "The list of allowed locations for AKS clusters."
+        description = "The list of allowed locations for Resources."
         displayName = "Allowed Locations"
       }
     }
-    resourceTypes = {
+    # resourceTypes = {
+    #   type = "Array"
+    #   metadata = {
+    #     displayName = "Resource Types"
+    #     description = "List of Azure resource types to apply the policy."
+    #   }
+    # }
+
+    blacklistedResourceTypes = {
       type = "Array"
       metadata = {
         displayName = "Resource Types"
-        description = "List of Azure resource types to apply the policy."
+        description = "List of Azure resource types not supporting diagnostics settings."
+      }
+    }
+    resourceTypesGroup1 = {
+      type = "Array"
+      metadata = {
+        displayName = "Resource Types Group 1"
+        description = "List of Azure resource types for Group 1."
+      }
+    }
+    resourceTypesGroup2 = {
+      type = "Array"
+      metadata = {
+        displayName = "Resource Types Group 2"
+        description = "List of Azure resource types for Group 2."
+      }
+    }
+    logsConfigurationGroup1 = {
+      type = "Array"
+      metadata = {
+        displayName = "Logs Configuration Group 1"
+        description = "Logs configuration for Resource Types Group 1."
+      }
+    }
+    logsConfigurationGroup2 = {
+      type = "Array"
+      metadata = {
+        displayName = "Logs Configuration Group 2"
+        description = "Logs configuration for Resource Types Group 2."
+      }
+    }
+    logsConfigurationGroup3 = {
+      type = "Array"
+      metadata = {
+        displayName = "Logs Configuration Group 3"
+        description = "Logs configuration for Resource Types Group 3."
       }
     }
   })
-
   policy_rule = jsonencode({
     if = {
       allOf = [
         {
-          field = "type"
-          in    = "[parameters('resourceTypes')]"
+          anyOf = [
+            {
+              field  = "type"
+              in = "[parameters('resourceTypesGroup1')]"
+            },
+            {
+              field  = "type"
+              in = "[parameters('resourceTypesGroup2')]"
+            }
+          ]
         },
         {
-          field = "location"
-          in    = "[parameters('ClientLocations')]"
+          not = {
+            anyOf = [
+              {
+              field  = "type"
+              in = "[parameters('blacklistedResourceTypes')]"
+              }
+            ]
+          }
+        },
+        {
+          field  = "location"
+          in = "[parameters('ClientLocations')]"
         }
       ]
     }
@@ -56,10 +116,18 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
         ]
         existenceCondition = {
           allOf = [
-            # {
-            #   field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-            #   equals = "AllLogs"
-            # },
+            {
+              anyOf = [
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].categoryGroup"
+                  in = ["AllLogs", "audit"]
+                },
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+                  equals = "AuditEvent"
+                }
+              ]
+            },
             {
               field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
               equals = "true"
@@ -86,6 +154,9 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
               storageAccountId = {
                 value = "[parameters('StorageAccountIds')[field('location')]]"
               }
+              logsConfiguration = {
+                value = "[if(contains(parameters('resourceTypesGroup1'), field('type')), parameters('logsConfigurationGroup1'), if(contains(parameters('resourceTypesGroup2'), field('type')), parameters('logsConfigurationGroup2'), parameters('logsConfigurationGroup3')))]"
+              }
             }
             template = {
               "$schema"      = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
@@ -103,6 +174,9 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
                 storageAccountId = {
                   type = "string"
                 }
+                logsConfiguration = {
+                  type = "list"
+                }
               }
               resources = [
                 {
@@ -113,12 +187,13 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
                   scope = "[parameters('resourceId')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
-                    logs = [
-                      {
-                        categoryGroup = "AllLogs"
-                        enabled  = true
-                      }
-                    ]
+                    logs = "[parameters('logsConfiguration')]"
+                    # logs = [
+                    #   {
+                    #     categoryGroup = "AllLogs"
+                    #     enabled  = true
+                    #   }
+                    # ]
                   }
                 }
               ]

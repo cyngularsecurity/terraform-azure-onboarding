@@ -25,14 +25,15 @@ resource "azurerm_role_definition" "policy_assignment" {
       "Microsoft.Storage/storageAccounts/listkeys/action",
 
       "Microsoft.Insights/diagnosticSettings/*",
-      # "Microsoft.Insights/diagnosticSettings/delete",
+      "Microsoft.Network/networkWatchers/flowLogs/write",
+      "Microsoft.Network/networkSecurityGroups/write",
 
       "Microsoft.ContainerService/managedClusters/read",
       "Microsoft.Resources/deployments/*",
       "Microsoft.Resources/subscriptions/resourceGroups/read",
       "Microsoft.Resources/subscriptions/resourceGroups/deployments/*",
     ]
-    not_actions = []
+    # not_actions = []
   }
 
   assignable_scopes = [
