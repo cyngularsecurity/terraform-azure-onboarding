@@ -1,11 +1,14 @@
 resource "azurerm_policy_definition" "aks_diagnostic_settings" {
-  count        = var.enable_aks_logs ? 1 : 0
-  name         = "cyngular-${var.client_name}-aks-diagnostic-settings-def"
+  count = var.enable_aks_logs ? 1 : 0
+
   policy_type  = "Custom"
   mode         = "Indexed"
-  display_name = "Cyngular ${var.client_name} AKS - Require Diagnostic Settings for Clusters"
+
+  name         = format("cyngular-%s-%s-aks-def", var.client_name, var.subscription_name)
+  display_name = "Cyngular ${var.client_name} AKS - Require Diagnostic Settings for Clusters in sub - ${var.subscription_name}"
   description  = "Ensures that AKS clusters have diagnostic settings configured to send logs to the specified storage account."
-  # description = "This policy applies diagnostic settings to AKS clusters only if they are created in specified locations."
+
+  management_group_id      = "/providers/Microsoft.Management/managementGroups/${data.azuread_client_config.current.tenant_id}"
 
   metadata = jsonencode({ category = "Monitoring" })
   parameters = jsonencode({
@@ -41,9 +44,9 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
     then = {
       effect = "DeployIfNotExists"
       details = {
-        type = "Microsoft.ContainerService/managedClusters/providers/diagnosticSettings"
-        # type = "Microsoft.Insights/diagnosticSettings"
-        # # deploymentScope = "subscription"
+        type = "Microsoft.ContainerService/managedClusters/Microsoft.Insights/diagnosticSettings"
+        # type = "Microsoft.ContainerService/managedClusters/providers/diagnosticSettings"
+        # evaluationDelay = "AfterProvisioning"
         # existenceScope = "resourceGroup"
         roleDefinitionIds = [
           "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // monitoring contributor
@@ -56,7 +59,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               equals = "kube-audit"
             },
             {
-              field  = "Microsoft.Insights/diagnosticSettings/logs.enabled" // Microsoft.Insights/diagnosticSettings/logs[*].enabled
+              field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
               equals = "true"
             },
             {
@@ -84,13 +87,13 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               }
             }
             template = {
-              "$schema" = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+              "$schema"      = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
               contentVersion = "1.3.0.0"
               parameters = {
                 resourceName = {
                   type = "string"
                 }
-                resourceId = {
+                resourceId ={
                   type = "string"
                 }
                 location = {
@@ -102,7 +105,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               }
               resources = [
                 {
-                  type = "Microsoft.Insights/diagnosticSettings"
+                  type       = "Microsoft.Insights/diagnosticSettings"
                   apiVersion = "2021-05-01-preview"
                   name       = "[concat(parameters('resourceName'), '-AKS-DS')]"
                   scope      = "[parameters('resourceId')]"
@@ -112,6 +115,10 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                     logs = [
                       {
                         category = "kube-audit"
+                        enabled  = true
+                      },
+                      {
+                        category = "kube-apiserver"
                         enabled  = true
                       }
                     ]

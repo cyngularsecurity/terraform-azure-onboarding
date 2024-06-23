@@ -1,12 +1,14 @@
 
 resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
-  count                = var.enable_activity_logs ? 1 : 0
+  count = var.enable_activity_logs ? 1 : 0
 
-  name         = "cyngular-${var.client_name}-activity-logs-diagnostic-settings-def"
   policy_type  = "Custom"
   mode         = "All"
-  display_name = "Cyngular ${var.client_name} Activity logs - over subscription"
-  description  = "cyngular diagnostic settings deployment for subscription Activity logs"
+
+  name         = format("cyngular-%s-%s-activity-logs-def", var.client_name, var.subscription_name)
+  display_name = "Cyngular ${var.client_name} Activity logs - over subscription - ${var.subscription_name}"
+  description  = "Ensures that Activity logs diagnostic settings configured for subscription to send logs to the specified storage account."
+  management_group_id      = "/providers/Microsoft.Management/managementGroups/${data.azuread_client_config.current.tenant_id}"
 
   metadata = jsonencode({ category = "Monitoring" })
   parameters = jsonencode({
@@ -17,6 +19,13 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
         description = "storage account ID"
       }
     }
+    # MainLocation = {
+    #   type = "String"
+    #   metadata = {
+    #     displayName = "Main Location"
+    #     description = "Main Location name"
+    #   }
+    # }
   })
 
   policy_rule = jsonencode({
@@ -27,52 +36,116 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
     then = {
       effect = "deployIfNotExists"
       details = {
+        roleDefinitionIds = [
+          "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c", // Contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238", // Monitoring Contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"  // Storage Account Contributor
+        ]
+        # deploymentScope = "Subscription"
+        # existenceScope = "Subscription"
         type = "Microsoft.Insights/diagnosticSettings"
         existenceCondition = {
           allOf = [
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "Administrative"
+            #     }
+            #   ]
+            # },
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "Autoscale"
+            #     }
+            #   ]
+            # },
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "ResourceHealth"
+            #     }
+            #   ]
+            # },
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "Recommendation"
+            #     }
+            #   ]
+            # },
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "Alert"
+            #     }
+            #   ]
+            # },
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "ServiceHealth"
+            #     }
+            #   ]
+            # },
+            # {
+            #   allOf = [
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+            #       equals = "true"
+            #     },
+            #     {
+            #       field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+            #       equals = "Security"
+            #     }
+            #   ]
+            # },
             {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
-              equals = "true"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "Administrative"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "Autoscale"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "Policy"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "Security"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "ServiceHealth"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "Alert"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "Recommendation"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "ResourceHealth"
+              allOf = [
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+                  equals = "true"
+                },
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+                  equals = "Policy"
+                }
+              ]
             }
           ]
-        },
-        roleDefinitionIds = [
-          "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238",  // Monitoring Contributor
-          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"   // Storage Account Contributor
-        ]
+        }
         deployment = {
+          # location = "${var.main_location}"
           properties = {
             mode = "incremental"
             parameters = {
@@ -105,6 +178,7 @@ resource "azurerm_policy_definition" "activity_logs_diagnostic_settings" {
                   type       = "Microsoft.Insights/diagnosticSettings"
                   apiVersion = "2021-05-01-preview"
                   name       = "[concat(parameters('subscription'), '-activity-logs')]"
+                  # location = "Global"
                   location   = "[parameters('location')]"
                   properties = {
                     StorageAccountID = "[parameters('StorageAccountID')]"
