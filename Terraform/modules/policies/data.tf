@@ -1,4 +1,4 @@
-# data "azurerm_subscription" "current" {}
+data "azuread_client_config" "current" {}
 
 # data "local_file" "policy_definition" {
 #   filename = local.policy_json_path

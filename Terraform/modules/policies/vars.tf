@@ -2,8 +2,12 @@ variable "client_name" {
   description = "Company name"
   type        = string
 }
-variable "subscription" {
-  description = "list of sub IDs"
+variable "subscription_id" {
+  description = "sub ID"
+  type        = string
+}
+variable "subscription_name" {
+  description = "sub display name"
   type        = string
 }
 variable "client_locations" {
@@ -60,3 +64,22 @@ variable "enable_aks_logs" {
 #   description = "Name list of resource groups in the sub"
 #   type        = list(string)
 # }
+
+variable "black_listed_types" {
+  description = "List of resource types to exclude from evaluation"
+  type        = list(string)
+  default     = []
+}
+
+variable "type_list_a" {
+  description = "List of resource types to check for AllLogs category"
+  type        = list(string)
+  default     = ["Microsoft.Compute/virtualMachines"]
+}
+
+variable "type_list_b" {
+  description = "List of resource types to check for AllLogs and Audit categories"
+  type        = list(string)
+  default     = ["Microsoft.Network/networkSecurityGroups"]
+}
+

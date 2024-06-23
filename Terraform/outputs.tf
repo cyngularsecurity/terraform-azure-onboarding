@@ -3,6 +3,14 @@
 # #   value = "######## admin consent url: https://login.microsoftonline.com/organizations/adminconsent?client_id=${var.application_id} #######"
 # # }
 
+# output "subscriptions_data" {
+#   value = local.subscriptions_data
+# }
+
+# output "azurerm_management_group_mg" {
+#   value = data.azurerm_management_group.tenant_root
+# }
+
 # output "locations_without_net_watcher" {
 #   value = {
 #     for sub in local.subscriptions :

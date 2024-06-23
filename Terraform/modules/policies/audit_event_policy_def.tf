@@ -2,11 +2,12 @@
 resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
   count                = var.enable_audit_events_logs ? 1 : 0
 
-  name         = "cyngular-${var.client_name}-audit-event-diagnostic-settings-def"
+  name = format("cyngular-%s-%s-audit-event-def", var.client_name, var.subscription_name)
   policy_type  = "Custom"
   mode         = "Indexed"
-  display_name = "Cyngular ${var.client_name} Audit Event - over resources"
+  display_name = "Cyngular ${var.client_name} Audit Event - over resources in sub ${var.subscription_name}"
   description  = "Cyngular diagnostic settings deployment for resources various categories"
+  management_group_id      = "/providers/Microsoft.Management/managementGroups/${data.azuread_client_config.current.tenant_id}"
 
   metadata = jsonencode({ category = "Monitoring" })
   parameters = jsonencode({
@@ -24,54 +25,23 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
         displayName = "Allowed Locations"
       }
     }
-    # resourceTypes = {
-    #   type = "Array"
-    #   metadata = {
-    #     displayName = "Resource Types"
-    #     description = "List of Azure resource types to apply the policy."
-    #   }
-    # }
-
-    blacklistedResourceTypes = {
+    blacklistedTypes = {
       type = "Array"
       metadata = {
         displayName = "Resource Types"
         description = "List of Azure resource types not supporting diagnostics settings."
       }
     }
-    resourceTypesGroup1 = {
-      type = "Array"
+    typeListA = {
+      type = "Array",
       metadata = {
-        displayName = "Resource Types Group 1"
-        description = "List of Azure resource types for Group 1."
+        description = "List of resource types to check for AllLogs category"
       }
-    }
-    resourceTypesGroup2 = {
-      type = "Array"
+    },
+    typeListB = {
+      type = "Array",
       metadata = {
-        displayName = "Resource Types Group 2"
-        description = "List of Azure resource types for Group 2."
-      }
-    }
-    logsConfigurationGroup1 = {
-      type = "Array"
-      metadata = {
-        displayName = "Logs Configuration Group 1"
-        description = "Logs configuration for Resource Types Group 1."
-      }
-    }
-    logsConfigurationGroup2 = {
-      type = "Array"
-      metadata = {
-        displayName = "Logs Configuration Group 2"
-        description = "Logs configuration for Resource Types Group 2."
-      }
-    }
-    logsConfigurationGroup3 = {
-      type = "Array"
-      metadata = {
-        displayName = "Logs Configuration Group 3"
-        description = "Logs configuration for Resource Types Group 3."
+        description = "List of resource types to check for AllLogs and Audit categories"
       }
     }
   })
@@ -79,62 +49,141 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
     if = {
       allOf = [
         {
-          anyOf = [
-            {
-              field  = "type"
-              in = "[parameters('resourceTypesGroup1')]"
-            },
-            {
-              field  = "type"
-              in = "[parameters('resourceTypesGroup2')]"
-            }
-          ]
-        },
-        {
           not = {
-            anyOf = [
-              {
-              field  = "type"
-              in = "[parameters('blacklistedResourceTypes')]"
-              }
-            ]
+            field  = "type"
+            in = "[parameters('blacklistedTypes')]"
+            # notin = "[concat(parameters('typeListA'), parameters('typeListB'), parameters('blacklistedTypes'))]"
           }
         },
+        # {
+        #   field  = "type"
+        #   notin = "[parameters('blacklistedTypes')]"
+        #   # notin = "[concat(parameters('typeListA'), parameters('typeListB'), parameters('blacklistedTypes'))]"
+        # },
         {
-          field  = "location"
-          in = "[parameters('ClientLocations')]"
+          allOf = [
+            {
+              anyOf = [
+                {
+                  field  = "type"
+                  in = "[parameters('typeListA')]"
+                },
+                {
+                  field  = "type"
+                  in = "[parameters('typeListB')]"
+                }
+              ]
+            },
+            {
+              field  = "location"
+              in = "[parameters('ClientLocations')]"
+            }
+          ]
         }
       ]
     }
     then = {
       effect = "deployIfNotExists"
       details = {
-        type = "Microsoft.Insights/diagnosticSettings"
         roleDefinitionIds = [
           "/providers/Microsoft.Authorization/roleDefinitions/ccca81f6-c8dc-45e2-8833-a5e13f9ae238",  // Monitoring Contributor
           "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"   // Storage Account Contributor
         ]
+        type = "Microsoft.Insights/diagnosticSettings"
         existenceCondition = {
-          allOf = [
+          anyOf = [
             {
-              anyOf = [
+              allOf = [
                 {
-                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].categoryGroup"
-                  in = ["AllLogs", "audit"]
+                  field = "type",
+                  in    = "[parameters('typeListA')]"
                 },
                 {
-                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-                  equals = "AuditEvent"
+                  count = {
+                    field = "Microsoft.Insights/diagnosticSettings/logs[*]",
+                    where = {
+                      allOf = [
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                          equals = true
+                        },
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/logs[*].categoryGroup",
+                          equals = "AllLogs"
+                        },
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+                          equals =  "[parameters('storageAccountIds')[field('location')]]"
+                          # exists = true
+                        }
+                      ]
+                    }
+                  },
+                  equals = 1
                 }
               ]
             },
             {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
-              equals = "true"
+              allOf = [
+                {
+                  field = "type",
+                  in    = "[parameters('typeListB')]"
+                },
+                {
+                  count = {
+                    field = "Microsoft.Insights/diagnosticSettings/logs[*]",
+                    where = {
+                      allOf = [
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                          equals = true
+                        },
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/logs[*].categoryGroup",
+                          in    = ["AllLogs", "Audit"]
+                        },
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+                          equals =  "[parameters('storageAccountIds')[field('location')]]"
+                        }
+                      ]
+                    }
+                  },
+                  equals = 2
+                }
+              ]
             },
             {
-              field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
-              exists = true
+              allOf = [
+                {
+                  not = {
+                    field  = "type"
+                    in = "[concat(parameters('typeListA'), parameters('typeListB'))]"
+                  }
+                },
+                {
+                  count = {
+                    field = "Microsoft.Insights/diagnosticSettings/logs[*]",
+                    where = {
+                      allOf = [
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                          equals = true
+                        },
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                          equals = "AuditEvent"
+                        },
+                        {
+                          field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+                          equals =  "[parameters('storageAccountIds')[field('location')]]"
+                        }
+                      ]
+                    }
+                  },
+                  equals = 1
+                }
+              ]
             }
           ]
         }
@@ -155,7 +204,7 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
                 value = "[parameters('StorageAccountIds')[field('location')]]"
               }
               logsConfiguration = {
-                value = "[if(contains(parameters('resourceTypesGroup1'), field('type')), parameters('logsConfigurationGroup1'), if(contains(parameters('resourceTypesGroup2'), field('type')), parameters('logsConfigurationGroup2'), parameters('logsConfigurationGroup3')))]"
+                value = "[if(contains(parameters('typeListA'), field('type')), 'AllLogs', if(contains(parameters('typeListB'), field('type')), 'AllLogs,Audit', 'AuditEvent'))]"
               }
             }
             template = {
@@ -187,13 +236,12 @@ resource "azurerm_policy_definition" "audit_event_diagnostic_settings" {
                   scope = "[parameters('resourceId')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
-                    logs = "[parameters('logsConfiguration')]"
-                    # logs = [
-                    #   {
-                    #     categoryGroup = "AllLogs"
-                    #     enabled  = true
-                    #   }
-                    # ]
+                    logs = [
+                      {
+                        categoryGroup = "[parameters('logsConfiguration')]"
+                        enabled  = true
+                      }
+                    ]
                   }
                 }
               ]

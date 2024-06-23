@@ -1,7 +1,5 @@
 # client company name -
-client_name = "asos"
-# client company home tenant id -
-tenant_id = "24d70ce4-12c4-4e49-8583-ce91546f86ea"
+client_name = "obero"
 # Cyngular's client specific Application ID -
 application_id = "9061c3d3-e5e8-4910-afff-79656dfb1e5e"
 
@@ -32,3 +30,6 @@ roles_json = <<EOF
 EOF
 
 // 'EOF' should trail an empty line -^-
+
+# # client company home tenant id -
+# tenant_id = "24d70ce4-12c4-4e49-8583-ce91546f86ea"
