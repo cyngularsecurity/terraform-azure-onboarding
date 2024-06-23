@@ -7,6 +7,10 @@
     - yq
     - jq
     - makefile (?)
+
+  - should enable use of management groups for the tenant
+  - should have permissions to "Microsoft.Authorization/roleAssignments/write" over scope "/providers/Microsoft.Management/managementGroups/{root mgmt id}"
+
 1. Main
     * input `company name` & `region`
     * add account extension
