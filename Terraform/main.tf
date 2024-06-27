@@ -38,14 +38,35 @@ module "role_assignment" {
   service_principal_id = module.main.sp_id
 }
 
-module "policy_assigments" {
+# module "policy_assigments" {
+#   source     = "./modules/policies"
+#   depends_on = [module.role_assignment]
+
+#   subscription_ids   = local.sub_ids
+#   subscription_names = local.sub_names
+
+#   prefix           = local.resource_prefix
+#   tags             = var.tags
+#   main_location    = local.main_location
+#   cyngular_rg_name = module.main.client_rg
+
+#   client_name              = var.client_name
+#   client_locations         = var.locations
+#   default_storage_accounts = module.main.storage_accounts_ids
+
+#   enable_activity_logs     = var.enable_activity_logs
+#   enable_audit_events_logs = var.enable_audit_events_logs
+#   enable_flow_logs         = var.enable_flow_logs
+#   enable_aks_logs          = var.enable_aks_logs
+# }
+
+module "cyngular_function" {
   source     = "./modules/policies"
   depends_on = [module.role_assignment]
 
   subscription_ids   = local.sub_ids
   subscription_names = local.sub_names
 
-  prefix           = local.resource_prefix
   tags             = var.tags
   main_location    = local.main_location
   cyngular_rg_name = module.main.client_rg
