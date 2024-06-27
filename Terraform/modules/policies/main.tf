@@ -1,51 +1,61 @@
+
 locals {
   main_location = element(var.client_locations, 0)
-
-  # policy_def_json  = jsondecode(data.local_file.policy_definition.content)
-  # policy_json_path = "${path.module}/policy_def.json"
+  mgmt_group_id = data.azuread_client_config.current.tenant_id
+  logging_enabled = var.enable_aks_logs || var.enable_flow_logs || var.enable_activity_logs || var.enable_audit_events_logs
 
   resource_types = {
-    list_a = join(",", [ // resource types to configure diagnostic settings for, with category group of allLogs
+    list_a = [ // resource types to configure diagnostic settings for, with category group of allLogs -- 1
       "Microsoft.Compute/components",
       "Microsoft.Compute/bastionHosts",
-    ])
-    
-    list_b = join(",", [ // resource types to configure diagnostic settings for, with category groups of allLogs, audit
+      "microsoft.recoveryservices/vaults",
+      "Microsoft.Network/virtualNetworks",
+      "microsoft.desktopvirtualization/workspaces",
+      "microsoft.insights/datacollectionrules",
+    ]
+
+    list_b = [ // resource types to configure diagnostic settings for, with category groups of allLogs, audit -- 2
       "Microsoft.KeyVault/vaults",
-      "Microsoft.Sql/servers",
       "Microsoft.OperationalInsights/workspaces",
       "Microsoft.Network/publicIPAddresses",
       "Microsoft.EventHub/namespaces",
       "Microsoft.DBforMySQL/flexibleServers",
-    ])
+      "microsoft.cache/redis",
+      "Microsoft.ServiceBus/namespaces",
+      "Microsoft.DBforPostgreSQL/flexibleServers",
+      "microsoft.synapse/workspaces",
+    ]
 
-    black_listed = join(",", [ // resource types to not configure diagnostic settings for
+    # black_listed = join(",", [ // resource types to not configure diagnostic settings for )
+    black_listed = [ // resource types to not configure diagnostic settings for
       "Microsoft.Storage/storageAccounts",
 
-      "Microsoft.Network/virtualNetworks",
       "Microsoft.Network/networkWatchers",
       "Microsoft.Network/networkInterfaces",
-      "microsoft.network/routetables",
-      "microsoft.network/privateendpoints",
+      "Microsoft.Network/routetables",
+      "Microsoft.Network/privateendpoints",
       "Microsoft.Network/loadBalancers",
       "Microsoft.Network/networkManagers",
-      "Microsoft.Network/networkSecurityGroups",
 
       "Microsoft.Web/serverFarms",
       "Microsoft.Web/sites",
 
+      "Microsoft.Compute/images",
       "Microsoft.Compute/disks",
       "Microsoft.Compute/snapshots",
       "Microsoft.Compute/sshPublicKeys",
       "Microsoft.Compute/virtualMachines",
-      "microsoft.compute/availabilitysets",
-      "microsoft.compute/virtualmachines/extensions",
+      "Microsoft.Compute/availabilitysets",
+      "Microsoft.Compute/virtualmachines/extensions",
       "Microsoft.Compute/virtualMachineScaleSets",
 
       "microsoft.operationsmanagement/solutions",
       "microsoft.managedidentity/userassignedidentities",
+
       "microsoft.devtestlab/labs",
-      "microsoft.databricks/accessconnectors",
+      "microsoft.devtestlab/schedules",
+
+      "Microsoft.Databricks/accessconnectors",
       "Microsoft.Databricks/workspaces",
       "microsoft.operationalinsights/querypacks",
 
@@ -54,18 +64,16 @@ locals {
       "microsoft.insights/components",
       "Microsoft.ContainerService/managedClusters",
 
-      "Microsoft.RecoveryServices/vaults",
-      "Microsoft.KeyVault/vaults",
-
-      "Microsoft.Sql/servers",
-
       "Microsoft.ClassicNetwork/networkSecurityGroups",
 
-      "Microsoft.ServiceBus/namespaces",
-      "Microsoft.DBforPostgreSQL/flexibleServers",
-      "microsoft.compute/images",
-
-      "microsoft.devtestlab/schedules",
-    ])
+      "Microsoft.Sql/servers",
+      "Microsoft.Sql/servers/databases",
+      "Microsoft.Network/networkSecurityGroups",
+      "microsoft.virtualmachineimages/imagetemplates",
+      "microsoft.network/networkwatchers/flowlogs",
+      "microsoft.compute/galleries/images/versions",
+      "microsoft.compute/galleries",
+      "microsoft.compute/galleries/images"
+    ]
   }
 }

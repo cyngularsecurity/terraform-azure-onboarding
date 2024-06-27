@@ -1,32 +1,14 @@
 resource "azurerm_policy_definition" "aks_diagnostic_settings" {
   count = var.enable_aks_logs ? 1 : 0
 
-  policy_type  = "Custom"
-  mode         = "Indexed"
+  policy_type = "Custom"
+  mode        = "Indexed"
 
-  name         = format("cyngular-%s-%s-aks-def", var.client_name, var.subscription_name)
-  display_name = "Cyngular ${var.client_name} AKS - Require Diagnostic Settings for Clusters in sub - ${var.subscription_name}"
+  name         = format("cyngular-%s-aks-def", var.client_name)
+  display_name = "Cyngular ${var.client_name} AKS Clusters Diagnostic Settings Definition"
   description  = "Ensures that AKS clusters have diagnostic settings configured to send logs to the specified storage account."
 
-  management_group_id      = "/providers/Microsoft.Management/managementGroups/${data.azuread_client_config.current.tenant_id}"
-
-  metadata = jsonencode({ category = "Monitoring" })
-  parameters = jsonencode({
-    StorageAccountIds = {
-      type = "Object"
-      metadata = {
-        description = "A map of locations to storage account IDs where the logs should be sent."
-        displayName = "Storage Account Map"
-      }
-    }
-    ClientLocations = {
-      type = "Array"
-      metadata = {
-        description = "The list of allowed locations for AKS clusters."
-        displayName = "Allowed Locations"
-      }
-    }
-  })
+  management_group_id = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
 
   policy_rule = jsonencode({
     if = {
@@ -44,29 +26,48 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
     then = {
       effect = "DeployIfNotExists"
       details = {
-        type = "Microsoft.ContainerService/managedClusters/Microsoft.Insights/diagnosticSettings"
-        # type = "Microsoft.ContainerService/managedClusters/providers/diagnosticSettings"
-        # evaluationDelay = "AfterProvisioning"
+        type = "Microsoft.ContainerService/managedClusters/providers/Microsoft.Insights/diagnosticSettings",
         # existenceScope = "resourceGroup"
         roleDefinitionIds = [
-          "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // monitoring contributor
-          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab", // storage account contributor
-        ]
+          "${azurerm_role_definition.policy_assignment_def[0].role_definition_resource_id}",
+          "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // Monitoring Contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab", // Storage Account Contributor
+        ],
         existenceCondition = {
-          allOf = [
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
-              equals = "kube-audit"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
-              equals = "true"
-            },
-            {
-              field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
-              exists = true
+          count = {
+            field = "Microsoft.Insights/diagnosticSettings/logs[*]",
+            where = {
+              allOf = [
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                  in    = ["kube-audit", "kube-apiserver"]
+                },
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                  equals = true
+                },
+                {
+                  field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+                  equals = "[parameters('storageAccountIds')[field('location')]]"
+                }
+              ]
             }
-          ]
+          },
+          equals = 2
+          # allOf = [
+          #   {
+          #     field  = "Microsoft.Insights/diagnosticSettings/logs[*].category"
+          #     equals = "kube-audit"
+          #   },
+          #   {
+          #     field  = "Microsoft.Insights/diagnosticSettings/logs[*].enabled"
+          #     equals = "true"
+          #   },
+          #   {
+          #     field  = "Microsoft.Insights/diagnosticSettings/storageAccountId"
+          #     exists = true
+          #   }
+          # ]
         }
         deployment = {
           properties = {
@@ -83,17 +84,16 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
               }
               storageAccountId = {
                 value = "[parameters('StorageAccountIds')[field('location')]]"
-                # value = "[if(contains(parameters('StorageAccountIds'), field('location')), parameters('StorageAccountIds')[field('location')], 'disabled')]"
               }
             }
             template = {
               "$schema"      = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
-              contentVersion = "1.3.0.0"
+              contentVersion = "3.0.1.0"
               parameters = {
                 resourceName = {
                   type = "string"
                 }
-                resourceId ={
+                resourceId = {
                   type = "string"
                 }
                 location = {
@@ -107,7 +107,8 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                 {
                   type       = "Microsoft.Insights/diagnosticSettings"
                   apiVersion = "2021-05-01-preview"
-                  name       = "[concat(parameters('resourceName'), '-AKS-DS')]"
+                  name       = "CyngularDiagnostic" // ?s
+                  # name       = "[concat(parameters('resourceName'), '-AKS-DS')]"
                   scope      = "[parameters('resourceId')]"
                   # location = "[parameters('location')]"
                   properties = {
@@ -128,6 +129,26 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
             }
           }
         }
+      }
+    }
+  })
+  metadata = jsonencode({
+    category = "Cyngular - AKS"
+    version = "3.0.1"
+  })
+  parameters = jsonencode({
+    StorageAccountIds = {
+      type = "Object"
+      metadata = {
+        description = "A map of locations to storage account IDs where the logs should be sent."
+        displayName = "Storage Account Map"
+      }
+    }
+    ClientLocations = {
+      type = "Array"
+      metadata = {
+        description = "The list of allowed locations for AKS clusters."
+        displayName = "Allowed Locations"
       }
     }
   })

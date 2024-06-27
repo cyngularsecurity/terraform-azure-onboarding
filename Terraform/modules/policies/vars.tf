@@ -2,13 +2,13 @@ variable "client_name" {
   description = "Company name"
   type        = string
 }
-variable "subscription_id" {
-  description = "sub ID"
-  type        = string
+variable "subscription_ids" {
+  description = "subs names and ids"
+  type        = map(string)
 }
-variable "subscription_name" {
-  description = "sub display name"
-  type        = string
+variable "subscription_names" {
+  description = "subs names and ids"
+  type        = map(string)
 }
 variable "client_locations" {
   description = "List of locations the client operates in"

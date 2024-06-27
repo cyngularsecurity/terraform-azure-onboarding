@@ -2,7 +2,7 @@
 #   max_length = 24
 #     static_prefix = "cyngular"
 #     max_client_length = local.max_length - length(local.static_prefix) - length(var.region)
-  
+
 #   # Truncate and format the client name to fit within the limits
 #   truncated_client_name = substr(lower(var.client_name), 0, local.max_client_length)
 #     storage_account_name = format("%s%s%s", local.static_prefix, local.truncated_client_name, lower(var.region))
