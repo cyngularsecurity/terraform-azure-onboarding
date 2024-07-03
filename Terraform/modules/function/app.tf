@@ -1,82 +1,86 @@
 
-locals {
-  base_app_settings = {
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
-    "AZURE_SECRET_NAME" = var.kv_name
-    "FUNCTIONS_WORKER_RUNTIME"       = "python"
-    "SUBSCRIPTION_ID" = var.subscription_id
-    "FUNCTIONS_EXTENSION_VERSION" = "~4"
-  }
-}
-
 resource "azurerm_linux_function_app" "function_service" {
-
-  name                = "${replace(var.func_name,"_","-")}-service-${var.client_name}"
-  resource_group_name = var.client_rg.name
-  location            = var.client_rg.location
+  name                = "cyngular-service-${var.client_name}"
+  resource_group_name = var.cyngular_rg_name
+  location            = var.main_location
 
   https_only                    = true
-  public_network_access_enabled = false
+  public_network_access_enabled = true
 
-  virtual_network_subnet_id = var.func_name == "os_service3" ? var.os_subnet_id : null
-  
-  service_plan_id           = var.service_plan_id
+  service_plan_id           = azurerm_service_plan.regular.id
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME" = "python"
-    "STORAGE_ACCOUNT_MAPPINGS" = jsonencode({
-      eastus = "/subscriptions/your-subscription-id/resourceGroups/example-resources/providers/Microsoft.Storage/storageAccounts/examplestorageacc"
-      westus = "/subscriptions/your-subscription-id/resourceGroups/example-resources/providers/Microsoft.Storage/storageAccounts/examplestorageacc"
-    })
+      # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true,
+    "FUNCTIONS_WORKER_RUNTIME"       = "python",
+    "FUNCTIONS_EXTENSION_VERSION" = "~4",
 
-  app_settings = merge(
-    local.base_app_settings,
-    var.func_name == "os_service1" ? { "FIRST_RUN" = 1 } : {},
-    var.func_name == "os_service2" ? { "AzureWebJobsServiceBus" = var.linux_service_bus_ns_conn_str } : {},
-    var.func_name == "visibility" ? local.visibility_app_settings : {}
-  )
+    "STORAGE_ACCOUNT_MAPPINGS"       = jsonencode(var.default_storage_accounts),
+    "COMPANY_LOCATIONS" = jsonencode(var.client_locations),
+    "ROOT_MGMT_GROUP_ID" = local.mgmt_group_id,
+    "UAI_ID"       = azurerm_user_assigned_identity.function_assignment_identity.client_id,
+
+    "enable_activity_logs"     = var.enable_activity_logs
+    "enable_audit_events_logs" = var.enable_audit_events_logs
+    "enable_flow_logs"         = var.enable_flow_logs
+    "enable_aks_logs"          = var.enable_aks_logs
+
+  }
 
   site_config {
     application_insights_connection_string = azurerm_application_insights.func_azure_insights.connection_string
     application_insights_key               = azurerm_application_insights.func_azure_insights.instrumentation_key
-    always_on                              = var.func_name == "os_service2" ? true : null
     application_stack {
       python_version = "3.11"
     }
   }
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
   }
 
-
-  lifecycle {
-    ignore_changes = [
-      app_settings
-    ]
-  }
+  # lifecycle {
+  #   ignore_changes = [
+  #     app_settings
+  #   ]
+  # }
   zip_deploy_file = var.service_zip
   tags = var.tags
 }
 
-# ------< storage account of linux function >----------------------------
 resource "azurerm_storage_account" "func_storage_account" {
-  name = format("%ssa", replace(var.func_name,"_",""))
-  resource_group_name      = var.client_rg.name
-  location                 = var.client_rg.location
+  name                = "cyngularservice${var.client_name}"
+  resource_group_name = var.cyngular_rg_name
+  location            = var.main_location
+
+  account_kind             = "StorageV2"
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  min_tls_version = "TLS1_2"
+
+  access_tier              = "Hot"
+  enable_https_traffic_only = true
+
   tags = var.tags
 }
 
-# ------< app insights of linux function >----------------------------
 resource "azurerm_application_insights" "func_azure_insights" {
-  name                = "${var.func_name}-service-${var.client_name}"
-  resource_group_name = var.client_rg.name
-  location            = var.client_rg.location
+  name                = "cyngular-service-${var.client_name}"
+  resource_group_name = var.cyngular_rg_name
+  location            = var.main_location
   application_type    = "web"
   retention_in_days   = 60
   tags       = var.tags
+}
+
+resource "azurerm_service_plan" "regular" {
+  name                = "ASP-cyngular-service-regular"
+  resource_group_name = var.cyngular_rg_name
+  location            = var.main_location
+
+  os_type  = "Linux"
+  sku_name = "Y1"
+  tags = var.tags
 }

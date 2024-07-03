@@ -517,7 +517,7 @@ resource "azurerm_policy_definition" "audit_event_ds_audit_event" {
                     storageAccountId = "[parameters('storageAccountId')]"
                     logs = [
                       {
-                        categoryGroup = "AuditEvent"
+                        category = "AuditEvent"
                         enabled       = true
                       }
                     ]
