@@ -4,62 +4,17 @@
   - cli tools
     - terraform
     - azcli
-    - yq
-    - jq
-    - makefile (?)
 
   - should enable use of management groups for the tenant
   - should have permissions to "Microsoft.Authorization/roleAssignments/write" over scope "/providers/Microsoft.Management/managementGroups/{root mgmt id}"
 
-1. Main
-    * input `company name` & `region`
-    * add account extension
-    * create `Service Principle`
-      * get SP object id from app id
-    * for current (mgmt / default) azure subscription
-      * create `CyngularRG` resource group in client region
-        * create `audit logs` storage account
-        * create nsg storage account for `nsg flow logs`
-      * get storage accounts `connection strings`
 
-    * List Subscriptions for logged in tennant / directory
-    
-    * Loop throgh Subscriptions:
-      * per subscription:
-      * assign `roles` to cyngular service principle in subscription scope:
-        * Reader
-        * Disk Pool Operator
-        * Data Operator for Managed Disks
-        * Disk Snapshot Contributor
-        * Microsoft Sentinel Reader
-      * export `activity logs`
-        * with a `diagnostic settings` bicep deployment
-        * from subscription and client region
-        * to audit_storage_account
-
-      * create `NetworkWatcherRG` resource group
-      * List resource groups
-      * per RG:
-        * if `net watcher` not in `resource group` location - configure (enable) network watcher
-
-        * list network interfaces / nsgs
-          * Loop through `NSGs` in `subscription`:
-          * if `net watcher` not in `NSG` location - configure network watcher
-          * if `NSG location` == `client loaction`: create flow logs for that NSG / Net Interface
-    
-      * list all resources in curr subscription and in client location
-      * loop through Resources
-        * per resource
-        * Export `diagnostic settings`
-          * from a `resource`
-          * with a specific type of `log settings`
-          * to audit_storage_account_id
-
-    * write sensitive data -
-      * Service Principal `App ID`
-      * Service Principal `Password`
-      * Service Principal `Tenant`
-      * `Audit` Storage Account `Connection String`
-      * `NSG` Storage Account `Connection String`
-    * to a file, `encrypt` and send to cyngular
-      * option to upload to cyngular key vault
+```
+open web browser on the wanted azure environment
+return to terminal, type 'az login', and follow the provided instructions
+install the terraform.zip file & extract it
+open a terminal window on the right path of the terraform configuration files extracted
+run 'cp example.tfvars {client_name}.tfvars'
+and fill the required values for terraform in the tfvars file
+then reurn to terminal and run 'terraform apply --auto-approve --var-file {client_name}.tfvars'
+```

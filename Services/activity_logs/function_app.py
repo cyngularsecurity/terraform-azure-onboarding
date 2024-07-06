@@ -299,10 +299,14 @@ def set_nsg_flow_logs(input):
                             "retention_policy": {
                                 "days": 0,
                                 "enabled": False
+                            },
+                            "format": {
+                                "type": "JSON",
+                                "version": 2
                             }
                         }
                     )
-                    logging.warning(f"Updated/Created flow log for NSG: {nsg.name} in location: {location}")
+                    logging.warning(f"Updated/Created flow log version 2 for NSG: {nsg.name} in location: {location}")
 
         logging.warning(f"NSG flow logs checked and updated for subscription: {subscription_id} | Location: {location}")
     except Exception as e:
