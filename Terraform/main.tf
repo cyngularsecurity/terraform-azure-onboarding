@@ -7,7 +7,8 @@ locals {
     "Disk Snapshot Contributor",
     "Microsoft Sentinel Reader",
     "API Management Workspace Reader",
-    "Reader and Data Access"
+    "Reader and Data Access",
+    "Managed Applications Reader"
   ]
   EOF
   ))
@@ -33,7 +34,7 @@ module "main" {
   main_location = local.main_location
 
   locations           = var.locations
-  preffix             = local.resource_prefix
+  prefix             = local.resource_prefix
   application_id      = var.application_id
   msgraph_id          = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
   current_user_obj_id = data.azuread_client_config.current.object_id
@@ -45,7 +46,7 @@ module "role_assignment" {
 
   mgmt_group_id = local.mgmt_group_id
   role_name            = each.value
-  subscription_ids     = { for i, sub in local.subscriptions_data : i => sub.id }
+  # subscription_ids     = { for i, sub in local.subscriptions_data : i => sub.id }
   service_principal_id = module.main.sp_id
 }
 

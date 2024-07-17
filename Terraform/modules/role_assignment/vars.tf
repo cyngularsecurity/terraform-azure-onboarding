@@ -1,9 +1,4 @@
 
-variable "subscription_ids" {
-  description = "List of subscription IDs"
-  # type        = list(string)
-}
-
 variable "role_name" {
   description = "Azure built-in role name to assign"
   type        = string
@@ -19,3 +14,8 @@ variable "mgmt_group_id" {
   type        = string
 
 }
+
+# variable "subscription_ids" {
+#   description = "List of subscription IDs"
+#   # type        = list(string)
+# }
