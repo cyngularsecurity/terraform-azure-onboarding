@@ -2,8 +2,7 @@
 # The Python Worker is managed by Azure Functions platform
 # Manually managing azure-functions-worker may cause unexpected issues
 
-msal
-
+# msal
 azure-functions
 azure-functions-durable
 
@@ -22,10 +21,3 @@ azure-mgmt-web
 azure-mgmt-resource
 azure-mgmt-storage
 azure-mgmt-network
-
-# azure-mgmt-containerservice
-# azure-mgmt-containerinstance
-# azure-mgmt-compute
-# azure-mgmt-sql
-# azure-servicebus
-# azure-keyvault-secrets

@@ -4,6 +4,6 @@ data "azurerm_subscriptions" "available" {}
 
 data "archive_file" "cyngular_function" {
   type        = "zip"
-  source_dir  = "../Services/audit_event"
-  output_path = "zips/cyngular-audit_event-service.zip"
+  source_dir  = "../Services/activity_logs"
+  output_path = "zips/cyngular-service.zip"
 }

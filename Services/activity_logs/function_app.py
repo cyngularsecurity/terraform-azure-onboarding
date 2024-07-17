@@ -5,9 +5,9 @@ import json
 
 import diagnostic_settings as cyngular_ds
 import cyngular_functions as cyngular_func
+
 import azure.functions as func
 import azure.durable_functions as df
-
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resourcegraph import ResourceGraphClient
 from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions, ResultFormat
@@ -36,23 +36,24 @@ logging.basicConfig(
 
 credential = cyngular_func.get_client_credentials()
 primary_location = company_locations[0].strip()
+cyngular_ds_name = "CyngularDiagnostic"
 
 # """
 # cyngulat trigger for Orchestration --  Durable Client Function
 # """
 OnBoard = df.DFApp(func.AuthLevel.ANONYMOUS)
-@OnBoard.route(route="DS/")
+# @OnBoard.route(route="DS/")
+# @OnBoard.durable_client_input(client_name="client")
+# async def durable_trigger_function_ds(req: func.HttpRequest, client):
 @OnBoard.durable_client_input(client_name="client")
-async def durable_trigger_function_ds(req: func.HttpRequest, client):
-#@OnBoard.durable_client_input(client_name="client")
-#@OnBoard.schedule(schedule="30 1-4 * * *",
-#            arg_name="DailyTimer",
-#            run_on_startup=True)
-#async def durable_trigger_functionO(DailyTimer: func.TimerRequest, client):
+@OnBoard.schedule(schedule="0 * * * *", arg_name="DailyTimer", run_on_startup=True)
+async def durable_trigger_function_ds(DailyTimer: func.TimerRequest, client):
     logging.warning("-- started client durable func --")
     instance_id = await client.start_new("main_orchestrator")
-    response = client.create_check_status_response(req, instance_id)
-    return response
+    logging.warning(f"Started orchestration with ID = '{instance_id}'.")
+
+    # response = client.create_check_status_response(req, instance_id)
+    # return response
 
 # """
 # cyngular trigger for services --  Orchestration Function
@@ -62,10 +63,7 @@ def main_orchestrator(context: df.DurableOrchestrationContext):
     try:
         logging.warning(f"-- Started main orhcestrator func --")
         subscriptions = cyngular_func.get_subscriptions(credential)
-        # logging.warning(f"-- subscriptions -- {len(subscriptions)}")
 
-        sub_ids = [sub['subscription_id'] for sub in subscriptions]
-        # logging.warning(f"-- sub_ids -- {sub_ids}")
         sub_tasks = [context.call_sub_orchestrator("sub_orchestrator", sub) for  sub in subscriptions]
 
         results = yield context.task_all(sub_tasks)
@@ -82,7 +80,6 @@ def sub_orchestrator(context: df.DurableOrchestrationContext):
     try:
         logging.warning(f"-- started sub orchestrator func subscription -< {subscription_name} >-")
         locations = company_locations
-        # logging.warning(f"-- locations filters -< {locations} >-")
         if primary_location not in storage_account_mappings:
             raise ValueError(f"Primary location '{primary_location}' not found in storage account mappings.")
         logging.warning(f"-- primary location -< {primary_location} >-")
@@ -150,7 +147,6 @@ def query_resources(input):
             options=options
         )
         response = resource_graph_client.resources(request)
-        # logging.warning(f"resources data: {response}")
 
         if response.count == 0:
             logging.error(f"No resources found in subscription: {subscription_id}") 
@@ -174,7 +170,7 @@ def set_activity_logs_ds(input):
         existing_settings = monitor_client.diagnostic_settings.list(
             resource_uri=f"/subscriptions/{subscription_id}"
         )
-        # generator expression, next func to find first ds matching the given storage_account_id. If none are found, defaults to None.
+        # generator expression, find first ds matching the given storage_account_id. If none are found, defaults to None.
         setting_name = next(
             (setting.name for setting in existing_settings if setting.storage_account_id == storage_account_id),
             None
@@ -188,7 +184,7 @@ def set_activity_logs_ds(input):
 
         monitor_client.diagnostic_settings.create_or_update(
             resource_uri=f"/subscriptions/{subscription_id}",
-            name=setting_name or "CyngularDiagnostic",
+            name=setting_name or cyngular_ds_name,
             parameters=parameters
         )
         logging.warning(f"Activity Logs deployed -< {operation.capitalize()} >- for sub: {subscription_id} ({subscription_name})")
@@ -228,7 +224,6 @@ def set_audit_event_ds(input):
                         
             if categories:
                 diagnostic_settings = monitor_client.diagnostic_settings.list(resource_id)
-                # # return len(list(diagnostic_settings)) > 0
                 if not any(ds for ds in diagnostic_settings if all(
                     log.category in categories and log.enabled for log in ds.logs
                 )):

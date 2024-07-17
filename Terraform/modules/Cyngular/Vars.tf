@@ -24,7 +24,7 @@ variable "application_id" {
   type        = string
 }
 
-variable "preffix" {
+variable "prefix" {
   description = "Prefix to include in resource names"
   type        = string
 }
