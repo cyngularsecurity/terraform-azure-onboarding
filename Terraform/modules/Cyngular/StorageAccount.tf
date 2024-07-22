@@ -4,7 +4,7 @@ resource "azurerm_storage_account" "cyngular_sa" {
   for_each = toset(var.locations)
 
   # name                = lower(substr("cyngular${var.client_name}${each.key}", 0, 24))
-  name                = lower(substr("cyngularsa${each.key}", 0, 24))
+  name                = lower(substr("cyngularsa${each.key}", 0, 23))
   resource_group_name = azurerm_resource_group.cyngular_client.name
   location            = each.value
 
@@ -14,7 +14,7 @@ resource "azurerm_storage_account" "cyngular_sa" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
-  tags = var.tags
+  tags = merge(storage_acount_tags, var.tags)
 }
 
 resource "azurerm_role_assignment" "sa_contributor" {
