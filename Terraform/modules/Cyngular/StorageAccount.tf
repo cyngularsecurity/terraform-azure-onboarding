@@ -14,7 +14,7 @@ resource "azurerm_storage_account" "cyngular_sa" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
-  tags = merge(storage_acount_tags, var.tags)
+  tags = merge(local.storage_acount_tags, var.tags)
 }
 
 resource "azurerm_role_assignment" "sa_contributor" {
