@@ -38,6 +38,11 @@ module "main" {
   application_id      = var.application_id
   msgraph_id          = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
   current_user_obj_id = data.azuread_client_config.current.object_id
+
+  enable_activity_logs     = var.enable_activity_logs
+  enable_audit_events_logs = var.enable_audit_events_logs
+  enable_flow_logs         = var.enable_flow_logs
+  enable_aks_logs          = var.enable_aks_logs
 }
 
 module "role_assignment" {
