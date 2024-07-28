@@ -24,13 +24,17 @@ locals {
   sub_ids   = { for i, sub in local.subscriptions_data : i => sub.id }
   sub_names = { for i, sub in local.subscriptions_data : i => sub.name }
   mgmt_group_id = data.azuread_client_config.current.tenant_id
+
+  tags = {
+    Owner = "Cyngular"
+  }
 }
 
 module "main" {
   source = "./modules/cyngular"
 
   client_name   = var.client_name
-  tags          = var.tags
+  tags          = local.tags
   main_location = local.main_location
 
   locations           = var.locations
@@ -63,7 +67,7 @@ module "cyngular_function" {
   subscription_ids   = local.sub_ids
   subscription_names = local.sub_names
 
-  tags             = var.tags
+  tags             = local.tags
   main_location    = local.main_location
   client_locations         = var.locations
   client_name              = var.client_name

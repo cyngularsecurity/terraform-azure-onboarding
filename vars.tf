@@ -10,10 +10,6 @@ variable "locations" {
   description = "List of locations to create storage accounts"
   type        = list(string)
 }
-variable "tags" {
-  type        = map(string)
-  description = "A map of the tags to use for the resources that are deployed."
-}
 variable "enable_audit_logs" {
   description = "create diagnostic settings for audit logs - on active directory scope"
   type        = bool
