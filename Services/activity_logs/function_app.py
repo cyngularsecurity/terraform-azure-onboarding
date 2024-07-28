@@ -245,10 +245,9 @@ def set_nsg_flow_logs(input):
         network_client = NetworkManagementClient(credential, subscription_id)
         resource_client = ResourceManagementClient(credential, subscription_id)
 
-        nw_list = network_client.network_watchers.list_all()
-        nw_locations = [nw.location for nw in nw_list]
+        network_watcher = cyngular_func.find_network_watcher(network_client, location)
 
-        if location not in nw_locations:
+        if not network_watcher:
             rg_name = "NetworkWatcherRG"
             nw_name = f"NetworkWatcher_{location}"
             
@@ -258,12 +257,14 @@ def set_nsg_flow_logs(input):
                 resource_client.resource_groups.create_or_update(rg_name, {"location": location})
                 logging.warning(f"Created Resource Group: {rg_name} in location: {location}")
 
-            network_client.network_watchers.create_or_update(
+            network_watcher = network_client.network_watchers.create_or_update(
                 resource_group_name=rg_name,
                 network_watcher_name=nw_name,
                 parameters={"location": location}
             )
             logging.warning(f"Created Network Watcher in location: {location} | for sub {subscription_id}")
+        else:
+            logging.warning(f"Using existing Network Watcher: {network_watcher.name} in resource group: {network_watcher.id.split('/')[4]}")
 
         nsgs = network_client.network_security_groups.list_all()
         for nsg in nsgs:
@@ -274,24 +275,25 @@ def set_nsg_flow_logs(input):
 
                 try:
                     flow_log_settings = network_client.flow_logs.get(
-                        resource_group_name=nsg_rg_name,
-                        network_security_group_name=nsg.name,
+                        resource_group_name=network_watcher.id.split('/')[4],
+                        # network_security_group_name=nsg.name,
+                        network_watcher_name=network_watcher.name,
                         flow_log_name=nsg_flow_log_name
                     )
                 except Exception:
                     flow_log_settings = None
 
-                # Check if flow log settings need to be created or updated
                 if not flow_log_settings or flow_log_settings.storage_id != storage_account_id:
-                    network_client.flow_logs.create_or_update(
-                        resource_group_name=nsg_rg_name,
-                        network_security_group_name=nsg.name,
+                    poller = network_client.flow_logs.begin_create_or_update(
+                        resource_group_name=network_watcher.id.split('/')[4],
+                        network_watcher_name=network_watcher.name,
                         flow_log_name=nsg_flow_log_name,
                         parameters={
-                            "location": location,
                             "enabled": True,
-                            "storage_id": storage_account_id,
-                            "retention_policy": {
+                            "location": location,
+                            "targetResourceId": nsg.id,
+                            "storageId": storage_account_id,
+                            "retentionPolicy": {
                                 "days": 0,
                                 "enabled": False
                             },
@@ -301,10 +303,24 @@ def set_nsg_flow_logs(input):
                             }
                         }
                     )
+                    result = poller.result()
                     logging.warning(f"Updated/Created flow log version 2 for NSG: {nsg.name} in location: {location}")
+                    logging.warning(f"nsg begin create -- res: {result}")
 
         logging.warning(f"NSG flow logs checked and updated for subscription: {subscription_id} | Location: {location}")
     except Exception as e:
         logging.critical(f"Failed to set NSG flow logs for subscription: {subscription_id} | Location: {location}. Error: {str(e)}")
         return {"status": "failed"}
     return {"status": "success"}
+
+# <!-- 
+#     try:
+#         logging.warning(f"Started NSG Flow Logs for sub: {subscription_id} | Location: {location}")
+#         network_client = NetworkManagementClient(credential, subscription_id)
+#         resource_client = ResourceManagementClient(credential, subscription_id)
+
+#         nw_list = network_client.network_watchers.list_all()
+#         nw_locations = [nw.location for nw in nw_list]
+
+#         if location not in nw_locations: -->
+
