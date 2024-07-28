@@ -39,6 +39,12 @@ variable "current_user_obj_id" {
   type        = string
 }
 
+variable "enable_audit_logs" {
+  description = "create diagnostic settings for audit logs - on active directory scope"
+  type        = bool
+  default     = true
+}
+
 variable "enable_activity_logs" {
   description = "create diagnostic settings for activity logs - on sub scope"
   type        = bool

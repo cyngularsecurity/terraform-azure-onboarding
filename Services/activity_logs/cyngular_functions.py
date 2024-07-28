@@ -68,6 +68,12 @@ def create_diagnostic_settings(monitor_client, resource_id, resource_name, resou
         logging.error(f"Failed to Apply ({operation}) DS on resource -< {resource_name} >- | type -< {resource_type} >- : {str(e)}.")
 
 
+def find_network_watcher(network_client, location):
+    network_watchers = network_client.network_watchers.list_all()
+    for nw in network_watchers:
+        if nw.location.lower() == location.lower():
+            return nw
+    return None
 
 # # def set_network_watcher(subscription_id, storage_account):
 # #     logging.info(f"Configure Network Watcher - Subscription: {subscription_id} - Location: {storage_account['location']}")

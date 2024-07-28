@@ -14,13 +14,18 @@ variable "tags" {
   type        = map(string)
   description = "A map of the tags to use for the resources that are deployed."
 }
-variable "enable_audit_events_logs" {
-  description = "create diagnostic settings for audit events - on resources scope"
+variable "enable_audit_logs" {
+  description = "create diagnostic settings for audit logs - on active directory scope"
   type        = bool
   default     = true
 }
 variable "enable_activity_logs" {
   description = "create diagnostic settings for activity logs - on sub scope"
+  type        = bool
+  default     = true
+}
+variable "enable_audit_events_logs" {
+  description = "create diagnostic settings for audit events - on resources scope"
   type        = bool
   default     = true
 }
@@ -34,3 +39,4 @@ variable "enable_aks_logs" {
   type        = bool
   default     = true
 }
+
