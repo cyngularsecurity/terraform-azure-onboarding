@@ -79,6 +79,4 @@ module "cyngular_function" {
   enable_audit_events_logs = var.enable_audit_events_logs
   enable_flow_logs         = var.enable_flow_logs
   enable_aks_logs          = var.enable_aks_logs
-
-  service_zip = data.archive_file.cyngular_function.output_path
 }
