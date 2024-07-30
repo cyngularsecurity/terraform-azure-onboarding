@@ -1,8 +1,8 @@
 resource "azurerm_policy_set_definition" "nsg_flow_logs_initiative" {
   count = var.enable_flow_logs ? 1 : 0
 
-  policy_type  = "Custom"
-  name         = "Cyngular-NFL-Initiative"
+  policy_type = "Custom"
+  name        = "Cyngular-NFL-Initiative"
 
   display_name        = "Cyngular ${var.client_name} NSG Flow Logs Initiative"
   description         = "Ensures that NSG Flow Logs are configured to send logs to the specified storage account."
@@ -31,7 +31,7 @@ resource "azurerm_policy_set_definition" "nsg_flow_logs_initiative" {
   }
 
   parameters = jsonencode({
-    ClientLocations   = {
+    ClientLocations = {
       type = "Array"
       metadata = {
         displayName = "Client Locations"
@@ -84,7 +84,7 @@ resource "azurerm_policy_set_definition" "nsg_flow_logs_initiative" {
   })
   metadata = jsonencode({
     category = "Cyngular - NSG Flow Logs"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
 }
 
@@ -230,7 +230,7 @@ resource "azurerm_policy_definition" "nsg_flow_logs" {
   })
   metadata = jsonencode({
     category = "Cyngular - NSG Flow Logs"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     Effect = {
@@ -302,7 +302,7 @@ resource "azurerm_policy_definition" "net_watcher" {
         },
         {
           field = "location"
-          notIn    = "[parameters('ClientLocations')]"
+          notIn = "[parameters('ClientLocations')]"
         }
       ]
     },
@@ -316,7 +316,7 @@ resource "azurerm_policy_definition" "net_watcher" {
         ],
         type              = "Microsoft.Network/networkWatchers"
         resourceGroupName = "[parameters('NetworkWatcherRG')]"
-        name              =  "[concat('NetworkWatcher_', field('location'))]"
+        name              = "[concat('NetworkWatcher_', field('location'))]"
         # existenceCondition = {
         #   field  = "location",
         #   # equals = "[field('location')]"
@@ -348,8 +348,8 @@ resource "azurerm_policy_definition" "net_watcher" {
                 {
                   type       = "Microsoft.Network/networkWatchers"
                   apiVersion = "2023-11-01"
-                  name     = "[concat('NetworkWatcher_', parameters('location'))]"
-                  location = "[parameters('location')]"
+                  name       = "[concat('NetworkWatcher_', parameters('location'))]"
+                  location   = "[parameters('location')]"
                   properties = {}
                 }
               ]
@@ -361,7 +361,7 @@ resource "azurerm_policy_definition" "net_watcher" {
   })
   metadata = jsonencode({
     category = "Cyngular - NSG Flow Logs"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     Effect = {

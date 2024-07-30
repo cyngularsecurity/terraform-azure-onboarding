@@ -7,9 +7,9 @@ resource "azurerm_storage_account" "func_storage_account" {
   account_kind             = "StorageV2"
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  min_tls_version = "TLS1_2"
+  min_tls_version          = "TLS1_2"
 
-  access_tier              = "Hot"
+  access_tier               = "Hot"
   enable_https_traffic_only = true
 
   tags = var.tags
@@ -21,7 +21,7 @@ resource "azurerm_application_insights" "func_azure_insights" {
   location            = var.main_location
   application_type    = "web"
   retention_in_days   = 60
-  tags       = var.tags
+  tags                = var.tags
 }
 
 resource "azurerm_service_plan" "regular" {
@@ -31,5 +31,5 @@ resource "azurerm_service_plan" "regular" {
 
   os_type  = "Linux"
   sku_name = "Y1"
-  tags = var.tags
+  tags     = var.tags
 }

@@ -7,7 +7,7 @@ resource "azurerm_linux_function_app" "function_service" {
   https_only                    = true
   public_network_access_enabled = true
 
-  service_plan_id           = azurerm_service_plan.regular.id
+  service_plan_id            = azurerm_service_plan.regular.id
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
@@ -18,14 +18,14 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   app_settings = {
-      # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true,
+    # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true,
     # "FUNCTIONS_EXTENSION_VERSION" = "~4",
-    "FUNCTIONS_WORKER_RUNTIME"       = "python",
+    "FUNCTIONS_WORKER_RUNTIME" = "python",
 
-    "STORAGE_ACCOUNT_MAPPINGS"       = jsonencode(var.default_storage_accounts),
-    "COMPANY_LOCATIONS" = jsonencode(var.client_locations),
-    "ROOT_MGMT_GROUP_ID" = local.mgmt_group_id,
-    "UAI_ID"       = azurerm_user_assigned_identity.function_assignment_identity.client_id,
+    "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts),
+    "COMPANY_LOCATIONS"        = jsonencode(var.client_locations),
+    "ROOT_MGMT_GROUP_ID"       = local.mgmt_group_id,
+    "UAI_ID"                   = azurerm_user_assigned_identity.function_assignment_identity.client_id,
 
     "enable_activity_logs"     = var.enable_activity_logs
     "enable_audit_events_logs" = var.enable_audit_events_logs

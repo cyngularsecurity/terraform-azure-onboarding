@@ -1,8 +1,8 @@
 data "azuread_client_config" "current" {}
 
 locals {
-  main_location = element(var.client_locations, 0)
-  mgmt_group_id = data.azuread_client_config.current.tenant_id
+  main_location   = element(var.client_locations, 0)
+  mgmt_group_id   = data.azuread_client_config.current.tenant_id
   logging_enabled = var.enable_aks_logs || var.enable_flow_logs || var.enable_activity_logs || var.enable_audit_events_logs
 
   resource_types = {

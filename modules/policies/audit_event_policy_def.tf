@@ -1,7 +1,7 @@
 resource "azurerm_policy_set_definition" "audit_event_initiative" {
   count = var.enable_audit_events_logs ? 1 : 0
 
-  policy_type  = "Custom"
+  policy_type = "Custom"
 
   name         = "Cyngular-AE-Initiative"
   display_name = "Cyngular ${var.client_name} Audit Event Initiative"
@@ -42,8 +42,8 @@ resource "azurerm_policy_set_definition" "audit_event_initiative" {
   }
 
   parameters = jsonencode({
-  #   # "BlacklistedTypes"  = { value = local.resource_types.black_listed },
-    ClientLocations   = {
+    #   # "BlacklistedTypes"  = { value = local.resource_types.black_listed },
+    ClientLocations = {
       type = "Array"
       metadata = {
         displayName = "Client Locations"
@@ -78,7 +78,7 @@ resource "azurerm_policy_set_definition" "audit_event_initiative" {
   })
   metadata = jsonencode({
     category = "Cyngular - Audit Event"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
 }
 
@@ -109,11 +109,11 @@ resource "azurerm_policy_definition" "audit_event_ds_list_a" {
     then = {
       effect = "DeployIfNotExists",
       details = {
-        type  = "Microsoft.Insights/diagnosticSettings",
+        type = "Microsoft.Insights/diagnosticSettings",
         roleDefinitionIds = [
           "${azurerm_role_definition.policy_assignment_def[0].role_definition_resource_id}",
           "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // Monitoring Contributor
-          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab",  // Storage Account Contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab", // Storage Account Contributor
         ],
         existenceCondition = {
           anyOf = [
@@ -189,8 +189,8 @@ resource "azurerm_policy_definition" "audit_event_ds_list_a" {
                   apiVersion = "2021-05-01-preview"
                   name       = "CyngularDiagnostics"
                   # name       = "[concat(parameters('resourceName'), '-diagnostics')]"
-                  location   = "[parameters('location')]"
-                  scope = "[parameters('resourceId')]"
+                  location = "[parameters('location')]"
+                  scope    = "[parameters('resourceId')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
                     logs = [
@@ -211,7 +211,7 @@ resource "azurerm_policy_definition" "audit_event_ds_list_a" {
 
   metadata = jsonencode({
     category = "Cyngular - Audit Event"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     StorageAccountIds = {
@@ -271,11 +271,11 @@ resource "azurerm_policy_definition" "audit_event_ds_list_b" {
     then = {
       effect = "DeployIfNotExists",
       details = {
-        type  = "Microsoft.Insights/diagnosticSettings",
+        type = "Microsoft.Insights/diagnosticSettings",
         roleDefinitionIds = [
           "${azurerm_role_definition.policy_assignment_def[0].role_definition_resource_id}",
           "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // Monitoring Contributor
-          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab",  // Storage Account Contributor
+          "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab", // Storage Account Contributor
         ],
         existenceCondition = {
           anyOf = [
@@ -351,8 +351,8 @@ resource "azurerm_policy_definition" "audit_event_ds_list_b" {
                   apiVersion = "2021-05-01-preview"
                   name       = "CyngularDiagnostics"
                   # name       = "[concat(parameters('resourceName'), '-diagnostics')]"
-                  location   = "[parameters('location')]"
-                  scope = "[parameters('resourceId')]"
+                  location = "[parameters('location')]"
+                  scope    = "[parameters('resourceId')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
                     logs = [
@@ -376,7 +376,7 @@ resource "azurerm_policy_definition" "audit_event_ds_list_b" {
   })
   metadata = jsonencode({
     category = "Cyngular - Audit Event"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     StorageAccountIds = {
@@ -418,7 +418,7 @@ resource "azurerm_policy_definition" "audit_event_ds_audit_event" {
       allOf = [
         {
           field = "type",
-          notIn    = "[concat(parameters('typeListA'), parameters('typeListB'))]"
+          notIn = "[concat(parameters('typeListA'), parameters('typeListB'))]"
         },
         {
           field = "location",
@@ -429,7 +429,7 @@ resource "azurerm_policy_definition" "audit_event_ds_audit_event" {
     then = {
       effect = "DeployIfNotExists",
       details = {
-        type  = "Microsoft.Insights/diagnosticSettings",
+        type = "Microsoft.Insights/diagnosticSettings",
         roleDefinitionIds = [
           "${azurerm_role_definition.policy_assignment_def[0].role_definition_resource_id}",
           "/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa", // Monitoring Contributor
@@ -512,13 +512,13 @@ resource "azurerm_policy_definition" "audit_event_ds_audit_event" {
                   name       = "CyngularDiagnostics"
                   name       = "[concat(parameters('resourceName'), '-diagnostics')]"
                   location   = "[parameters('location')]"
-                  scope = "[parameters('resourceId')]"
+                  scope      = "[parameters('resourceId')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
                     logs = [
                       {
                         category = "AuditEvent"
-                        enabled       = true
+                        enabled  = true
                       }
                     ]
                   }
@@ -532,7 +532,7 @@ resource "azurerm_policy_definition" "audit_event_ds_audit_event" {
   })
   metadata = jsonencode({
     category = "Cyngular - Audit Event"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     StorageAccountIds = {
