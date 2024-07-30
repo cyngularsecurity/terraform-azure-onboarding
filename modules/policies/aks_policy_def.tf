@@ -39,7 +39,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
             where = {
               allOf = [
                 {
-                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                  field = "Microsoft.Insights/diagnosticSettings/logs[*].category",
                   in    = ["kube-audit", "kube-apiserver"]
                 },
                 {
@@ -109,7 +109,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
                   apiVersion = "2021-05-01-preview"
                   name       = "CyngularDiagnostic" // ?s
                   # name       = "[concat(parameters('resourceName'), '-AKS-DS')]"
-                  scope      = "[parameters('resourceId')]"
+                  scope = "[parameters('resourceId')]"
                   # location = "[parameters('location')]"
                   properties = {
                     storageAccountId = "[parameters('storageAccountId')]"
@@ -134,7 +134,7 @@ resource "azurerm_policy_definition" "aks_diagnostic_settings" {
   })
   metadata = jsonencode({
     category = "Cyngular - AKS"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     StorageAccountIds = {

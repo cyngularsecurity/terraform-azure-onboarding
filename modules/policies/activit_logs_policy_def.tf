@@ -32,7 +32,7 @@ resource "azurerm_policy_definition" "activity_logs" {
             where = {
               allOf = [
                 {
-                  field  = "Microsoft.Insights/diagnosticSettings/logs[*].category",
+                  field = "Microsoft.Insights/diagnosticSettings/logs[*].category",
                   in = [
                     "Administrative",
                     "Security",
@@ -137,7 +137,7 @@ resource "azurerm_policy_definition" "activity_logs" {
   })
   metadata = jsonencode({
     category = "Cyngular - Activity Logs"
-    version = "3.0.1"
+    version  = "3.0.1"
   })
   parameters = jsonencode({
     StorageAccountID = {

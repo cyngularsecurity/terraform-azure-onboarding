@@ -36,8 +36,8 @@ resource "azurerm_management_group_policy_assignment" "audit_event" {
   # policy_definition_id = azurerm_policy_definition.audit_event[count.index].id
   policy_definition_id = azurerm_policy_set_definition.audit_event_initiative[count.index].id
 
-  management_group_id      = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
-  location             = var.main_location
+  management_group_id = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
+  location            = var.main_location
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.policy_assignment_identity[count.index].id]
@@ -50,8 +50,8 @@ resource "azurerm_management_group_policy_assignment" "audit_event" {
       in   = var.client_locations
     }
     selectors {
-      kind = "resourceType"
-      not_in   = local.resource_types.black_listed
+      kind   = "resourceType"
+      not_in = local.resource_types.black_listed
     }
   }
 
@@ -81,8 +81,8 @@ resource "azurerm_management_group_policy_assignment" "nsg_flow_logs" {
 
   policy_definition_id = azurerm_policy_set_definition.nsg_flow_logs_initiative[count.index].id
   # policy_definition_id = azurerm_policy_definition.nsg_flow_logs[count.index].id
-  management_group_id  = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
-  location             = var.main_location
+  management_group_id = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
+  location            = var.main_location
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.policy_assignment_identity[count.index].id]
