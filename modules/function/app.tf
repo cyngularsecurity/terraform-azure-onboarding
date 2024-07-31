@@ -18,9 +18,10 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   app_settings = {
-    # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true,
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = true,
     # "FUNCTIONS_EXTENSION_VERSION" = "~4",
     "FUNCTIONS_WORKER_RUNTIME" = "python",
+    "WEBSITE_RUN_FROM_PACKAGE" = "https://cyngular-onboarding-templates.s3.amazonaws.com/azure/func_zip.zip"
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts),
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations),
