@@ -18,12 +18,12 @@ module "onboarding" {
     version = "1.0.2"
 
     application_id = "{application id provided by cyngular}"
-    client_name = "{client name}"
-    locations = ["westus", "westus2"]
+    client_name    = "{client name}"
+    locations      = ["westus", "westus2"]
 
   enable_activity_logs            = true
   enable_aks_logs                 = true
-  enable_audit_events_logs  = true
+  enable_audit_events_logs        = true
   enable_audit_logs               = true
   enable_flow_logs                = true
 
