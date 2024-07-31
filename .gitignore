@@ -209,3 +209,4 @@ local.settings.json
 .python_packages
 
 **/zips/**
+**/.terraform/**
