@@ -12,7 +12,6 @@ resource "azurerm_linux_function_app" "function_service" {
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
   zip_deploy_file = data.archive_file.function_app_zip.output_path // var.service_zip
-
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
@@ -28,7 +27,6 @@ resource "azurerm_linux_function_app" "function_service" {
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
     "ROOT_MGMT_GROUP_ID"       = local.mgmt_group_id
     "UAI_ID"                   = azurerm_user_assigned_identity.function_assignment_identity.client_id
-
     "enable_activity_logs"     = var.enable_activity_logs
     "enable_audit_events_logs" = var.enable_audit_events_logs
     "enable_flow_logs"         = var.enable_flow_logs

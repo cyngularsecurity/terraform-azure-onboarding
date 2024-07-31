@@ -8,7 +8,7 @@ locals {
     cyngular-auditevents  = var.enable_audit_events_logs
     cyngular-nsgflowlogs  = var.enable_flow_logs
     cyngular-aks          = var.enable_aks_logs
-    cyngular-os           = true # TODO
+    cyngular-os           = true
     cyngular-visibility   = true
   }
 }
