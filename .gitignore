@@ -1,6 +1,7 @@
 .local
 .env
 *.log
+<<<<<<< HEAD
 Old/**
 
 
@@ -221,3 +222,7 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+=======
+*.json
+Old/**
+>>>>>>> 7046323 (adding terraform config for ob, all exept nsg logs and services enableing, CyngularDiagnostic name for testing)
