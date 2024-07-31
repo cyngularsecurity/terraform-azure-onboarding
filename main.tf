@@ -81,7 +81,4 @@ module "cyngular_function" {
   enable_aks_logs          = var.enable_aks_logs
 
   service_zip = data.archive_file.cyngular_function.output_path
-  role_name            = each.value
-  subscriptions        = local.subscriptions
-  service_principal_id = module.main.sp_id
 }
