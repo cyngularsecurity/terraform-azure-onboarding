@@ -73,7 +73,6 @@ blacklisted_types = [ # resource types to not configure diagnostic settings for
     "Microsoft.EventGrid/systemTopics",
 
     "microsoft.insights/components",
-    # "Microsoft.ContainerService/managedClusters",
 
     "Microsoft.ClassicNetwork/networkSecurityGroups",
 

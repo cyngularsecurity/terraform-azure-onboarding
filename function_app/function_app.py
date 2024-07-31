@@ -42,18 +42,12 @@ cyngular_ds_name = "CyngularDiagnostic"
 # cyngulat trigger for Orchestration --  Durable Client Function
 # """
 OnBoard = df.DFApp(func.AuthLevel.ANONYMOUS)
-# @OnBoard.route(route="DS/")
-# @OnBoard.durable_client_input(client_name="client")
-# async def durable_trigger_function_ds(req: func.HttpRequest, client):
 @OnBoard.durable_client_input(client_name="client")
 @OnBoard.schedule(schedule="0 * * * *", arg_name="DailyTimer", run_on_startup=True)
 async def durable_trigger_function_ds(DailyTimer: func.TimerRequest, client):
     logging.warning("-- started client durable func --")
     instance_id = await client.start_new("main_orchestrator")
     logging.warning(f"Started orchestration with ID = '{instance_id}'.")
-
-    # response = client.create_check_status_response(req, instance_id)
-    # return response
 
 # """
 # cyngular trigger for services --  Orchestration Function
@@ -312,15 +306,3 @@ def set_nsg_flow_logs(input):
         logging.critical(f"Failed to set NSG flow logs for subscription: {subscription_id} | Location: {location}. Error: {str(e)}")
         return {"status": "failed"}
     return {"status": "success"}
-
-# <!-- 
-#     try:
-#         logging.warning(f"Started NSG Flow Logs for sub: {subscription_id} | Location: {location}")
-#         network_client = NetworkManagementClient(credential, subscription_id)
-#         resource_client = ResourceManagementClient(credential, subscription_id)
-
-#         nw_list = network_client.network_watchers.list_all()
-#         nw_locations = [nw.location for nw in nw_list]
-
-#         if location not in nw_locations: -->
-

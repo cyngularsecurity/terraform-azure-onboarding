@@ -1,7 +1,6 @@
 .local
 .env
 *.log
-*.json
 Old/**
 
 
