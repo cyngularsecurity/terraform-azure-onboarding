@@ -11,18 +11,20 @@ resource "azurerm_linux_function_app" "function_service" {
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
-  zip_deploy_file = data.archive_file.function_app_zip.output_path // var.service_zip
+  # zip_deploy_file = data.archive_file.function_app_zip.output_path // var.service_zip
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
   }
 
   app_settings = {
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
     # "FUNCTIONS_EXTENSION_VERSION" = "~4"
     "FUNCTIONS_WORKER_RUNTIME" = "python"
-    "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "ENABLE_ORYX_BUILD" = true
+    # "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://cyngular-onboarding-templates.s3.amazonaws.com/azure/cyngular_func.zip"
+    "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip"
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
@@ -35,6 +37,7 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   site_config {
+    # always_on = true
     application_insights_connection_string = azurerm_application_insights.func_azure_insights.connection_string
     application_insights_key               = azurerm_application_insights.func_azure_insights.instrumentation_key
     application_stack {

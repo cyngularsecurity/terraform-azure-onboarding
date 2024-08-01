@@ -33,3 +33,20 @@ resource "azurerm_service_plan" "regular" {
   sku_name = "Y1"
   tags     = var.tags
 }
+
+# resource "null_resource" "mount_threats_to_fs" {
+#   provisioner "local-exec" {
+#     interpreter = ["bash", "-c"]
+#     command     = <<-EOT
+#       az functionapp sync-function-triggers \
+#         -g $RESOURCE_GROUP \
+#         -n $FUNCTION_APP_NAME
+#     EOT
+#     environment = {
+#       RESOURCE_GROUP       = var.client_rg.name
+#       FUNCTION_APP_NAME         = local.func_name
+#     }
+#   }
+# }
+
+
