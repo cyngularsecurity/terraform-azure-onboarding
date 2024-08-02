@@ -1,6 +1,6 @@
 
 resource "azurerm_linux_function_app" "function_service" {
-  name                = "cyngular-app-${var.client_name}"
+  name                = local.func_name
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
@@ -18,13 +18,17 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   app_settings = {
-    # "FUNCTIONS_EXTENSION_VERSION" = "~4"
     "FUNCTIONS_WORKER_RUNTIME" = "python"
+    # "FUNCTIONS_EXTENSION_VERSION" = "~4"
+
     "ENABLE_ORYX_BUILD" = true
-    # "WEBSITE_RUN_FROM_PACKAGE" = "1"
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
+
+    # "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip"
+    # "WEBSITE_RUN_FROM_PACKAGE" = ""
+    
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://cyngular-onboarding-templates.s3.amazonaws.com/azure/cyngular_func.zip"
-    "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip"
+    # "WEBSITE_RUN_FROM_PACKAGE" = "1"
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
@@ -37,7 +41,6 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   site_config {
-    # always_on = true
     application_insights_connection_string = azurerm_application_insights.func_azure_insights.connection_string
     application_insights_key               = azurerm_application_insights.func_azure_insights.instrumentation_key
     application_stack {
@@ -54,11 +57,11 @@ resource "azurerm_linux_function_app" "function_service" {
   tags = var.tags
 }
 
-data "archive_file" "function_app_zip" {
-  type        = "zip"
-  source_dir  = "function_app"
-  output_path = "cyngular_func.zip"
-}
+# data "archive_file" "function_app_zip" {
+#   type        = "zip"
+#   source_dir  = "function_app"
+#   output_path = "cyngular_func.zip"
+# }
 
 # resource "azurerm_function_app_function" "example" {
 #   name            = "cyngular-function-app-function"
