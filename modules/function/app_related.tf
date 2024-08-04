@@ -34,28 +34,22 @@ resource "azurerm_service_plan" "regular" {
   tags     = var.tags
 }
 
-data "azurerm_function_app_host_keys" "function_service" {
-  name                = local.func_name
-  resource_group_name = var.cyngular_rg_name
-  depends_on          = [azurerm_linux_function_app.function_service]
-}
+# data "azurerm_function_app_host_keys" "function_service" {
+#   name                = local.func_name
+#   resource_group_name = var.cyngular_rg_name
+#   depends_on          = [azurerm_linux_function_app.function_service]
+# }
 
-resource "null_resource" "deploy" {
-  provisioner "local-exec" {
-    command     = <<-EOT
+# resource "null_resource" "deploy" {
+#   provisioner "local-exec" {
+#     command     = <<-EOT
 
-      az functionapp deployment source config-zip \
-        -g "${RESOURCE_GROUP}" -n "${FUNCTION_APP_NAME}" \
-        --src "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip?se=2024-08-02T00%3A03Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=T4cMcbc4Hc1fsLPRC9L1XaaZLW%2F6EgCYzZup%2BeK1TUg%3D"
-
-      # curl -X POST "https://${var.function_app_name}.azurewebsites.net/admin/host/synctriggers?code=$(terraform output -raw default_host_key)" -H "Content-Length: 0"    
-    EOT
-    environment = {
-      RESOURCE_GROUP       = var.cyngular_rg_name
-      FUNCTION_APP_NAME         = local.func_name
-    }
-  }
-}
+#       az functionapp deployment source config-zip \
+#         -g "${var.cyngular_rg_name}" -n "${local.func_name}" \
+#         --src "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip?se=2024-08-02T00%3A03Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=T4cMcbc4Hc1fsLPRC9L1XaaZLW%2F6EgCYzZup%2BeK1TUg%3D"
+#     EOT
+#   }
+# }
 
 # resource "null_resource" "sync_triggers" {
 #   provisioner "local-exec" {
@@ -69,8 +63,4 @@ resource "null_resource" "deploy" {
 #     EOT
 #   }
 #   # depends_on = [data.azurerm_function_app_host_keys.function_service]
-# }
-
-# output "default_host_key" {
-#   value = data.azurerm_function_app_host_keys.function_service.default_function_key
 # }

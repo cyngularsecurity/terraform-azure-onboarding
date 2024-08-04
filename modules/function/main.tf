@@ -1,4 +1,3 @@
-data "azuread_client_config" "current" {}
 
 locals {
   func_name = "cyngular-app-${var.client_name}"
