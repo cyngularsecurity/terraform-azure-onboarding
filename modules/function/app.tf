@@ -11,7 +11,7 @@ resource "azurerm_linux_function_app" "function_service" {
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
-  # zip_deploy_file = data.archive_file.function_app_zip.output_path // var.service_zip
+  zip_deploy_file = data.archive_file.function_app_zip.output_path // var.service_zip
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
@@ -21,11 +21,11 @@ resource "azurerm_linux_function_app" "function_service" {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
     # "FUNCTIONS_EXTENSION_VERSION" = "~4"
 
-    "ENABLE_ORYX_BUILD" = true
+    # "ENABLE_ORYX_BUILD" = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
 
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip"
-    # "WEBSITE_RUN_FROM_PACKAGE" = ""
+    # "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip?se=2024-08-02T00%3A03Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=T4cMcbc4Hc1fsLPRC9L1XaaZLW%2F6EgCYzZup%2BeK1TUg%3D"
     
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://cyngular-onboarding-templates.s3.amazonaws.com/azure/cyngular_func.zip"
     # "WEBSITE_RUN_FROM_PACKAGE" = "1"
@@ -56,12 +56,6 @@ resource "azurerm_linux_function_app" "function_service" {
   }
   tags = var.tags
 }
-
-# data "archive_file" "function_app_zip" {
-#   type        = "zip"
-#   source_dir  = "function_app"
-#   output_path = "cyngular_func.zip"
-# }
 
 # resource "azurerm_function_app_function" "example" {
 #   name            = "cyngular-function-app-function"
