@@ -10,8 +10,7 @@ resource "azurerm_storage_account" "func_storage_account" {
   min_tls_version          = "TLS1_2"
 
   access_tier               = "Hot"
-  enable_https_traffic_only = true
-
+  https_traffic_only_enabled  = true
   tags = var.tags
 }
 
@@ -19,7 +18,7 @@ resource "azurerm_application_insights" "func_azure_insights" {
   name                = "cyngular-service-${var.client_name}"
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
-  application_type    = "web"
+  application_type    = "other"
   retention_in_days   = 60
   tags                = var.tags
 }
