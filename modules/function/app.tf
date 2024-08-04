@@ -22,14 +22,10 @@ resource "azurerm_linux_function_app" "function_service" {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
     # "FUNCTIONS_EXTENSION_VERSION" = "~4"
 
-    "ENABLE_ORYX_BUILD" = true
+    # "ENABLE_ORYX_BUILD" = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
-
-    # "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip"
     "WEBSITE_RUN_FROM_PACKAGE" = "https://westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip?se=2026-08-04T13%3A44Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=e26fEfpVgib%2BU0VqBzwuECng9uah8AqlnMTtwpPyxm4%3D"
-    
-    # "WEBSITE_RUN_FROM_PACKAGE" = "https://cyngular-onboarding-templates.s3.amazonaws.com/azure/cyngular_func.zip"
-    # "WEBSITE_RUN_FROM_PACKAGE" = "1"
+        # "WEBSITE_RUN_FROM_PACKAGE" = "1"
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
