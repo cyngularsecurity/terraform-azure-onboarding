@@ -56,13 +56,11 @@ module "role_assignment" {
 
   mgmt_group_id = local.mgmt_group_id
   role_name     = each.value
-  # subscription_ids     = { for i, sub in local.subscriptions_data : i => sub.id }
   service_principal_id = module.main.sp_id
 }
 
 module "cyngular_function" {
   source = "./modules/function"
-  # depends_on = [module.role_assignment]
 
   subscription_ids   = local.sub_ids
   subscription_names = local.sub_names
@@ -79,6 +77,4 @@ module "cyngular_function" {
   enable_audit_events_logs = var.enable_audit_events_logs
   enable_flow_logs         = var.enable_flow_logs
   enable_aks_logs          = var.enable_aks_logs
-
-  service_zip = data.archive_file.cyngular_function.output_path
 }

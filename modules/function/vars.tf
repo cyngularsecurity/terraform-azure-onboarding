@@ -3,10 +3,6 @@ variable "client_name" {
   type        = string
   description = "name of the client"
 }
-variable "service_zip" {
-  type        = string
-  description = "local zip of function"
-}
 variable "subscription_ids" {
   description = "subs names and ids"
   type        = map(string)
