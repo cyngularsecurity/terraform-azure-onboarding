@@ -19,3 +19,15 @@
 # # output "admin_consent_url" {
 # #   value = "######## admin consent url: https://login.microsoftonline.com/organizations/adminconsent?client_id=${var.application_id} #######"
 # # }
+
+# output "module_path" {
+#   value = "${path.module}"
+# }
+
+# output "cwd_path" {
+#   value = "${path.cwd}"
+# }
+
+# output "root_path" {
+#   value = "${path.root}"
+# }

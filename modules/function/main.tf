@@ -3,7 +3,8 @@ locals {
   func_name = "cyngular-app-${var.client_name}"
   main_location   = element(var.client_locations, 0)
   # main_sub_id   = element(var.subscription_ids, 0)
-  
+  function_app_zip_content = filebase64("${data.archive_file.function_app_zip.output_path}")
+
   mgmt_group_id   = data.azuread_client_config.current.tenant_id
   logging_enabled = var.enable_aks_logs || var.enable_flow_logs || var.enable_activity_logs || var.enable_audit_events_logs
 

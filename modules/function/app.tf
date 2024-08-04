@@ -11,7 +11,8 @@ resource "azurerm_linux_function_app" "function_service" {
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
-  zip_deploy_file = data.archive_file.function_app_zip.output_path // var.service_zip
+  # zip_deploy_file = data.http.function_zip.response_body
+  # zip_deploy_file = data.archive_file.function_app_zip.output_path
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
@@ -21,11 +22,11 @@ resource "azurerm_linux_function_app" "function_service" {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
     # "FUNCTIONS_EXTENSION_VERSION" = "~4"
 
-    # "ENABLE_ORYX_BUILD" = true
+    "ENABLE_ORYX_BUILD" = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
 
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip"
-    # "WEBSITE_RUN_FROM_PACKAGE" = "https://devsitesawestus2.blob.core.windows.net/cyngular-client-function/cyngular_func.zip?se=2024-08-02T00%3A03Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=T4cMcbc4Hc1fsLPRC9L1XaaZLW%2F6EgCYzZup%2BeK1TUg%3D"
+    "WEBSITE_RUN_FROM_PACKAGE" = "https://westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip?se=2026-08-04T13%3A44Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=e26fEfpVgib%2BU0VqBzwuECng9uah8AqlnMTtwpPyxm4%3D"
     
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://cyngular-onboarding-templates.s3.amazonaws.com/azure/cyngular_func.zip"
     # "WEBSITE_RUN_FROM_PACKAGE" = "1"
@@ -46,15 +47,19 @@ resource "azurerm_linux_function_app" "function_service" {
     application_stack {
       python_version = "3.11"
     }
+    # app_command_line = <<-EOF
+    #   #!/bin/bash
+    #   echo "${local.function_app_zip_content}" | base64 --decode > /home/site/wwwroot/function_app.zip
+    #   unzip /home/site/wwwroot/function_app.zip -d /home/site/wwwroot
+    # EOF
   }
-
+  tags = var.tags
   lifecycle {
     ignore_changes = [
       # app_settings,
       tags
     ]
   }
-  tags = var.tags
 }
 
 # resource "azurerm_function_app_function" "example" {
