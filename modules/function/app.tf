@@ -23,7 +23,7 @@ resource "azurerm_linux_function_app" "function_service" {
     "FUNCTIONS_EXTENSION_VERSION" = "~4"
     # "AzureWebJobsStorage" = "westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip"
     
-    # "ENABLE_ORYX_BUILD" = true
+    "ENABLE_ORYX_BUILD" = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
     # "WEBSITE_RUN_FROM_PACKAGE" = local.func_zip_url // 1
 
