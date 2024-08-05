@@ -29,9 +29,16 @@ resource "azurerm_service_plan" "regular" {
   location            = var.main_location
 
   os_type  = "Linux"
-  sku_name = "Y1"
+  sku_name = "Y1" // EP2 // Y1
   tags     = var.tags
 }
+
+# resource "azurerm_app_service_source_control" "function_service" {
+#   app_id                 = azurerm_linux_function_app.function_service.id
+#   repo_url               = "https://github.com/Azure-Samples/flask-app-on-azure-functions.git"
+#   branch                 = "main"
+#   use_manual_integration = true
+# }
 
 # data "azurerm_function_app_host_keys" "function_service" {
 #   name                = local.func_name

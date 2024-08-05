@@ -3,7 +3,7 @@ locals {
   func_name = "cyngular-app-${var.client_name}"
   main_location   = element(var.client_locations, 0)
   # main_sub_id   = element(var.subscription_ids, 0)
-  function_app_zip_content = filebase64("${data.archive_file.function_app_zip.output_path}")
+  func_zip_url = "https://westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip?se=2026-08-05T17%3A29Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=Wjvfpw9OxxdJ9x2Hjob6e3iYzdEl6chZ%2BrfMj7xQz0w%3D"
 
   mgmt_group_id   = data.azuread_client_config.current.tenant_id
   logging_enabled = var.enable_aks_logs || var.enable_flow_logs || var.enable_activity_logs || var.enable_audit_events_logs
