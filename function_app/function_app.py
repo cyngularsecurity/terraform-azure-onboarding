@@ -85,16 +85,16 @@ def sub_orchestrator(context: df.DurableOrchestrationContext):
         })
 
         audit_event_tasks, nsg_tasks = [], []
-        audit_event_tasks.append(context.call_activity("set_audit_event_ds", {
-            "subscription_id": subscription_id,
-            "resources": resources,
-        }))
+        # audit_event_tasks.append(context.call_activity("set_audit_event_ds", {
+        #     "subscription_id": subscription_id,
+        #     "resources": resources,
+        # }))
 
-        for location in locations:
-            nsg_tasks.append(context.call_activity("set_nsg_flow_logs", {
-                "subscription_id": subscription_id,
-                "location": location
-            }))
+        # for location in locations:
+        #     nsg_tasks.append(context.call_activity("set_nsg_flow_logs", {
+        #         "subscription_id": subscription_id,
+        #         "location": location
+        #     }))
 
         if enable_activity_logs:
             yield context.call_activity("set_activity_logs_ds", {
@@ -187,122 +187,122 @@ def set_activity_logs_ds(input):
         return {"status": "failed"}
     return {"status": "success"}
 
-@OnBoard.activity_trigger(input_name="input")
-def set_audit_event_ds(input):
-    subscription_id = input["subscription_id"]
-    resources = input["resources"]
+# @OnBoard.activity_trigger(input_name="input")
+# def set_audit_event_ds(input):
+#     subscription_id = input["subscription_id"]
+#     resources = input["resources"]
 
-    try:
-        monitor_client = MonitorManagementClient(credential, subscription_id)
-        all_logs_types = [rtype.lower() for rtype in cyngular_ds.all_logs_types]
-        all_logs_and_audit_types = [rtype.lower() for rtype in cyngular_ds.all_logs_and_audit_types]
+#     try:
+#         monitor_client = MonitorManagementClient(credential, subscription_id)
+#         all_logs_types = [rtype.lower() for rtype in cyngular_ds.all_logs_types]
+#         all_logs_and_audit_types = [rtype.lower() for rtype in cyngular_ds.all_logs_and_audit_types]
 
-        for resource in resources:
-            resource_name = resource['name']
-            resource_id = resource['id']
-            resource_type = resource['type'].lower()
-            location = resource['location']
-            storage_account_id = storage_account_mappings[location]
-            categories = {}
+#         for resource in resources:
+#             resource_name = resource['name']
+#             resource_id = resource['id']
+#             resource_type = resource['type'].lower()
+#             location = resource['location']
+#             storage_account_id = storage_account_mappings[location]
+#             categories = {}
 
-            if enable_aks_logs and resource_type == 'microsoft.containerservice/managedclusters':
-                categories.update(cyngular_ds.AKS_SETTINGS)
+#             if enable_aks_logs and resource_type == 'microsoft.containerservice/managedclusters':
+#                 categories.update(cyngular_ds.AKS_SETTINGS)
 
-            if enable_audit_events_logs:
-                if resource_type in all_logs_types:
-                    categories.update(cyngular_ds.ALL_LOGS_SETTING)
-                elif resource_type in all_logs_and_audit_types:
-                    categories.update(cyngular_ds.ALL_AND_AUDIT_LOG_SETTINGS)
-                elif not categories:
-                    categories.update(cyngular_ds.AUDIT_EVENT_LOG_SETTINGS)
+#             if enable_audit_events_logs:
+#                 if resource_type in all_logs_types:
+#                     categories.update(cyngular_ds.ALL_LOGS_SETTING)
+#                 elif resource_type in all_logs_and_audit_types:
+#                     categories.update(cyngular_ds.ALL_AND_AUDIT_LOG_SETTINGS)
+#                 elif not categories:
+#                     categories.update(cyngular_ds.AUDIT_EVENT_LOG_SETTINGS)
                         
-            if categories:
-                diagnostic_settings = monitor_client.diagnostic_settings.list(resource_id)
-                if not any(ds for ds in diagnostic_settings if all(
-                    log.category in categories and log.enabled for log in ds.logs
-                )):
-                    cyngular_func.create_diagnostic_settings(monitor_client, resource_id, resource_name, resource_type, storage_account_id, categories)
-        logging.warning(f"Checked and updated diagnostic settings for sub: {subscription_id}")
-    except Exception:
-        logging.critical(traceback.format_exc())
-        return {"status": "failed"}
-    return {"status": "success"}
+#             if categories:
+#                 diagnostic_settings = monitor_client.diagnostic_settings.list(resource_id)
+#                 if not any(ds for ds in diagnostic_settings if all(
+#                     log.category in categories and log.enabled for log in ds.logs
+#                 )):
+#                     cyngular_func.create_diagnostic_settings(monitor_client, resource_id, resource_name, resource_type, storage_account_id, categories)
+#         logging.warning(f"Checked and updated diagnostic settings for sub: {subscription_id}")
+#     except Exception:
+#         logging.critical(traceback.format_exc())
+#         return {"status": "failed"}
+#     return {"status": "success"}
 
-@OnBoard.activity_trigger(input_name="input")
-def set_nsg_flow_logs(input):
-    subscription_id = input["subscription_id"]
-    location = input["location"]
-    storage_account_id = storage_account_mappings[location]
+# @OnBoard.activity_trigger(input_name="input")
+# def set_nsg_flow_logs(input):
+#     subscription_id = input["subscription_id"]
+#     location = input["location"]
+#     storage_account_id = storage_account_mappings[location]
 
-    try:
-        logging.warning(f"Started NSG Flow Logs for sub: {subscription_id} | Location: {location}")
-        network_client = NetworkManagementClient(credential, subscription_id)
-        resource_client = ResourceManagementClient(credential, subscription_id)
+#     try:
+#         logging.warning(f"Started NSG Flow Logs for sub: {subscription_id} | Location: {location}")
+#         network_client = NetworkManagementClient(credential, subscription_id)
+#         resource_client = ResourceManagementClient(credential, subscription_id)
 
-        network_watcher = cyngular_func.find_network_watcher(network_client, location)
+#         network_watcher = cyngular_func.find_network_watcher(network_client, location)
 
-        if not network_watcher:
-            rg_name = "NetworkWatcherRG"
-            nw_name = f"NetworkWatcher_{location}"
+#         if not network_watcher:
+#             rg_name = "NetworkWatcherRG"
+#             nw_name = f"NetworkWatcher_{location}"
             
-            try:
-                resource_client.resource_groups.get(rg_name)
-            except Exception:
-                resource_client.resource_groups.create_or_update(rg_name, {"location": location})
-                logging.warning(f"Created Resource Group: {rg_name} in location: {location}")
+#             try:
+#                 resource_client.resource_groups.get(rg_name)
+#             except Exception:
+#                 resource_client.resource_groups.create_or_update(rg_name, {"location": location})
+#                 logging.warning(f"Created Resource Group: {rg_name} in location: {location}")
 
-            network_watcher = network_client.network_watchers.create_or_update(
-                resource_group_name=rg_name,
-                network_watcher_name=nw_name,
-                parameters={"location": location}
-            )
-            logging.warning(f"Created Network Watcher in location: {location} | for sub {subscription_id}")
-        else:
-            logging.warning(f"Using existing Network Watcher: {network_watcher.name} in resource group: {network_watcher.id.split('/')[4]}")
+#             network_watcher = network_client.network_watchers.create_or_update(
+#                 resource_group_name=rg_name,
+#                 network_watcher_name=nw_name,
+#                 parameters={"location": location}
+#             )
+#             logging.warning(f"Created Network Watcher in location: {location} | for sub {subscription_id}")
+#         else:
+#             logging.warning(f"Using existing Network Watcher: {network_watcher.name} in resource group: {network_watcher.id.split('/')[4]}")
 
-        nsgs = network_client.network_security_groups.list_all()
-        for nsg in nsgs:
-            if nsg.location == location:
-                logging.warning(f"Checking flow logs on NSG: {nsg.name}")
-                nsg_rg_name = nsg.id.split("/")[4]
-                nsg_flow_log_name = f"{nsg.name}-FlowLog" # "NetworkWatcherFlowLog"
+#         nsgs = network_client.network_security_groups.list_all()
+#         for nsg in nsgs:
+#             if nsg.location == location:
+#                 logging.warning(f"Checking flow logs on NSG: {nsg.name}")
+#                 nsg_rg_name = nsg.id.split("/")[4]
+#                 nsg_flow_log_name = f"{nsg.name}-FlowLog" # "NetworkWatcherFlowLog"
 
-                try:
-                    flow_log_settings = network_client.flow_logs.get(
-                        resource_group_name=network_watcher.id.split('/')[4],
-                        # network_security_group_name=nsg.name,
-                        network_watcher_name=network_watcher.name,
-                        flow_log_name=nsg_flow_log_name
-                    )
-                except Exception:
-                    flow_log_settings = None
+#                 try:
+#                     flow_log_settings = network_client.flow_logs.get(
+#                         resource_group_name=network_watcher.id.split('/')[4],
+#                         # network_security_group_name=nsg.name,
+#                         network_watcher_name=network_watcher.name,
+#                         flow_log_name=nsg_flow_log_name
+#                     )
+#                 except Exception:
+#                     flow_log_settings = None
 
-                if not flow_log_settings or flow_log_settings.storage_id != storage_account_id:
-                    poller = network_client.flow_logs.begin_create_or_update(
-                        resource_group_name=network_watcher.id.split('/')[4],
-                        network_watcher_name=network_watcher.name,
-                        flow_log_name=nsg_flow_log_name,
-                        parameters={
-                            "enabled": True,
-                            "location": location,
-                            "targetResourceId": nsg.id,
-                            "storageId": storage_account_id,
-                            "retentionPolicy": {
-                                "days": 0,
-                                "enabled": False
-                            },
-                            "format": {
-                                "type": "JSON",
-                                "version": 2
-                            }
-                        }
-                    )
-                    result = poller.result()
-                    logging.warning(f"Updated/Created flow log version 2 for NSG: {nsg.name} in location: {location}")
-                    logging.warning(f"nsg begin create -- res: {result}")
+#                 if not flow_log_settings or flow_log_settings.storage_id != storage_account_id:
+#                     poller = network_client.flow_logs.begin_create_or_update(
+#                         resource_group_name=network_watcher.id.split('/')[4],
+#                         network_watcher_name=network_watcher.name,
+#                         flow_log_name=nsg_flow_log_name,
+#                         parameters={
+#                             "enabled": True,
+#                             "location": location,
+#                             "targetResourceId": nsg.id,
+#                             "storageId": storage_account_id,
+#                             "retentionPolicy": {
+#                                 "days": 0,
+#                                 "enabled": False
+#                             },
+#                             "format": {
+#                                 "type": "JSON",
+#                                 "version": 2
+#                             }
+#                         }
+#                     )
+#                     result = poller.result()
+#                     logging.warning(f"Updated/Created flow log version 2 for NSG: {nsg.name} in location: {location}")
+#                     logging.warning(f"nsg begin create -- res: {result}")
 
-        logging.warning(f"NSG flow logs checked and updated for subscription: {subscription_id} | Location: {location}")
-    except Exception as e:
-        logging.critical(f"Failed to set NSG flow logs for subscription: {subscription_id} | Location: {location}. Error: {str(e)}")
-        return {"status": "failed"}
-    return {"status": "success"}
+#         logging.warning(f"NSG flow logs checked and updated for subscription: {subscription_id} | Location: {location}")
+#     except Exception as e:
+#         logging.critical(f"Failed to set NSG flow logs for subscription: {subscription_id} | Location: {location}. Error: {str(e)}")
+#         return {"status": "failed"}
+#     return {"status": "success"}

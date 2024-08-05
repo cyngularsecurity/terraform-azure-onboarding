@@ -27,11 +27,20 @@ module "onboarding" {
   enable_audit_logs               = true
   enable_flow_logs                = true
 
+
 }
 ```
+  <!-- "cyngular-auditlogs": 'true',
+"cyngular-activitylogs": 'true',
+"cyngular-auditevents": 'true',
+"cyngular-nsgflowlogs": 'true',
+"cyngular-aks": 'true',
+"cyngular-os": 'true',
+"cyngular-visibility": 'true'
+ -->
 
 For services parameters
-provide true, for cyngular to collect logs
+provide true, if cyngular should collect logs to cyngular buckets
 If provided false, optionally add tags to storage accounts collecting respective logs:
 
 Entra audit logs - {key: cyngular-auditlogs, value: true}

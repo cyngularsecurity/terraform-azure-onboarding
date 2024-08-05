@@ -61,37 +61,3 @@ resource "azurerm_linux_function_app" "function_service" {
     null_resource.fetch_zip
   ]
 }
-
-# resource "azurerm_function_app_function" "example" {
-#   name            = "cyngular-function-app-function"
-#   function_app_id = azurerm_linux_function_app.function_service.id
-#   language        = "Python"
-
-#   file {
-#     name    = "run.csx"
-#     content = file("exampledata/run.csx")
-#   }
-
-#   test_data = jsonencode({
-#     "name" = "Azure"
-#   })
-#   config_json = jsonencode({
-#     "bindings" = [
-#       {
-#         "authLevel" = "function"
-#         "direction" = "in"
-#         "methods" = [
-#           "get",
-#           "post",
-#         ]
-#         "name" = "req"
-#         "type" = "httpTrigger"
-#       },
-#       {
-#         "direction" = "out"
-#         "name"      = "$return"
-#         "type"      = "http"
-#       },
-#     ]
-#   })
-# }

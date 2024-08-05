@@ -56,17 +56,3 @@ resource "azurerm_service_plan" "regular" {
 #     EOT
 #   }
 # }
-
-# resource "null_resource" "sync_triggers" {
-#   provisioner "local-exec" {
-#     interpreter = ["bash", "-c"]
-#     command = <<-EOT
-#       az functionapp restart -n ${local.func_name} -g ${var.cyngular_rg_name}
-#       URL="https://${azurerm_linux_function_app.function_service.default_hostname}/admin/host/synctriggers?code=${data.azurerm_function_app_host_keys.function_service.default_function_key}"
-#       # URL="https://management.azure.com${azurerm_linux_function_app.function_service.id}/syncfunctiontriggers?api-version=2016-08-01"
-#       echo $URL | tee > url.txt
-#       curl -X POST $URL -H "Content-Length: 0"
-#     EOT
-#   }
-#   # depends_on = [data.azurerm_function_app_host_keys.function_service]
-# }
