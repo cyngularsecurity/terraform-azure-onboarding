@@ -16,7 +16,7 @@ resource "null_resource" "fetch_zip" {
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]
     command     = <<-EOT
-      curl -O "${local.func_zip_url}"
+      curl -o ${local.zip_file_path} -L --fail --retry 2 --retry-delay 4 "${local.func_zip_url}"
     EOT
   }
   triggers = {
