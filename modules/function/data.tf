@@ -32,4 +32,8 @@ resource "null_resource" "sync_triggers" {
     EOT
   }
   depends_on = [azurerm_linux_function_app.function_service]
+  triggers = {
+    func = azurerm_linux_function_app.function_service.possible_outbound_ip_addresses
+    # always_run = "${timestamp()}"
+  }
 }

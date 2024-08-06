@@ -64,4 +64,7 @@ run:
 terraform init
 terraform plan
 terraform apply --auto-approve
+
+
+# terraform taint "module.cyngular_function.azurerm_linux_function_app.function_service"
 ```
