@@ -5,9 +5,9 @@ data "azuread_client_config" "current" {}
 #   url = "https://github.com/cyngularsecurity/terraform-azure-onboarding/blob/v3.4/cyngular_func.zip"
 # }
 
-data "local_file" "restart_func" {
-  filename = "${path.root}/RunBooks/RestartFunc.sh"
-}
+# data "local_file" "restart_func" {
+#   filename = "${path.root}/RunBooks/RestartFunc.sh"
+# }
 
 
 resource "null_resource" "fetch_zip" {

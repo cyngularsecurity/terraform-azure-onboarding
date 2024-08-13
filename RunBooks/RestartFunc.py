@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# import os
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.web import WebSiteManagementClient
 
