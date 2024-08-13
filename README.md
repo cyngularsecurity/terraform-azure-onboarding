@@ -3,7 +3,7 @@
 ## Prerequisites
 
 * cli tools
-  * Terraform cli
+  * Terraform cli [https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli]
   * azcli
 
 * the tenant should have management groups feature enabled
@@ -39,15 +39,19 @@ module "onboarding" {
 "cyngular-visibility": 'true'
  -->
 
+## set
+
 For services parameters
 provide true, if cyngular should collect logs to cyngular buckets
 If provided false, optionally add tags to storage accounts collecting respective logs:
 
-Entra audit logs - {key: cyngular-auditlogs, value: true}
-Subscriptions diagnostic settings - {key: cyngular-activitylogs, value: true}
-Resource diagnostic settings - {key: cyngular-auditevents, value: true}
-Nsgs flow logs - {key: cyngular-nsgflowlogs, value: true}
-AKS Cluster diagnostic settings - {key: cyngular-aks, value: true}
+* Entra audit logs - {key: cyngular-auditlogs, value: true}
+* Subscriptions diagnostic settings - {key: cyngular-activitylogs, value: true}
+* Resource diagnostic settings - {key: cyngular-auditevents, value: true}
+* Nsgs flow logs - {key: cyngular-nsgflowlogs, value: true}
+* AKS Cluster diagnostic settings - {key: cyngular-aks, value: true}
+
+## run
 
 * open web browser on the wanted azure environment.
 * return to terminal, Authenticate with your Azure account
@@ -65,6 +69,7 @@ terraform init
 terraform plan
 terraform apply --auto-approve
 
-
-# terraform taint "module.cyngular_function.azurerm_linux_function_app.function_service"
+# to redeploy the function with upto date zip code:
+terraform taint "module.cyngular_function.azurerm_linux_function_app.function_service"
+terraform apply --auto-approve
 ```

@@ -3,15 +3,12 @@ ALL_AND_AUDIT_LOG_SETTINGS = {
     "AllLogs": True,  # categoryGroup
     "Audit": True     # categoryGroup
 }
-
 ALL_LOGS_SETTING = {
     "AllLogs": True   # categoryGroup
 }
-
 AUDIT_EVENT_LOG_SETTINGS = {
     "AuditEvent": False  # category
 }
-
 AKS_SETTINGS = {
     "kube-audit": False,    # category
     "kube-apiserver": False # category
@@ -25,7 +22,6 @@ all_logs_types = [ # resource types to configure diagnostic settings for, with c
     "microsoft.desktopvirtualization/workspaces",
     "microsoft.insights/datacollectionrules",
 ]
-
 all_logs_and_audit_types = [ # resource types to configure diagnostic settings for, with category groups of allLogs, audit -- 2
     "Microsoft.KeyVault/vaults",
     "Microsoft.OperationalInsights/workspaces",
@@ -37,8 +33,8 @@ all_logs_and_audit_types = [ # resource types to configure diagnostic settings f
     "Microsoft.DBforPostgreSQL/flexibleServers",
     "microsoft.synapse/workspaces",
 ]
-
 blacklisted_types = [ # resource types to not configure diagnostic settings for
+    "microsoft.dataprotection/backupvaults",
     "Microsoft.Storage/storageAccounts",
 
     "Microsoft.Network/networkWatchers",
@@ -47,6 +43,8 @@ blacklisted_types = [ # resource types to not configure diagnostic settings for
     "Microsoft.Network/privateendpoints",
     "Microsoft.Network/loadBalancers",
     "Microsoft.Network/networkManagers",
+
+    "Microsoft.ClassicNetwork/networkSecurityGroups",
 
     "Microsoft.Web/serverFarms",
     "Microsoft.Web/sites",
@@ -73,8 +71,6 @@ blacklisted_types = [ # resource types to not configure diagnostic settings for
     "Microsoft.EventGrid/systemTopics",
 
     "microsoft.insights/components",
-
-    "Microsoft.ClassicNetwork/networkSecurityGroups",
 
     "Microsoft.Sql/servers",
     "Microsoft.Sql/servers/databases",
