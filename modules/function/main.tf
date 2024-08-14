@@ -1,6 +1,6 @@
 
 locals {
-  func_name = "cyngular-app-${var.client_name}"
+  func_name = "cyngular-security-app-${var.client_name}"
   main_location   = element(var.client_locations, 0)
   # main_sub_id   = element(var.subscription_ids, 0)
   func_zip_url = "https://westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip?se=2026-08-06T00%3A10Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=f%2BPgaO0BtafhaVAkTL32b08eZK2EwsuAmk2%2FhuLYrjw%3D"
