@@ -1,6 +1,5 @@
 resource "azurerm_storage_account" "func_storage_account" {
-  # name                = lower(substr("cyngularsa${each.key}", 0, 24))
-  name                = "cyngularapp${var.client_name}"
+  name                = lower(substr("${var.client_name}csafunc", 0, 24))
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
