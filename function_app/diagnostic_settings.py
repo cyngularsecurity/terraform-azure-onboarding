@@ -36,7 +36,7 @@ all_logs_and_audit_types = [ # resource types to configure diagnostic settings f
 blacklisted_types = [ # resource types to not configure diagnostic settings for
     "microsoft.dataprotection/backupvaults",
     "Microsoft.Storage/storageAccounts",
-
+    "microsoft.cognitiveservices/accounts",
     "Microsoft.Network/networkWatchers",
     "Microsoft.Network/networkInterfaces",
     "Microsoft.Network/routetables",
