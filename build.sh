@@ -6,6 +6,6 @@ set -eu
 # pip install -r requirements.txt
 
 # Package your function app
-zip -r9 cyngular_func .
+zip -r9 cyngular_func ./function_app/*
 
 # rm -rf .env
