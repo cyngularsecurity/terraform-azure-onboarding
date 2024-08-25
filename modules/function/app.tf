@@ -21,6 +21,8 @@ resource "azurerm_linux_function_app" "function_service" {
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
     "FUNCTIONS_EXTENSION_VERSION" = "~4"
+    "AzureWebJobsDisableHomepage" = true
+    "AzureWebJobsDisableHomepage" = true
     # "AzureWebJobsStorage" = "westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip"
     
     "ENABLE_ORYX_BUILD" = true
