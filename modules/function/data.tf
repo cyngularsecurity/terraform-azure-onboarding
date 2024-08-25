@@ -18,7 +18,7 @@ resource "null_resource" "fetch_zip" {
     EOT
   }
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = timestamp()
   }
 }
 

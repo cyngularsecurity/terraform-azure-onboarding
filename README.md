@@ -1,75 +1,71 @@
-# OnBoarding Workflow
+### Azure Deployment Instructions for Cyngular Platform
 
-## Prerequisites
+**Prerequisites:** Install CLI Tools
 
-* cli tools
-  * Terraform cli [https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli]
-  * azcli
+- Terraform CLI [https://developer.hashicorp.com/terraform/install]
+- Azure CLI [https://learn.microsoft.com/en-us/cli/azure/]
+- Curl [https://developers.greenwayhealth.com/developer-platform/docs/installing-curl]
 
-* the tenant should have management groups feature enabled
-* the applying user should have permissions to "Microsoft.Authorization/roleAssignments/write" over scope "/providers/Microsoft.Management/managementGroups/{root mgmt id}"
+**Step 2:** Ensure the Management Groups feature is enabled in your Azure subscription.
 
-create a main.tf file with cyngular module:
-add correct values for required parameters:
+**Step 3:** Set Required Permissions  
+   Ensure your Azure user has the following permission:
 
-```hcl
-module "onboarding" {
-    source  = "cyngularsecurity/onboarding/azure"
-    version = "1.0.2"
+- `Microsoft.Authorization/roleAssignments/write` over the path `/providers/Microsoft.Management/managementGroups/{root management group ID}`.
 
-    application_id = "{application id provided by cyngular}"
-    client_name    = "{client name}"
-    locations      = ["westus", "westus2"]
+**Step 4:** Configure Optional Log Collection Parameters  
+   Before creating the `main.tf` file, decide which log types you want to enable:
 
-  enable_activity_logs            = true
-  enable_aks_logs                 = true
-  enable_audit_events_logs        = true
-  enable_audit_logs               = true
-  enable_flow_logs                = true
+   a. **If the service (e.g., NSGs Flow Logs) isn't enabled and you want to enable it,** leave the parameter (e.g., enable_flow_logs as `true` — no further action is needed.
+   b. **If the service is already enabled or you don't want to enable it (e.g., Entra Audit Logs),** set the parameter to `false`. Add the tag to the Storage Account only if your company is already collecting the logs and wants Cyngular to analyze them.
 
+   **Log Type Parameters and Required Tags:**
 
-}
-```
-  <!-- "cyngular-auditlogs": 'true',
-"cyngular-activitylogs": 'true',
-"cyngular-auditevents": 'true',
-"cyngular-nsgflowlogs": 'true',
-"cyngular-aks": 'true',
-"cyngular-os": 'true',
-"cyngular-visibility": 'true'
- -->
+- **Entra Audit Logs:** `{key: "cyngular-auditlogs", value: "true"}`
+- **Subscriptions Diagnostic Settings:** `{key: "cyngular-activitylogs", value: "true"}`
+- **Resource Diagnostic Settings:** `{key: "cyngular-auditevents", value: "true"}`
+- **NSGs Flow Logs:** `{key: "cyngular-nsgflowlogs", value: "true"}`
+- **AKS Cluster Diagnostic Settings:** `{key: "cyngular-aks", value: "true"}`
 
-## set
+**Step 5:** Create `main.tf` File  
+   After deciding on the log collection parameters, create a `main.tf` file with the following content, replacing the placeholders with your actual values:
 
-For services parameters
-provide true, if cyngular should collect logs to cyngular buckets
-If provided false, optionally add tags to storage accounts collecting respective logs:
+   ```hcl
+   module "onboarding" {
+      source  = "cyngularsecurity/onboarding/azure"
+      version = "3.0.57"
+      application_id = "<application_id>"
+      client_name    = "<company_name>"
+      locations      = ["<location1>", "<location2>"]
 
-* Entra audit logs - {key: cyngular-auditlogs, value: true}
-* Subscriptions diagnostic settings - {key: cyngular-activitylogs, value: true}
-* Resource diagnostic settings - {key: cyngular-auditevents, value: true}
-* Nsgs flow logs - {key: cyngular-nsgflowlogs, value: true}
-* AKS Cluster diagnostic settings - {key: cyngular-aks, value: true}
+      enable_activity_logs       = true
+      enable_aks_logs            = true
+      enable_audit_events_logs   = true
+      enable_audit_logs          = true
+      enable_flow_logs           = true
+   }
+   ```
 
-## run
+**Step 6:** Authenticate with Azure  
+   Run `az login`.  
+   This command will open a browser window for you to log in with your Azure credentials. Once authenticated, close the browser tab.
 
-* open web browser on the wanted azure environment.
-* return to terminal, Authenticate with your Azure account
+**Step 7:** Initialize and Apply Terraform  
+   Run the following Terraform commands in the same directory as the `main.tf` file:
+  
+  ```bash
+  terraform init
+  terraform plan
+  terraform apply --auto-approve
+  ```
 
-```bash
-az login # and follow the provided instructions
-```
-
-(for more info visit - <https://registry.terraform.io/modules/cyngularsecurity/onboarding/azure/latest>)
-
-run:
+<!-- # to redeploy the function with upto date zip code:
 
 ```bash
-terraform init
-terraform plan
-terraform apply --auto-approve
-
-# to redeploy the function with upto date zip code:
 terraform taint "module.cyngular_function.azurerm_linux_function_app.function_service"
 terraform apply --auto-approve
-```
+``` -->
+
+<!-- https://registry.terraform.io/modules/cyngularsecurity/onboarding/azure/latest -->
+
+<!-- https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-safelist-urls?tabs=public-cloud -->

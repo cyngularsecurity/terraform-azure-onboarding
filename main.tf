@@ -15,7 +15,7 @@ locals {
   main_location   = element(var.locations, 0)
   resource_prefix = format("cyngular-%s", var.client_name)
 
-  subscriptions = toset(data.azurerm_subscriptions.available.subscriptions[*].subscription_id)
+  # subscriptions = toset(data.azurerm_subscriptions.available.subscriptions[*].subscription_id)
   subscriptions_data = { for i, sub in data.azurerm_subscriptions.available.subscriptions : i => {
     id   = sub.subscription_id
     name = lower(replace(sub.display_name, " ", "_"))
@@ -26,7 +26,7 @@ locals {
   mgmt_group_id = data.azuread_client_config.current.tenant_id
   
   tags = {
-    Owner = "Cyngular"
+    Vendor = "Cyngular Security"
   }
 }
 
@@ -63,7 +63,7 @@ module "cyngular_function" {
   source = "./modules/function"
 
   subscription_ids   = local.sub_ids
-  subscription_names = local.sub_names
+  # subscription_names = local.sub_names
 
   tags             = local.tags
   main_location    = local.main_location

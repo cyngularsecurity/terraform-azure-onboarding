@@ -7,10 +7,7 @@ variable "subscription_ids" {
   description = "subs names and ids"
   type        = map(string)
 }
-variable "subscription_names" {
-  description = "subs names and ids"
-  type        = map(string)
-}
+
 variable "client_locations" {
   description = "List of locations the client operates in"
   type        = list(string)
@@ -57,21 +54,25 @@ variable "enable_aks_logs" {
   default     = true
 }
 
-variable "black_listed_types" {
-  description = "List of resource types to exclude from evaluation"
-  type        = list(string)
-  default     = []
-}
+# variable "black_listed_types" {
+#   description = "List of resource types to exclude from evaluation"
+#   type        = list(string)
+#   default     = []
+# }
 
-variable "type_list_a" {
-  description = "List of resource types to check for AllLogs category"
-  type        = list(string)
-  default     = ["Microsoft.Compute/virtualMachines"]
-}
+# variable "type_list_a" {
+#   description = "List of resource types to check for AllLogs category"
+#   type        = list(string)
+#   default     = ["Microsoft.Compute/virtualMachines"]
+# }
 
-variable "type_list_b" {
-  description = "List of resource types to check for AllLogs and Audit categories"
-  type        = list(string)
-  default     = ["Microsoft.Network/networkSecurityGroups"]
-}
+# variable "type_list_b" {
+#   description = "List of resource types to check for AllLogs and Audit categories"
+#   type        = list(string)
+#   default     = ["Microsoft.Network/networkSecurityGroups"]
+# }
 
+# variable "subscription_names" {
+#   description = "subs names and ids"
+#   type        = map(string)
+# }

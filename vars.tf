@@ -1,10 +1,15 @@
 variable "client_name" {
   description = "Company name"
   type        = string
+  validation {
+    condition     = can(regex("^[a-z0-9]+$", var.client_name))
+    error_message = "Company name must contain only lowercase letters and digits."
+  }
 }
 variable "application_id" {
   description = "Application ID for the multi-tenant service principal"
   type        = string
+  nullable = false
 }
 variable "locations" {
   description = "List of locations to create storage accounts"

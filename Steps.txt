@@ -1,0 +1,11 @@
+a. If the service (e.g., VPC Flow Logs) isn't enabled and you want to enable it, leave the checkbox as "true" — no further action is needed.
+b. If the service is already enabled or you don't want to enable it (e.g., DNS query logging), set the checkbox to "false" during the CloudFormation stack creation. Add the tag to the resource bucket only if your company is already collecting the telemetry and wants Cyngular to analyze it.
+
+   - Cloud Trail: `{key: "cyngular-cloudtrail", value: "true"}`
+   - DNS Logs: `{key: "cyngular-dnslogs", value: "true"}`
+   - VPC Flow Logs: `{key: "cyngular-vpcflowlogs", value: "true"}`
+
+<application id>
+follow instrustion on tf module here - <link>
+
+after tf is done, insert tennant id and location and click conect cloud priovider, wait for confimation

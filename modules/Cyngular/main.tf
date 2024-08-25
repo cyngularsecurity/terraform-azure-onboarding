@@ -1,7 +1,7 @@
 data "azuread_client_config" "current" {}
 
 locals {
-  mgmt_group_id = data.azuread_client_config.current.tenant_id
+  # mgmt_group_id = data.azuread_client_config.current.tenant_id
   storage_acount_tags = {
     cyngular-auditlogs    = var.enable_audit_logs
     cyngular-activitylogs = var.enable_activity_logs
