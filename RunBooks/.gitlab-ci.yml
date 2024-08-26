@@ -1,0 +1,59 @@
+# stages:
+#   - zip
+#   - sync
+#   - release
+
+# variables:
+#   ZIP_FILE: "func_app.zip"
+#   GITHUB_REPO: "" 
+
+
+# zip:
+#   stage: zip
+#   image:
+#     name: javieraviles/zip:latest
+#   script:
+#     - rm ${ZIP_FILE} && (cd function_app && zip -r ${ZIP_FILE} ./* && cd ..)
+#   artifacts:
+#     paths:
+#       - ${ZIP_FILE}
+
+# sync:
+#   stage: sync
+#   image:
+#     name: alpine/git
+#     entrypoint: [""]
+#   script:
+#     - git config --global user.email "auto-sync@github.com" # Replace with your email
+#     - git config --global user.name "sync-to-github" 
+
+#     - git remote add github '$GITHUB_REPO'
+#     - latest_tag=$(git describe --tags --abbrev=0)
+#     - IFS='.' read -r -a tag_parts <<< "${latest_tag#v}"
+#     - new_patch=$((tag_parts[2] + 1))
+#     - new_tag="v${tag_parts[0]}.${tag_parts[1]}.$new_patch"
+      
+#       # Commit, tag, and push changes to GitHub
+#       git add .
+#       git commit -m "Automated commit from GitLab CI pipeline"
+#       git tag -a "$new_tag" -m "Automated tag from CI pipeline"
+#       git push origin "$GIT_BRANCH"
+#       git push origin "$new_tag"
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH =~ /^feature\//'
+#     - if: '$CI_COMMIT_BRANCH =~ /^release\//'
+
+# release:
+#   stage: release
+#   image:
+#     name: maniator/gh
+#     entrypoint: [""]
+#   script:
+#     - FUNCTIONS=$(echo "$CI_COMMIT_MESSAGE" | grep -oE '#[^#]+#' | sed 's/#//g')
+#     - if [[ "$CI_COMMIT_BRANCH" == "main" ]]; then REGION="$DEV_REGION"; elif [[ "$CI_COMMIT_BRANCH" =~ ^release/ ]]; then REGION="$PROD_REGION"; fi
+#     - bash ./DevOps/deployLayer.sh $CI_COMMIT_REF_NAME $REGION $FUNCTIONS 
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "main"'
+#       when: manual
+#     - if: '$CI_COMMIT_BRANCH =~ /^release\//'
+#       when: manual
