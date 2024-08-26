@@ -5,7 +5,7 @@ b. If the service is already enabled or you don't want to enable it (e.g., DNS q
    - DNS Logs: `{key: "cyngular-dnslogs", value: "true"}`
    - VPC Flow Logs: `{key: "cyngular-vpcflowlogs", value: "true"}`
 
-<application id>
+<application_id>
 follow instrustion on tf module here - <link>
 
 after tf is done, insert tennant id and location and click conect cloud priovider, wait for confimation
