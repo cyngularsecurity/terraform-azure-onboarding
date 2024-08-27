@@ -11,7 +11,7 @@ resource "azurerm_linux_function_app" "function_service" {
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
-  zip_deploy_file = local.zip_file_path // data.external.fetch_zip.result["zip"]
+  zip_deploy_file = local.zip_file_path 
   # zip_deploy_file = data.archive_file.function_app_zip.output_path
   identity {
     type         = "UserAssigned"
@@ -60,6 +60,6 @@ resource "azurerm_linux_function_app" "function_service" {
     ]
   }
   depends_on = [
-    null_resource.fetch_zip
+    null_resource.get_zip
   ]
 }
