@@ -3,8 +3,7 @@ locals {
   func_name = "cyngular-app-${var.client_name}"
   # main_location   = element(var.client_locations, 0)
   # main_sub_id   = element(var.subscription_ids, 0)
-  func_zip_url = "https://raw.githubusercontent.com/cyngularsecurity/terraform-azure-onboarding/0a8fe6fcbcf664fe9e7775b4f048983546a9a9f6/cyngular_func.zip"
-  # func_zip_url = "https://westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip?se=2026-08-06T00%3A10Z&sp=r&spr=https&sv=2022-11-02&sr=b&sig=f%2BPgaO0BtafhaVAkTL32b08eZK2EwsuAmk2%2FhuLYrjw%3D"
+  func_zip_url = "https://eastussitesaprod.blob.core.windows.net/cyngular-ob/release/v3.0/Main/function.zip"
   zip_file_path = "${path.root}/cyngular_func.zip"
   
   mgmt_group_id   = data.azuread_client_config.current.tenant_id
