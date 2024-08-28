@@ -21,7 +21,6 @@ locals {
     }
   }
   sub_ids       = { for i, sub in local.subscriptions_data : i => sub.id }
-  sub_names     = { for i, sub in local.subscriptions_data : i => sub.name }
   mgmt_group_id = data.azuread_client_config.current.tenant_id
   
   tags = {
