@@ -41,3 +41,9 @@ variable "enable_aks_logs" {
   default     = true
 }
 
+
+variable "os" {
+  type        = string
+  description = "the os of the client pc"
+  default = "linux"
+}

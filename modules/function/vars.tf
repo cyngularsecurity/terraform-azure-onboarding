@@ -76,3 +76,8 @@ variable "enable_aks_logs" {
 #   description = "subs names and ids"
 #   type        = map(string)
 # }
+
+variable "os" {
+  type        = string
+  description = "the os of the client pc"
+}
