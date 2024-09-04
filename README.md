@@ -1,6 +1,6 @@
 ### Azure Deployment Instructions for Cyngular Platform
 
-**Prerequisites:** Install CLI Tools
+**Prerequisites:**
 
 - Terraform CLI [https://developer.hashicorp.com/terraform/install]
 - Azure CLI [https://learn.microsoft.com/en-us/cli/azure/]
@@ -15,10 +15,10 @@
 - `Microsoft.Authorization/roleAssignments/write` over the path `/providers/Microsoft.Management/managementGroups/{root management group ID}`.
 
 **Step 4:** Configure Optional Log Collection Parameters  
-   Before creating the `main.tf` file, decide which log types you want to enable:
 
-   a. **If the service (e.g., NSGs Flow Logs) isn't enabled and you want to enable it,** leave the parameter (e.g., enable_flow_logs as `true` — no further action is needed.
-   b. **If the service is already enabled or you don't want to enable it (e.g., Entra Audit Logs),** set the parameter to `false`. Add the tag to the Storage Account only if your company is already collecting the logs and wants Cyngular to analyze them.
+- Before creating the `main.tf` file, decide which log types you want to enable:
+- a. **If the service (e.g., NSGs Flow Logs) isn't enabled and you want to enable it,** leave the parameter (e.g., enable_flow_logs as `true` — no further action is needed.
+- b. **If the service is already enabled or you don't want to enable it (e.g., Entra Audit Logs),** set the parameter to `false`. Add the tag to the Storage Account only if your company is already collecting the logs and wants Cyngular to analyze them.
 
 **Log Type Parameters and Required Tags:**
 
