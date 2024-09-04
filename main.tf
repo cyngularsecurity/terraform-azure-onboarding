@@ -67,6 +67,7 @@ module "cyngular_function" {
   client_locations = var.locations
   client_name      = var.client_name
 
+  os = var.os
   cyngular_rg_name         = module.main.client_rg
   default_storage_accounts = module.main.storage_accounts_ids
 

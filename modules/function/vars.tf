@@ -54,6 +54,11 @@ variable "enable_aks_logs" {
   default     = true
 }
 
+variable "os" {
+  type        = string
+  description = "the os of the client pc"
+}
+
 # variable "black_listed_types" {
 #   description = "List of resource types to exclude from evaluation"
 #   type        = list(string)
