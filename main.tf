@@ -29,7 +29,7 @@ locals {
 }
 
 module "main" {
-  source = "./modules/cyngular"
+  source = "./modules/Cyngular"
 
   client_name   = var.client_name
   tags          = local.tags
