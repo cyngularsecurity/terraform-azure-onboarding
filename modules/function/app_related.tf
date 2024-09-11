@@ -1,6 +1,5 @@
 resource "azurerm_storage_account" "func_storage_account" {
   name                = lower(substr("cyngularsa${var.client_name}", 0, 24))
-  # name                = "cyngularapp${var.client_name}"
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
@@ -14,10 +13,21 @@ resource "azurerm_storage_account" "func_storage_account" {
   tags = var.tags
 }
 
+# resource "azurerm_log_analytics_workspace" "func_log_analytics_workspace" {
+#   name                = "cyngular-logs-${var.client_name}"
+#   resource_group_name = var.cyngular_rg_name
+#   location            = var.main_location
+#   sku                 = "PerGB2018"
+#   retention_in_days   = 30
+#   tags                = var.tags
+# }
+
 resource "azurerm_application_insights" "func_azure_insights" {
   name                = "cyngular-service-${var.client_name}"
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
+
+  # workspace_id        = azurerm_log_analytics_workspace.func_log_analytics_workspace.id  # Workspace-based mode
   application_type    = "other"
   retention_in_days   = 60
   tags                = var.tags
@@ -29,8 +39,13 @@ resource "azurerm_service_plan" "regular" {
   location            = var.main_location
 
   os_type  = "Linux"
-  sku_name = "Y1" // EP2 // Y1
+  sku_name = "Y1"
   tags     = var.tags
+
+  # sku_name = "EP2"
+  # sku_name = "P1v2"
+  # maximum_elastic_worker_count = 5
+
 }
 
 # resource "azurerm_app_service_source_control" "function_service" {
