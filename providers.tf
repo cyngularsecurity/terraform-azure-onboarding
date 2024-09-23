@@ -1,13 +1,13 @@
 terraform {
-  #required_version = ">= 1.9.5" 
+  required_version = ">= 1.9.5"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.114.0"
+      version = "~> 4.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "2.51.0"
+      version = "2.53.1"
     }
     azapi = {
       source  = "Azure/azapi"
@@ -25,14 +25,6 @@ terraform {
       source  = "hashicorp/null"
       version = "3.2.2"
     }
-    archive = {
-      source  = "hashicorp/archive"
-      version = "2.4.2"
-    }
-    http = {
-      source = "hashicorp/http"
-      version = "3.4.4"
-    }
     local = {
       source  = "hashicorp/local"
       version = "2.4.1"
@@ -41,6 +33,7 @@ terraform {
 }
 
 provider "azurerm" {
-  # skip_provider_registration = true
+  subscription_id = var.main_subscription_id
+  # resource_provider_registrations = "none" 
   features {}
 }

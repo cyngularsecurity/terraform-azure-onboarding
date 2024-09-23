@@ -11,22 +11,21 @@ resource "azurerm_linux_function_app" "function_service" {
   storage_account_name       = azurerm_storage_account.func_storage_account.name
   storage_account_access_key = azurerm_storage_account.func_storage_account.primary_access_key
 
-  zip_deploy_file = local.zip_file_path 
-  # zip_deploy_file = data.archive_file.function_app_zip.output_path
+  zip_deploy_file = local.zip_file_path
+
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
   }
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME" = "python"
-    "FUNCTIONS_EXTENSION_VERSION" = "~4"
+    "FUNCTIONS_WORKER_RUNTIME"    = "python"
     "AzureWebJobsDisableHomepage" = true
-    # "AzureWebJobsStorage" = "westus2sitesadev.blob.core.windows.net/cyngular-ob/cyngular_func.zip"
-    
-    "ENABLE_ORYX_BUILD" = true
+
+    "ENABLE_ORYX_BUILD"              = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
     # "WEBSITE_RUN_FROM_PACKAGE" = local.func_zip_url // 1
+    # "WEBSITE_RUN_FROM_PACKAGE" = azurerm_storage_blob.function_app_zip.url
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
@@ -39,7 +38,6 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   site_config {
-    # always_on                              = true
     application_insights_connection_string = azurerm_application_insights.func_azure_insights.connection_string
     application_insights_key               = azurerm_application_insights.func_azure_insights.instrumentation_key
     application_stack {

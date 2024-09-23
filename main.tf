@@ -22,7 +22,7 @@ locals {
   }
   sub_ids       = { for i, sub in local.subscriptions_data : i => sub.id }
   mgmt_group_id = data.azuread_client_config.current.tenant_id
-  
+
   tags = {
     Vendor = "Cyngular Security"
   }
@@ -52,22 +52,22 @@ module "role_assignment" {
   source   = "./modules/role_assignment"
   for_each = local.roles
 
-  mgmt_group_id = local.mgmt_group_id
-  role_name     = each.value
+  mgmt_group_id        = local.mgmt_group_id
+  role_name            = each.value
   service_principal_id = module.main.sp_id
 }
 
 module "cyngular_function" {
   source = "./modules/function"
 
-  subscription_ids   = local.sub_ids
+  subscription_ids = local.sub_ids
 
   tags             = local.tags
   main_location    = local.main_location
   client_locations = var.locations
   client_name      = var.client_name
 
-  os = var.os
+  os                       = var.os
   cyngular_rg_name         = module.main.client_rg
   default_storage_accounts = module.main.storage_accounts_ids
 

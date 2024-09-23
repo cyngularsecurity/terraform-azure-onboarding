@@ -14,8 +14,3 @@ variable "mgmt_group_id" {
   type        = string
 
 }
-
-# variable "subscription_ids" {
-#   description = "List of subscription IDs"
-#   # type        = list(string)
-# }

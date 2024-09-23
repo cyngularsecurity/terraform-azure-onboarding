@@ -1,18 +1,19 @@
-
-
 resource "azurerm_storage_account" "cyngular_sa" {
   for_each = toset(var.locations)
+
   name                = lower(substr("${var.client_name}0${each.key}", 0, 23))
   resource_group_name = azurerm_resource_group.cyngular_client.name
   location            = each.value
 
-  account_kind = "StorageV2"
-  account_tier = "Standard"
-
+  account_kind             = "StorageV2"
+  account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
-  tags = merge(local.storage_acount_tags, var.tags)
+  tags = merge(
+    each.key == local.main_location ? local.main_storage_account_tags : local.common_storage_account_tags,
+    var.tags
+  )
 }
 
 resource "azurerm_role_assignment" "sa_contributor" {
