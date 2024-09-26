@@ -2,10 +2,10 @@
 
 **Prerequisites:**
 
-- Terraform CLI [https://developer.hashicorp.com/terraform/install]
-- Azure CLI [https://learn.microsoft.com/en-us/cli/azure/]
-- Curl [https://developers.greenwayhealth.com/developer-platform/docs/installing-curl]
-- Git [https://www.atlassian.com/git/tutorials/install-git]
+- [Terraform CLI][terraform_cli]
+- [Azure CLI][azure_cli]
+- [Curl][curl_cli]
+- [Git][git_cli]
 
 **Step 1:** Ensure the Management Groups feature is enabled in your Azure subscription.
 
@@ -62,9 +62,10 @@
   terraform apply --auto-approve
   ```
 
-**Step 6:** Export Audit Logs
-   If enable_audit_logs is set to false, tag the storage account already collecting it accordingly [Step 3]
-   If enable_audit_logs is set to true, find the storage account tagged accordingly, and export entra (aad) diagnostic settings to it, specifing all logs categories. [[https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png]]
+**Step 6:** Export Audit Logs  
+   If enable_audit_logs is set to false, tag the storage account already collecting it accordingly [See Step 3]
+
+   If enable_audit_logs is set to true, export entra (aad) diagnostic settings to the storage account tagged accordingly, specifing all logs categories. [[https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png]]
 
 <!-- # to redeploy the function with upto date zip code:
 
@@ -76,3 +77,8 @@ terraform apply --auto-approve
 <!-- https://registry.terraform.io/modules/cyngularsecurity/onboarding/azure/latest -->
 
 <!-- https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-safelist-urls?tabs=public-cloud -->
+
+[terraform_cli]: https://developer.hashicorp.com/terraform/install
+[azure_cli]: https://learn.microsoft.com/en-us/cli/azure
+[curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
+[git_cli]: https://www.atlassian.com/git/tutorials/install-git
