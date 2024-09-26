@@ -12,6 +12,7 @@ locals {
   ]
   EOF
   ))
+
   main_location   = element(var.locations, 0)
   resource_prefix = format("cyngular-%s", var.client_name)
 
@@ -35,8 +36,10 @@ module "main" {
   tags          = local.tags
   main_location = local.main_location
 
-  locations           = var.locations
-  prefix              = local.resource_prefix
+  locations = var.locations
+  prefix    = local.resource_prefix
+  suffix    = random_string.suffix.result
+
   application_id      = var.application_id
   msgraph_id          = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
   current_user_obj_id = data.azuread_client_config.current.object_id
@@ -67,6 +70,8 @@ module "cyngular_function" {
   client_locations = var.locations
   client_name      = var.client_name
 
+  suffix = random_string.suffix.result
+
   os                       = var.os
   cyngular_rg_name         = module.main.client_rg
   default_storage_accounts = module.main.storage_accounts_ids
@@ -76,3 +81,20 @@ module "cyngular_function" {
   enable_flow_logs         = var.enable_flow_logs
   enable_aks_logs          = var.enable_aks_logs
 }
+
+# module "audit_logs" {
+#   source = "./modules/function"
+#   count  = var.enable_audit_logs == true ? 1 : 0
+
+#   subscription_ids = local.sub_ids
+#   suffix = random_string.suffix.result
+
+#   tags             = local.tags
+#   main_location    = local.main_location
+#   client_locations = var.locations
+#   client_name      = var.client_name
+
+#   os                       = var.os
+#   cyngular_rg_name         = module.main.client_rg
+#   default_storage_accounts = module.main.storage_accounts_ids
+# }

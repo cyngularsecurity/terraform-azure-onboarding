@@ -29,6 +29,11 @@ variable "tags" {
   description = "A map of the tags to use for the resources that are deployed."
 }
 
+variable "suffix" {
+  description = "Suffix to include in resource names"
+  type        = string
+}
+
 variable "default_storage_accounts" {
   description = "Map of default storage accounts by location"
   type        = map(string)

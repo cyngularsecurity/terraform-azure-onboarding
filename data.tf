@@ -5,3 +5,10 @@ data "azurerm_subscriptions" "available" {}
 data "azurerm_management_group" "root" {
   display_name = "Tenant Root Group"
 }
+
+resource "random_string" "suffix" {
+  length  = 7
+  numeric = true
+  special = false
+  upper   = false
+}

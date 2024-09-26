@@ -1,9 +1,11 @@
 resource "azurerm_storage_account" "cyngular_sa" {
   for_each = toset(var.locations)
+  name     = lower(substr("cyngular${each.key}${var.suffix}", 0, 23))
 
-  name                = lower(substr("${var.client_name}0${each.key}", 0, 23))
   resource_group_name = azurerm_resource_group.cyngular_client.name
   location            = each.value
+
+  cross_tenant_replication_enabled = false
 
   account_kind             = "StorageV2"
   account_tier             = "Standard"

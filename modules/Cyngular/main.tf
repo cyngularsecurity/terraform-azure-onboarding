@@ -1,7 +1,7 @@
 data "azuread_client_config" "current" {}
 
 locals {
-  main_location = var.locations[0]
+  main_location = element(var.locations, 0)
 
   common_storage_account_tags = {
     cyngular-auditevents = var.enable_audit_events_logs

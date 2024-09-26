@@ -7,14 +7,14 @@
 - Curl [https://developers.greenwayhealth.com/developer-platform/docs/installing-curl]
 - Git [https://www.atlassian.com/git/tutorials/install-git]
 
-**Step 2:** Ensure the Management Groups feature is enabled in your Azure subscription.
+**Step 1:** Ensure the Management Groups feature is enabled in your Azure subscription.
 
-**Step 3:** Set Required Permissions  
+**Step 2:** Set Required Permissions  
    Ensure your Azure user has the following permission:
 
 - `Microsoft.Authorization/roleAssignments/write` over the path `/providers/Microsoft.Management/managementGroups/{root management group ID}`.
 
-**Step 4:** Configure Optional Log Collection Parameters  
+**Step 3:** Configure Optional Log Collection Parameters  
 
 - Before creating the `main.tf` file, decide which log types you want to enable:
 - a. **If the service (e.g., NSGs Flow Logs) isn't enabled and you want to enable it,** leave the parameter (e.g., enable_flow_logs as `true` — no further action is needed.
@@ -28,30 +28,32 @@
 - **NSGs Flow Logs:** `{key: "cyngular-nsgflowlogs", value: "true"}`
 - **AKS Cluster Diagnostic Settings:** `{key: "cyngular-aks", value: "true"}`
 
-**Step 5:** Create `main.tf` File  
+**Step 4:** Create `main.tf` File  
    After deciding on the log collection parameters, create a `main.tf` file with the following content, replacing the placeholders with your actual values:
 
    ```hcl
    module "onboarding" {
       source  = "cyngularsecurity/onboarding/azure"
       
+      main_subscription_id = "<deployment_subscription_id>"
+
       application_id = "<application_id>"
       client_name    = "<company_name>"
       locations      = ["<location1>", "<location2>"]
 
+      enable_audit_logs          = true
       enable_activity_logs       = true
       enable_aks_logs            = true
       enable_audit_events_logs   = true
-      enable_audit_logs          = true
       enable_flow_logs           = true
    }
    ```
 
-**Step 6:** Authenticate with Azure  
+**Step 5:** Authenticate with Azure  
    Run `az login`.  
    This command will open a browser window for you to log in with your Azure credentials. Once authenticated, close the browser tab.
 
-**Step 7:** Initialize and Apply Terraform  
+**Step 6:** Initialize and Apply Terraform  
    Run the following Terraform commands in the same directory as the `main.tf` file:
   
   ```bash
@@ -59,6 +61,10 @@
   terraform plan
   terraform apply --auto-approve
   ```
+
+**Step 6:** Export Audit Logs
+   If enable_audit_logs is set to false, tag the storage account already collecting it accordingly [Step 3]
+   If enable_audit_logs is set to true, find the storage account tagged accordingly, and export entra (aad) diagnostic settings to it, specifing all logs categories. [[https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png]]
 
 <!-- # to redeploy the function with upto date zip code:
 
