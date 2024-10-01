@@ -34,7 +34,7 @@
    ```hcl
    module "onboarding" {
       source  = "cyngularsecurity/onboarding/azure"
-      
+
       main_subscription_id = "<deployment_subscription_id>"
 
       application_id = "<application_id>"
@@ -65,6 +65,12 @@
 **Step 6:** Export Audit Logs  
    If audit logs are already configured, tag the storage account accordingly. [Refer to Step 3]  
    If enable_audit_logs is set to true, export Entra ID (AAD) diagnostic settings to the appropriately tagged storage account, specifying all log categories. (https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png)
+
+**Step 7:** Grant Admin Concent  
+   In Entra ID, Navigate to Enterprise applications  
+   Remove the filter for Enterprise Application on Application type  
+   Find the Application by name "{Client Name} SP"
+   click on Permissions under the Security section, and Grant Admin Consent for Default Directory
 
 <!-- # to redeploy the function with upto date zip code:
 

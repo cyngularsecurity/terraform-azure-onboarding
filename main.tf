@@ -82,19 +82,19 @@ module "cyngular_function" {
   enable_aks_logs          = var.enable_aks_logs
 }
 
-# module "audit_logs" {
-#   source = "./modules/function"
-#   count  = var.enable_audit_logs == true ? 1 : 0
+module "audit_logs" {
+  source = "./modules/audit_logs"
+  count  = var.enable_audit_logs == true ? 1 : 0
 
-#   subscription_ids = local.sub_ids
-#   suffix = random_string.suffix.result
+  locations = var.locations
 
-#   tags             = local.tags
-#   main_location    = local.main_location
-#   client_locations = var.locations
-#   client_name      = var.client_name
+  subscription_ids = local.sub_ids
+  suffix = random_string.suffix.result
 
-#   os                       = var.os
-#   cyngular_rg_name         = module.main.client_rg
-#   default_storage_accounts = module.main.storage_accounts_ids
-# }
+  tags             = local.tags
+  main_location    = local.main_location
+  client_name      = var.client_name
+
+  cyngular_rg_name         = module.main.client_rg
+  default_storage_accounts = module.main.storage_accounts_ids
+}
