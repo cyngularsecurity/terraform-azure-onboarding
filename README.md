@@ -62,15 +62,16 @@
   terraform apply --auto-approve
   ```
 
-**Step 6:** Export Audit Logs  
+<!-- **Step 6:** Export Audit Logs  
    If audit logs are already configured, tag the storage account accordingly. [Refer to Step 3]  
-   If enable_audit_logs is set to true, export Entra ID (AAD) diagnostic settings to the appropriately tagged storage account, specifying all log categories. (https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png)
+   If enable_audit_logs is set to true, export Entra ID (AAD) diagnostic settings to the appropriately tagged storage account, specifying all log categories. (https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png) -->
 
-**Step 7:** Grant Admin Concent  
-   In Entra ID, Navigate to Enterprise applications  
+**Step 6:** Grant Admin Consent  
+   terraform output will have an admin consent url link, open it and grant admin consent.
+   <!-- In Entra ID, Navigate to Enterprise applications  
    Remove the filter for Enterprise Application on Application type  
    Find the Application by name "{Client Name} SP"
-   click on Permissions under the Security section, and Grant Admin Consent for Default Directory
+   click on Permissions under the Security section, and Grant Admin Consent for Default Directory -->
 
 <!-- # to redeploy the function with upto date zip code:
 

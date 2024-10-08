@@ -20,7 +20,8 @@ locals {
   main_location = element(var.locations, 0)
 
   aad_ds = {
-    name              = "cyngular-audit-logs-${var.suffix}"
+    name              = "cyngular-audit-logs-${var.client_name}"
+    # name              = "cyngular-audit-logs-${var.suffix}"
     retention_enabled = true
     retention_days    = 1
   }
