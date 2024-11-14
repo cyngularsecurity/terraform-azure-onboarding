@@ -34,6 +34,5 @@ terraform {
 
 provider "azurerm" {
   subscription_id = var.main_subscription_id
-  # resource_provider_registrations = "none" 
   features {}
 }
