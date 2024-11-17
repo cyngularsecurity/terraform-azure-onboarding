@@ -24,8 +24,6 @@ resource "azurerm_linux_function_app" "function_service" {
 
     "ENABLE_ORYX_BUILD"              = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
-    # "WEBSITE_RUN_FROM_PACKAGE" = local.func_zip_url // 1
-    # "WEBSITE_RUN_FROM_PACKAGE" = azurerm_storage_blob.function_app_zip.url
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
