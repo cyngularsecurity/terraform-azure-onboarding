@@ -85,7 +85,7 @@ terraform apply --auto-approve
 
 <!-- https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-safelist-urls?tabs=public-cloud -->
 
-## Help
+## Notice
 
 - To Rreinstall / Update 'cyngular_func.zip', Run ```terraform taint "module.cyngular_function.null_resource.get_zip"``` & re run terraform apply
 - Terraform Cli version required is '1.9.5' as of release '3.3'
