@@ -7,6 +7,13 @@ variable "client_name" {
   }
 }
 
+variable "override_location" {
+  description = "supported location for function related resources"
+  type        = string
+  default = ""
+  # default     = null
+}
+
 variable "main_subscription_id" {
   description = "the clientt main subscription id, for azure resource manager provider auth"
   type        = string
