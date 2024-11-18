@@ -62,6 +62,8 @@ module "role_assignment" {
   mgmt_group_id        = local.mgmt_group_id
   role_name            = each.value
   service_principal_id = module.main.sp_id
+
+  depends_on = [module.main]
 }
 
 module "cyngular_function" {
@@ -88,6 +90,8 @@ module "cyngular_function" {
   enable_audit_events_logs = var.enable_audit_events_logs
   enable_flow_logs         = var.enable_flow_logs
   enable_aks_logs          = var.enable_aks_logs
+
+  depends_on = [module.main]
 }
 
 module "audit_logs" {
