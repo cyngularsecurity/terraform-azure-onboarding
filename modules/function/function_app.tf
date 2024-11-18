@@ -4,6 +4,7 @@ resource "azurerm_linux_function_app" "function_service" {
   resource_group_name = var.cyngular_rg_name
   location            = var.override_location != "" ? var.override_location : var.main_location
 
+  # always_on                                     = false
   https_only                    = true
   public_network_access_enabled = true
 

@@ -22,12 +22,12 @@ resource "azurerm_role_assignment" "sa_contributor" {
   for_each             = azurerm_storage_account.cyngular_sa
   scope                = each.value.id
   role_definition_name = "Storage Account Contributor"
-  principal_id         = azuread_service_principal.client_sp.id
+  principal_id         = azuread_service_principal.client_sp.object_id
 }
 
 resource "azurerm_role_assignment" "blob_contributor" {
   for_each             = azurerm_storage_account.cyngular_sa
   scope                = each.value.id
   role_definition_name = "Storage Blob Data Owner"
-  principal_id         = azuread_service_principal.client_sp.id
+  principal_id         = azuread_service_principal.client_sp.object_id
 }
