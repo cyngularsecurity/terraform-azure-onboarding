@@ -3,32 +3,32 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "4.5.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "2.53.1"
+      version = "3.0.2"
     }
-    azapi = {
-      source  = "Azure/azapi"
-      version = "1.13.1"
-    }
+    # azapi = {
+    #   source  = "Azure/azapi"
+    #   version = "1.13.1"
+    # }
     random = {
       source  = "hashicorp/random"
-      version = "~>3.0"
+      version = "3.6.3"
     }
-    external = {
-      source  = "hashicorp/external"
-      version = "2.3.1"
-    }
+    # external = {
+    #   source  = "hashicorp/external"
+    #   version = "2.3.1"
+    # }
     null = {
       source  = "hashicorp/null"
       version = "3.2.2"
     }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.4.1"
-    }
+    # local = {
+    #   source  = "hashicorp/local"
+    #   version = "2.4.1"
+    # }
   }
 }
 
@@ -37,4 +37,6 @@ provider "azurerm" {
   features {}
 }
 
-# provider "azuread" {}
+provider "azuread" {
+  tenant_id = data.azurerm_client_config.current.tenant_id
+}

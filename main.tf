@@ -22,7 +22,7 @@ locals {
     }
   }
   sub_ids       = { for i, sub in local.subscriptions_data : i => sub.id }
-  mgmt_group_id = data.azuread_client_config.current.tenant_id
+  mgmt_group_id = data.azurerm_client_config.current.tenant_id
 
   tags = {
     Vendor = "Cyngular Security"
@@ -46,7 +46,7 @@ module "main" {
 
   application_id      = var.application_id
   msgraph_id          = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
-  current_user_obj_id = data.azuread_client_config.current.object_id
+  current_user_obj_id = data.azurerm_client_config.current.object_id
 
   enable_audit_logs        = var.enable_audit_logs
   enable_activity_logs     = var.enable_activity_logs
