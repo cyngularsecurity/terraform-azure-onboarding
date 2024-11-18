@@ -87,9 +87,23 @@ terraform apply --auto-approve
 
 ## Notice
 
+- If not using a backend, install terraform state for future managment, Run ```terraform state pull > cyngular_onboarding.tfstate``` .
+
 - To Rreinstall / Update 'cyngular_func.zip', Run ```terraform taint "module.cyngular_function.null_resource.get_zip"``` & re run terraform apply
 - Terraform Cli version required is '1.9.5' as of release '3.3'
 - Make sure not to reach The limit of 5 diagnostic settings per subscription account
+
+## Notice
+
+- If not using a backend, use existing terraform state, Run ```terraform state push cyngular_onboarding.tfstate``` .
+- Update version.
+- Run:
+
+```bash
+  terraform init -upgrade
+  terraform plan
+  terraform apply --auto-approve
+```
 
 [terraform_cli]: https://developer.hashicorp.com/terraform/install
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
