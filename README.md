@@ -47,6 +47,12 @@
       enable_audit_events_logs   = true
       enable_flow_logs           = true
    }
+
+   output "admin_consent_url" {
+      description = "Admin Consent URL"
+      value = module.onboarding.org_admin_consent_url
+   }
+
    ```
 
 **Step 5:** Authenticate with Azure  
