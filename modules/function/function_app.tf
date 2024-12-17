@@ -37,8 +37,12 @@ resource "azurerm_linux_function_app" "function_service" {
   }
 
   site_config {
-    application_insights_connection_string = azurerm_application_insights.func_azure_insights.connection_string
-    application_insights_key               = azurerm_application_insights.func_azure_insights.instrumentation_key
+    # application_insights_connection_string = azurerm_application_insights.func_azure_insights.connection_string
+    # application_insights_key               = azurerm_application_insights.func_azure_insights.instrumentation_key
+
+    application_insights_connection_string = try(azurerm_application_insights.func_azure_insights[0].connection_string, null)
+    application_insights_key               = try(azurerm_application_insights.func_azure_insights[0].instrumentation_key, null)
+
     application_stack {
       python_version = "3.11"
     }
@@ -56,6 +60,6 @@ resource "azurerm_linux_function_app" "function_service" {
     ]
   }
   depends_on = [
-    null_resource.get_zip
+    local_file.zip_file
   ]
 }

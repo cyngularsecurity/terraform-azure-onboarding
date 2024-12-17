@@ -27,8 +27,19 @@ variable "override_location" {
 
 variable "cyngular_rg_name" {
   type        = string
-  description = "cyngular rg on the client side"
+  description = "cyngular rg name on the client side"
 }
+
+variable "cyngular_rg_id" {
+  type        = string
+  description = "cyngular rg id on the client side"
+}
+
+variable "cyngular_rg_location" {
+  type        = string
+  description = "cyngular rg location on the client side"
+}
+
 
 variable "tags" {
   type        = map(string)

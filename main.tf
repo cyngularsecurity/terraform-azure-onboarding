@@ -69,8 +69,13 @@ module "role_assignment" {
   depends_on = [module.main]
 }
 
+
 module "cyngular_function" {
   source = "./modules/function"
+
+  providers = {
+    azapi  = azapi
+  }
 
   subscription_ids = local.sub_ids
 
@@ -86,7 +91,10 @@ module "cyngular_function" {
   suffix = random_string.suffix.result
 
   os                       = var.os
-  cyngular_rg_name         = module.main.client_rg
+  cyngular_rg_name         = module.main.client_rg.name
+  cyngular_rg_id           = module.main.client_rg.id
+  cyngular_rg_location     = module.main.client_rg.location
+
   default_storage_accounts = module.main.storage_accounts_ids
 
   enable_activity_logs     = var.enable_activity_logs
@@ -110,6 +118,7 @@ module "audit_logs" {
   main_location    = local.main_location
   client_name      = var.client_name
 
-  cyngular_rg_name         = module.main.client_rg
+  cyngular_rg_name         = module.main.client_rg.name
+
   default_storage_accounts = module.main.storage_accounts_ids
 }
