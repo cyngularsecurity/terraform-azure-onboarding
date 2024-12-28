@@ -98,15 +98,13 @@
 # #   depends_on = [azurerm_linux_function_app.function_service]
 # # }
 
+# data "azurerm_linux_function_app" "fn_wrapper" {
+#     name = local.func_name
+#     resource_group_name = var.cyngular_rg_name
+# }
 
-
-data "azurerm_linux_function_app" "fn_wrapper" {
-    name = local.func_name
-    resource_group_name = var.cyngular_rg_name
-}
-
-resource "azurerm_role_assignment" "storage_roleassignment" {
-  scope = azurerm_storage_account.func_storage_account.id
-  role_definition_name = "Storage Blob Data Owner"
-  principal_id = data.azurerm_linux_function_app.fn_wrapper.identity.0.principal_id
-}
+# resource "azurerm_role_assignment" "storage_roleassignment" {
+#   scope = azurerm_storage_account.func_storage_account.id
+#   role_definition_name = "Storage Blob Data Owner"
+#   principal_id = data.azurerm_linux_function_app.fn_wrapper.identity.0.principal_id
+# }

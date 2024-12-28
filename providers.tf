@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.5.0"
+      version = "4.14.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -30,7 +30,11 @@ terraform {
 
 provider "azurerm" {
   subscription_id = var.main_subscription_id
-  features {}
+  features {
+    application_insights {
+      disable_generated_rule = true
+    }
+  }
 }
 
 provider "azuread" {

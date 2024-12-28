@@ -1,5 +1,6 @@
 
 data "azuread_client_config" "current" {}
+data "azurerm_subscription" "current" {}
 
 # resource "null_resource" "get_zip" {
 #   provisioner "local-exec" {
