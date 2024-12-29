@@ -15,6 +15,7 @@ locals {
     "ServicePrincipalRiskEvents",
     "RiskyUsers",
     "RiskyServicePrincipals",
+    "NetworkAccessAlerts"
   ]
 
   main_location = element(var.locations, 0)
