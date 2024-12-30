@@ -19,12 +19,6 @@ variable "main_location" {
   description = "client main location"
 }
 
-variable "override_location" {
-  type        = string
-  description = "supported location for function related resources"
-  default = ""
-}
-
 variable "cyngular_rg_name" {
   type        = string
   description = "cyngular rg name on the client side"

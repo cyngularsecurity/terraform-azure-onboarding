@@ -2,7 +2,7 @@
 resource "azurerm_linux_function_app" "function_service" {
   name                = local.func_name
   resource_group_name = var.cyngular_rg_name
-  location            = var.override_location != "" ? var.override_location : var.main_location
+  location            = var.main_location
 
   https_only                    = true
   public_network_access_enabled = true
@@ -46,8 +46,8 @@ resource "azurerm_linux_function_app" "function_service" {
       # always_on = azurerm_service_plan.main.sku_name != "F1" || azurerm_service_plan.main.sku_name != "Y1"
       # app_scale_limit = azurerm_service_plan.main.sku_name != "F1" ? 1 : 0
 
-    application_insights_connection_string = try(azurerm_application_insights.func_azure_insights.connection_string, null)
-    application_insights_key               = try(azurerm_application_insights.func_azure_insights.instrumentation_key, null)
+    application_insights_connection_string = try(azurerm_application_insights.func_azure_insights[0].connection_string, null)
+    application_insights_key               = try(azurerm_application_insights.func_azure_insights[0].instrumentation_key, null)
 
     application_stack {
       python_version = "3.11"

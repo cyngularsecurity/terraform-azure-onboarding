@@ -39,10 +39,6 @@ module "main" {
   main_location = local.main_location
   locations = var.locations
 
-  override_location = var.override_location != null ? var.override_location : (
-    can(regex("^israel", lower(local.main_location))) ? local.main_location : local.main_location
-  )
-
   prefix    = local.resource_prefix
   suffix    = random_string.suffix.result
 
@@ -83,10 +79,6 @@ module "cyngular_function" {
   client_name      = var.client_name
   main_location    = local.main_location
   client_locations = var.locations
-
-  override_location = var.override_location != null ? var.override_location : (
-    can(regex("^israel", lower(local.main_location))) ? local.main_location : local.main_location
-  )
 
   suffix = random_string.suffix.result
 
