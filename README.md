@@ -63,7 +63,7 @@
    Run the following Terraform commands in the same directory as the `main.tf` file:
   
   ```bash
-  terraform init
+  terraform init -upgrade
   terraform plan
   terraform apply --auto-approve
   ```
@@ -72,7 +72,7 @@
    If audit logs are already configured, tag the storage account accordingly. [Refer to Step 3]  
    If enable_audit_logs is set to true, export Entra ID (AAD) diagnostic settings to the appropriately tagged storage account, specifying all log categories. (https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png) -->
 
-**Step 6:** Grant Admin Consent  
+**Step 7:** Grant Admin Consent  
    The Terraform output will include an admin consent URL link. Open it and grant admin consent.
 
    <!-- In Entra ID, Navigate to Enterprise applications  
@@ -93,23 +93,13 @@ terraform apply --auto-approve
 
 ## Notice
 
-- If not using a backend, install terraform state for future managment, Run ```terraform state pull > cyngular_onboarding.tfstate``` .
+- If not using a remote terraform backend, save terraform state for future managment, Run ```terraform state pull > cyngular_onboarding.tfstate``` .
+- To reuse it, Run ```terraform state push cyngular_onboarding.tfstate``` .
 
 - To Rreinstall / Update 'cyngular_func.zip', Run ```terraform taint "module.cyngular_function.null_resource.get_zip"``` & re run terraform apply
+
 - Terraform Cli version required is '1.9.5' as of release '3.3'
 - Make sure not to reach The limit of 5 diagnostic settings per subscription account
-
-## Notice
-
-- If not using a backend, use existing terraform state, Run ```terraform state push cyngular_onboarding.tfstate``` .
-- Update version.
-- Run:
-
-```bash
-  terraform init -upgrade
-  terraform plan
-  terraform apply --auto-approve
-```
 
 [terraform_cli]: https://developer.hashicorp.com/terraform/install
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
