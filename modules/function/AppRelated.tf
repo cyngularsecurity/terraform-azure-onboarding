@@ -17,15 +17,10 @@ resource "azurerm_storage_account" "func_storage_account" {
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
-  cross_tenant_replication_enabled = false
-  account_kind                     = "StorageV2"
-  account_tier                     = "Standard"
-  account_replication_type         = "LRS"
-  min_tls_version                  = "TLS1_2"
-
-  access_tier                = "Hot"
-  https_traffic_only_enabled = true
-  shared_access_key_enabled = false
+  account_kind             = "StorageV2"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
 
   tags                       = var.tags
 }

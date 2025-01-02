@@ -4,8 +4,8 @@ resource "azurerm_linux_function_app" "function_service" {
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
-  https_only                    = true
-  public_network_access_enabled = true
+  # https_only                    = true
+  # public_network_access_enabled = true
 
   service_plan_id            = azurerm_service_plan.main.id
   storage_account_name       = azurerm_storage_account.func_storage_account.name
@@ -27,6 +27,7 @@ resource "azurerm_linux_function_app" "function_service" {
     # "WEBSITE_CONTENTSHARE" = lower(local.func_name)
 
     # "WEBSITE_RUN_FROM_PACKAGE" = "https://${azurerm_storage_account.func_storage_account.name}.blob.core.windows.net/${resource.azurerm_storage_container.func_storage_container.name}/${resource.azurerm_storage_blob.zip_deployment.name}"
+    # "WEBSITE_RUN_FROM_PACKAGE" = 1
 
     "ENABLE_ORYX_BUILD"              = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
@@ -50,7 +51,8 @@ resource "azurerm_linux_function_app" "function_service" {
     application_insights_key               = try(azurerm_application_insights.func_azure_insights[0].instrumentation_key, null)
 
     application_stack {
-      python_version = "3.11"
+      # python_version = "3.11"
+      python_version = "3.12"
     }
     # app_command_line = <<-EOF
     #   #!/bin/bash
@@ -66,7 +68,7 @@ resource "azurerm_linux_function_app" "function_service" {
   #     tags
   #   ]
   # }
-  # depends_on = [
-  #   local_file.zip_file
-  # ]
+  depends_on = [
+    local_file.zip_file
+  ]
 }

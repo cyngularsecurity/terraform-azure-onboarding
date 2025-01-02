@@ -30,29 +30,24 @@ data "azurerm_subscription" "current" {}
 
 data "http" "zip_file" {
   url = local.func_zip_url
-  
+
   request_headers = {
     Accept = "application/zip"
+    # Accept = "application/json"
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = contains([200], self.status_code)
+      error_message = "Status code invalid"
+    }
   }
 }
 
-resource "local_file" "zip_file" {
+
+resource "local_sensitive_file" "zip_file" {
+# resource "local_file" "zip_file" {
   content_base64 = data.http.zip_file.response_body_base64
   # content  = data.http.zip_file.response_body
   filename = local.zip_file_path
 }
-
-# data "http" "zip_file" {
-#   url = local.func_zip_url
-
-#   request_headers = {
-#     Accept = "application/json"
-#   }
-
-#   lifecycle {
-#     postcondition {
-#       condition     = contains([200], self.status_code)
-#       error_message = "Status code invalid"
-#     }
-#   }
-# }

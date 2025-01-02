@@ -5,23 +5,17 @@ resource "azurerm_storage_account" "cyngular_sa" {
   resource_group_name = azurerm_resource_group.cyngular_client.name
   location            = each.value
 
-  cross_tenant_replication_enabled = false
-
   account_kind             = "StorageV2"
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
-  access_tier                = "Hot"
-  https_traffic_only_enabled = true
-
-
-  blob_properties {
-    delete_retention_policy {
-      days                     = 100
-      permanent_delete_enabled = true
-    }
-  }
+  # blob_properties {
+  #   delete_retention_policy {
+  #     days                     = 100
+  #     permanent_delete_enabled = true
+  #   }
+  # }
 
   tags = merge( 
     each.key == local.main_location ? local.main_storage_account_tags : local.common_storage_account_tags,
@@ -32,6 +26,7 @@ resource "azurerm_storage_account" "cyngular_sa" {
 resource "azurerm_role_assignment" "sa_contributor" {
   for_each             = azurerm_storage_account.cyngular_sa
   scope                = each.value.id
+
   role_definition_name = "Storage Account Contributor"
   principal_id         = azuread_service_principal.client_sp.object_id
 }
@@ -39,6 +34,7 @@ resource "azurerm_role_assignment" "sa_contributor" {
 resource "azurerm_role_assignment" "blob_contributor" {
   for_each             = azurerm_storage_account.cyngular_sa
   scope                = each.value.id
+
   role_definition_name = "Storage Blob Data Owner"
   principal_id         = azuread_service_principal.client_sp.object_id
 }

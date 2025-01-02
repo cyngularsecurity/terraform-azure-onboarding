@@ -69,10 +69,6 @@ module "role_assignment" {
 module "cyngular_function" {
   source = "./modules/function"
 
-  providers = {
-    azapi  = azapi
-  }
-
   subscription_ids = local.sub_ids
 
   tags             = local.tags

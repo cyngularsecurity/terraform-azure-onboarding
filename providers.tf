@@ -9,10 +9,10 @@ terraform {
       source  = "hashicorp/azuread"
       version = "3.0.2"
     }
-    azapi = {
-      source = "Azure/azapi"
-      version = "2.1.0"
-    }
+    # azapi = {
+    #   source = "Azure/azapi"
+    #   version = "2.1.0"
+    # }
     random = {
       source  = "hashicorp/random"
       version = "3.6.3"
@@ -21,10 +21,10 @@ terraform {
       source = "hashicorp/local"
       version = "2.5.2"
     }
-    # null = {
-    #   source  = "hashicorp/null"
-    #   version = "3.2.2"
-    # }
+    http = {
+      source = "hashicorp/http"
+      version = "3.4.5"
+    }
   }
 }
 
@@ -41,7 +41,7 @@ provider "azuread" {
   tenant_id = data.azurerm_client_config.current.tenant_id
 }
 
-provider "azapi" {
-  subscription_id = var.main_subscription_id
-  tenant_id       = data.azurerm_client_config.current.tenant_id
-}
+# provider "azapi" {
+#   subscription_id = var.main_subscription_id
+#   tenant_id       = data.azurerm_client_config.current.tenant_id
+# }
