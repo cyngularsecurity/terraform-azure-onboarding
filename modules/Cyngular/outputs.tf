@@ -5,7 +5,6 @@ output "client_rg" {
 
 output "sp_id" {
   value     = azuread_service_principal.client_sp.object_id 
-  # value     = element(split("/", azuread_service_principal.client_sp.object_id), length(split("/", azuread_service_principal.client_sp.object_id)) - 1)
   sensitive = true
 }
 
