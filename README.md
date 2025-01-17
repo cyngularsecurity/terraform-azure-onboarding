@@ -110,3 +110,4 @@ terraform apply --auto-approve
 [curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
 [git_cli]: https://www.atlassian.com/git/tutorials/install-git
 
+
