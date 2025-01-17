@@ -12,7 +12,10 @@
 **Step 2:** Set Required Permissions  
    Ensure your Azure user has the following permission:
 
-- `Microsoft.Authorization/roleAssignments/write` over the path `/providers/Microsoft.Management/managementGroups/{root management group ID}`.
+- `Microsoft.Authorization/roleAssignments/write` over the management group scope, (path `/providers/Microsoft.Management/managementGroups/{root management group ID}`).
+- `Microsoft.Authorization/roleAssignments/contributor`
+   over each Subscription scope, (path `/subscriptions/{subscription ID}`).
+   or over each Management Group scope, (path `/providers/Microsoft.Management/managementGroups/{management group ID}`).
 
 **Step 3:** Configure Optional Log Collection Parameters  
 
@@ -52,12 +55,13 @@
       description = "Admin Consent URL"
       value = module.onboarding.org_admin_consent_url
    }
-
    ```
 
 **Step 5:** Authenticate with Azure  
    Run `az login`.  
-   This command will open a browser window for you to log in with your Azure credentials. Once authenticated, close the browser tab.
+   This command will open a browser window for you to log in with your Azure credentials.
+   Once authenticated, close the browser tab.
+   Choose the subscription to set as default.
 
 **Step 6:** Initialize and Apply Terraform  
    Run the following Terraform commands in the same directory as the `main.tf` file:
@@ -75,7 +79,7 @@
 **Step 7:** Grant Admin Consent  
    The Terraform output will include an admin consent URL link. Open it and grant admin consent.
 
-   <!-- In Entra ID, Navigate to Enterprise applications  
+   <!-- In Entra ID, Navigate to Enterprise applications
    Remove the filter for Enterprise Application on Application type
    Find the Application by name "{Client Name} SP"
    click on Permissions under the Security section, and Grant Admin Consent for Default Directory -->
