@@ -109,3 +109,4 @@ terraform apply --auto-approve
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
 [curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
 [git_cli]: https://www.atlassian.com/git/tutorials/install-git
+
