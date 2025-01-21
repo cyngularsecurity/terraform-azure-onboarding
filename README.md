@@ -20,7 +20,7 @@
 **Step 3:** Configure Optional Log Collection Parameters  
 
 - Before creating the `main.tf` file, decide which log types you want to enable:
-- a. **If the service (e.g., NSGs Flow Logs) isn't enabled and you want to enable it,** leave the parameter (e.g., enable_flow_logs as `true` — no further action is needed.
+- a. **If the service (e.g., NSGs Flow Logs) isn't enabled and you want to enable it,** leave the parameter (e.g., enable_flow_logs) as `true` — no further action is needed.
 - b. **If the service is already enabled or you don't want to enable it (e.g., Entra Audit Logs),** set the parameter to `false`. Add the tag to the Storage Account only if your company is already collecting the logs and wants Cyngular to analyze them.
 
 **Log Type Parameters and Required Tags:**
@@ -109,5 +109,3 @@ terraform apply --auto-approve
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
 [curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
 [git_cli]: https://www.atlassian.com/git/tutorials/install-git
-
-
