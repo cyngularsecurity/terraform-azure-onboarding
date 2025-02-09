@@ -28,10 +28,10 @@ variable "locations" {
   description = "List of locations that the clients operate in"
   type        = list(string)
   
-  validation {
-    condition     = !(length(var.locations) == 1 && contains(var.locations, "israelcentral"))
-    error_message = "The list of locations cannot contain only 'israelcentral', as it is not supported for consumption plan deployment. Please add more locations or choose a different location."
-  }
+  # validation {
+  #   condition     = !(length(var.locations) == 1 && contains(var.locations, "israelcentral"))
+  #   error_message = "The list of locations cannot contain only 'israelcentral', as it is not supported for consumption plan deployment. Please add more locations or choose a different location."
+  # }
 }
 
 variable "main_location" {

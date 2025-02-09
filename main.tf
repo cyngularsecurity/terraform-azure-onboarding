@@ -32,7 +32,6 @@ module "role_assignment" {
   depends_on = [module.main]
 }
 
-
 module "cyngular_function" {
   source = "./modules/function"
 
