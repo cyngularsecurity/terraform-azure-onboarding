@@ -1,7 +1,3 @@
-
-data "azuread_client_config" "current" {}
-data "azurerm_subscription" "current" {}
-
 data "http" "zip_file" {
   url = local.func_zip_url
 

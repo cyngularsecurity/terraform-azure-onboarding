@@ -25,8 +25,24 @@ variable "application_id" {
 }
 
 variable "locations" {
-  description = "List of locations to create storage accounts"
+  description = "List of locations that the clients operate in"
   type        = list(string)
+  
+  validation {
+    condition     = !(length(var.locations) == 1 && contains(var.locations, "israelcentral"))
+    error_message = "The list of locations cannot contain only 'israelcentral', as it is not supported for consumption plan deployment. Please add more locations or choose a different location."
+  }
+}
+
+variable "main_location" {
+  type        = string
+  description = "The Main location for Storage Account deployment, main sa will contain Audit & Activity logs"
+  default     = ""
+
+  validation {
+    condition     = contains(var.locations, var.main_location)
+    error_message = "The main location must be one of the specified locations in the locations variable."
+  }
 }
 
 variable "enable_audit_logs" {
@@ -59,7 +75,7 @@ variable "enable_aks_logs" {
   default     = true
 }
 
-variable "os" {
+variable "local_os" {
   type        = string
   description = "the os of the client pc"
   default     = "linux"

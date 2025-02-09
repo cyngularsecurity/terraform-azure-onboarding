@@ -7,6 +7,8 @@ locals {
     cyngular-auditevents = var.enable_audit_events_logs
     cyngular-nsgflowlogs = var.enable_flow_logs
     cyngular-aks         = var.enable_aks_logs
+
+    cyngular-client = var.client_name
   }
 
   main_storage_account_tags = merge(local.common_storage_account_tags, {

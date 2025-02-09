@@ -1,36 +1,3 @@
-locals {
-  roles = toset(jsondecode(<<EOF
-  [
-    "Reader",
-    "Disk Pool Operator",
-    "Data Operator for Managed Disks",
-    "Disk Snapshot Contributor",
-    "Microsoft Sentinel Reader",
-    "API Management Workspace Reader",
-    "Reader and Data Access",
-    "Managed Applications Reader"
-  ]
-  EOF
-  ))
-
-  config = data.azuread_client_config.current
-
-  main_location   = element(var.locations, 0)
-  resource_prefix = format("cyngular-%s", var.client_name)
-
-  subscriptions_data = { for i, sub in data.azurerm_subscriptions.available.subscriptions : i => {
-    id   = sub.subscription_id
-    name = lower(replace(sub.display_name, " ", "_"))
-    }
-  }
-  sub_ids       = { for i, sub in local.subscriptions_data : i => sub.id }
-  mgmt_group_id = local.config.tenant_id
-
-  tags = {
-    Vendor = "Cyngular Security"
-  }
-}
-
 module "main" {
   source = "./modules/Cyngular"
 
@@ -69,16 +36,20 @@ module "role_assignment" {
 module "cyngular_function" {
   source = "./modules/function"
 
+  mgmt_group_id        = local.mgmt_group_id
   subscription_ids = local.sub_ids
 
   tags             = local.tags
   client_name      = var.client_name
-  main_location    = local.main_location
-  client_locations = var.locations
 
   suffix = random_string.suffix.result
+  main_subscription_id = var.main_subscription_id
 
-  os                       = var.os
+  app_insights_unsupported_locations = local.app_insights_unsupported_locations
+  main_location    = local.cyngular_function_location
+  client_locations = var.locations
+
+  local_os                       = var.local_os
   cyngular_rg_name         = module.main.client_rg.name
   cyngular_rg_id           = module.main.client_rg.id
   cyngular_rg_location     = module.main.client_rg.location

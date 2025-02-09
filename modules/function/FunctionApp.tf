@@ -17,24 +17,7 @@ resource "azurerm_linux_function_app" "function_service" {
     identity_ids = [azurerm_user_assigned_identity.function_assignment_identity.id]
   }
 
-  app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"    = "python"
-    "AzureWebJobsDisableHomepage" = true
-
-    "ENABLE_ORYX_BUILD"              = true
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
-
-    "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
-    "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
-
-    "UAI_ID"                   = azurerm_user_assigned_identity.function_assignment_identity.client_id
-
-    "ROOT_MGMT_GROUP_ID"       = local.mgmt_group_id
-    "enable_activity_logs"     = var.enable_activity_logs
-    "enable_audit_events_logs" = var.enable_audit_events_logs
-    "enable_flow_logs"         = var.enable_flow_logs
-    "enable_aks_logs"          = var.enable_aks_logs
-  }
+  app_settings = local.func_env_vars
 
   site_config {
     application_insights_connection_string = try(azurerm_application_insights.func_azure_insights[0].connection_string, null)
@@ -43,10 +26,20 @@ resource "azurerm_linux_function_app" "function_service" {
     application_stack {
       python_version = "3.12"
     }
+
+    # app_service_logs {
+    #   disk_quota_mb         = 100
+    #   retention_period_days = 3
+    # }
   }
-  
+
   tags = var.tags
+
   depends_on = [
-    local_sensitive_file.zip_file
+    local_sensitive_file.zip_file,
+    azurerm_role_assignment.func_assigment_custom_mgmt,
+    azurerm_role_assignment.func_assigment_reader_mgmt,
+    azurerm_role_assignment.sa_contributor,
+    azurerm_role_assignment.blob_contributor
   ]
 }

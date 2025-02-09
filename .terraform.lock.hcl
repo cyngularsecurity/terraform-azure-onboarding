@@ -83,7 +83,7 @@ provider "registry.terraform.io/hashicorp/local" {
 
 provider "registry.terraform.io/hashicorp/random" {
   version     = "3.6.3"
-  constraints = "~> 3.0"
+  constraints = "3.6.3"
   hashes = [
     "h1:zG9uFP8l9u+yGZZvi5Te7PV62j50azpgwPunq2vTm1E=",
     "zh:04ceb65210251339f07cd4611885d242cd4d0c7306e86dda9785396807c00451",

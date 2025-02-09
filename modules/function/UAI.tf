@@ -9,7 +9,7 @@ resource "azurerm_role_definition" "function_assignment_def" {
   scope = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
 
   name        = format("%s-cyngular-mgmt-role", var.client_name)
-  description = "cyngular main role for policy def & assignments"
+  description = "cyngular uai mgmt role"
 
   permissions {
     actions = [

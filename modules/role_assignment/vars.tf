@@ -12,5 +12,4 @@ variable "service_principal_id" {
 variable "mgmt_group_id" {
   description = "management group root id"
   type        = string
-
 }

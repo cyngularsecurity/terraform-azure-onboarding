@@ -73,9 +73,3 @@ variable "enable_aks_logs" {
   type        = bool
   default     = true
 }
-
-variable "override_location" {
-  type        = string
-  description = "supported location for function related resources"
-  default = ""
-}

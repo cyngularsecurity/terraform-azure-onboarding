@@ -105,7 +105,12 @@ terraform apply --auto-approve
 - Terraform Cli version required is '1.9.5' as of release '3.3'
 - Make sure not to reach The limit of 5 diagnostic settings per subscription account
 
+- If Service principle resource, takes too long to create, app id might be invalid.
+
 [terraform_cli]: https://developer.hashicorp.com/terraform/install
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
 [curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
-[git_cli]: https://www.atlassian.com/git/tutorials/install-git
+
+
+[azure_func_cli]: https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos,isolated-process,node-v4,python-v2,http-trigger,container-apps&pivots=programming-language-python
+
