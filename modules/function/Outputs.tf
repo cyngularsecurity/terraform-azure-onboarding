@@ -1,7 +1,3 @@
-# output "sync_triggers" {
-#   value = try(jsondecode(nonsensitive(null_resource.sync_triggers.triggers.stderror)), null)
-# }
-
 output "deploy_script_path" {
   value = local.deploy_script_path
 }

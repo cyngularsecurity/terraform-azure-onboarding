@@ -26,11 +26,6 @@ resource "azurerm_linux_function_app" "function_service" {
     application_stack {
       python_version = "3.12"
     }
-
-    # app_service_logs {
-    #   disk_quota_mb         = 100
-    #   retention_period_days = 3
-    # }
   }
 
   tags = var.tags

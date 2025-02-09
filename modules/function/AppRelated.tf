@@ -40,9 +40,6 @@ resource "azurerm_application_insights" "func_azure_insights" {
   application_type    = "web"
   retention_in_days = 60
 
-  # # workspace_id = contains(local.app_insights_unsupported_locations, local.func_absolute_location) ? null : azurerm_log_analytics_workspace.func_azure_log_analytics_workspace[0].id
-  # workspace_id = try(azurerm_log_analytics_workspace.func_azure_log_analytics_workspace[0].id, null)
-
   tags = merge(var.tags, {
     "RelatedFuncName": local.func_name
   })
