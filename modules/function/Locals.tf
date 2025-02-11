@@ -4,7 +4,7 @@ locals {
 
   func_name = "cyngular-app-${var.client_name}-${var.suffix}"
 
-  func_sp_sku_name = contains(var.app_insights_unsupported_locations, var.main_location) ? "B1" : "Y1"
+  func_sp_sku_name = contains(var.app_insights_unsupported_locations, var.main_location) ? "B2" : "Y1"
 
   func_zip_url  = "https://cyngular-onboarding-templates.s3.us-east-1.amazonaws.com/azure/cyngular_func.zip"
   

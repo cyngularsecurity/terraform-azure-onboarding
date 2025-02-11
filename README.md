@@ -114,3 +114,4 @@ terraform apply --auto-approve
 
 [azure_func_cli]: https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos,isolated-process,node-v4,python-v2,http-trigger,container-apps&pivots=programming-language-python
 
+      <!-- main_location  = "<main_log_location>"  # Specify main logs location  -->
