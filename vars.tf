@@ -39,10 +39,10 @@ variable "main_location" {
   description = "The Main location for Storage Account deployment, main sa will contain Audit & Activity logs"
   default     = ""
 
-  validation {
-    condition     = contains(var.locations, var.main_location)
-    error_message = "The main location must be one of the specified locations in the locations variable."
-  }
+  # validation {
+  #   condition     = contains(var.locations, var.main_location)
+  #   error_message = "The main location must be one of the specified locations in the locations variable."
+  # }
 }
 
 variable "enable_audit_logs" {
