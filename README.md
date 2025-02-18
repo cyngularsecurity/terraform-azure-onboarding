@@ -17,6 +17,8 @@
    over each Subscription scope, (path `/subscriptions/{subscription ID}`).
    or over each Management Group scope, (path `/providers/Microsoft.Management/managementGroups/{management group ID}`).
 
+- Make sure the user have access to the Root Management Group (https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=azure-portal,entra-audit-logs#step-1-elevate-access-for-a-global-administrator), validate with command -- `az account management-group show --name $(az account show --query tenantId -o tsv)`.
+
 **Step 3:** Configure Optional Log Collection Parameters  
 
 - Before creating the `main.tf` file, decide which log types you want to enable:
