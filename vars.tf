@@ -80,3 +80,9 @@ variable "local_os" {
   description = "the os of the client pc"
   default     = "linux"
 }
+
+variable "root_management_group_name" {
+  type        = string
+  description = "the name of the root management group"
+  default     = "Tenant Root Group"
+}

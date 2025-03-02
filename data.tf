@@ -6,5 +6,6 @@ data "azurerm_subscriptions" "available" {}
 data "azuread_application_published_app_ids" "well_known" {}
 
 data "azurerm_management_group" "root" {
-  display_name = "Tenant Root Group"
+  display_name = var.root_management_group_name
+  # display_name         = "Tenant Root Group"
 }

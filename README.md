@@ -17,7 +17,10 @@
    over each Subscription scope, (path `/subscriptions/{subscription ID}`).
    or over each Management Group scope, (path `/providers/Microsoft.Management/managementGroups/{management group ID}`).
 
-- Make sure the user have access to the Root Management Group (https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=azure-portal,entra-audit-logs#step-1-elevate-access-for-a-global-administrator), validate with command -- `az account management-group show --name $(az account show --query tenantId -o tsv)`.
+- Make sure the user have access to the Root Management Group ([Mgmt Group Docs][azure_docs_url_1]), validate with command:
+   ```bash
+   az account management-group show --name $(az account show --query tenantId -o tsv)
+   ```
 
 **Step 3:** Configure Optional Log Collection Parameters  
 
@@ -45,6 +48,8 @@
       application_id = "<application_id>"
       client_name    = "<company_name>"
       locations      = ["<location1>", "<location2>"]
+
+      root_management_group_name = "<root_management_group_name>"
 
       enable_audit_logs          = true
       enable_activity_logs       = true
@@ -102,7 +107,7 @@ terraform apply --auto-approve
 - If not using a remote terraform backend, save terraform state for future managment, Run ```terraform state pull > cyngular_onboarding.tfstate``` .
 - To reuse it, Run ```terraform state push cyngular_onboarding.tfstate``` .
 
-- To Rreinstall / Update 'cyngular_func.zip', Run ```terraform taint "module.cyngular_function.null_resource.get_zip"``` & re run terraform apply
+<!-- - To Rreinstall / Update 'cyngular_func.zip', Run ```terraform taint "module.cyngular_function.null_resource.get_zip"``` & re run terraform apply -->
 
 - Terraform Cli version required is '1.9.5' as of release '3.3'
 - Make sure not to reach The limit of 5 diagnostic settings per subscription account
@@ -112,8 +117,8 @@ terraform apply --auto-approve
 [terraform_cli]: https://developer.hashicorp.com/terraform/install
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
 [curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
+[git_cli]: https://git-scm.com/
 
+[azure_docs_url_1]: https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=azure-portal,entra-audit-logs#step-1-elevate-access-for-a-global-administrator
 
 [azure_func_cli]: https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos,isolated-process,node-v4,python-v2,http-trigger,container-apps&pivots=programming-language-python
-
-      <!-- main_location  = "<main_log_location>"  # Specify main logs location  -->
