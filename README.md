@@ -17,7 +17,8 @@
    over each Subscription scope, (path `/subscriptions/{subscription ID}`).
    or over each Management Group scope, (path `/providers/Microsoft.Management/managementGroups/{management group ID}`).
 
-- Make sure the user have access to the Root Management Group ([Mgmt Group Docs][azure_docs_url_1]), validate with command:
+- Make sure the user have access to the Root Management Group ([Mgmt Group Docs][azure_docs_url_1])
+   validate with command:
    ```bash
    az account management-group show --name $(az account show --query tenantId -o tsv)
    ```
@@ -113,6 +114,7 @@ terraform apply --auto-approve
 - Make sure not to reach The limit of 5 diagnostic settings per subscription account
 
 - If Service principle resource, takes too long to create, app id might be invalid.
+<!-- - If Service principle resource, seems to already exist, find it and delete it, as visiting the admin consent url prior to terraform apply will create the sp. -->
 
 [terraform_cli]: https://developer.hashicorp.com/terraform/install
 [azure_cli]: https://learn.microsoft.com/en-us/cli/azure
