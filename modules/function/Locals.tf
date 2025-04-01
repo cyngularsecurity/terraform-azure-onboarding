@@ -31,6 +31,7 @@ locals {
 
     "STORAGE_ACCOUNT_MAPPINGS" = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"        = jsonencode(var.client_locations)
+    "CLIENT_NAME"              = var.client_name
 
     "UAI_ID"                   = azurerm_user_assigned_identity.function_assignment_identity.client_id
 

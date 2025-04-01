@@ -3,19 +3,15 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.14.0"
+      version = "4.16.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "3.0.2"
+      version = "3.1.0"
     }
-    # azapi = {
-    #   source = "Azure/azapi"
-    #   version = "2.1.0"
-    # }
     random = {
       source  = "hashicorp/random"
-      version = "3.6.3"
+      version = "3.7.1"
     }
     local = {
       source = "hashicorp/local"
@@ -40,8 +36,3 @@ provider "azurerm" {
 provider "azuread" {
   tenant_id = data.azurerm_client_config.current.tenant_id
 }
-
-# provider "azapi" {
-#   subscription_id = var.main_subscription_id
-#   tenant_id       = data.azurerm_client_config.current.tenant_id
-# }
