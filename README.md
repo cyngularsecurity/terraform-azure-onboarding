@@ -114,6 +114,8 @@ terraform apply --auto-approve
 - Make sure not to reach The limit of 5 diagnostic settings per subscription account
 
 - If Service principle resource, takes too long to create, app id might be invalid.
+- If encountering an error for creating cyngular Storage accounts: "unexpected status 404 (404 Not Found) with error: ParentResourceNotFound: Failed to perform 'read' on resource(s) of type 'storageAccounts/blobServices', because the parent resource '/subscriptions/{subscription_id}/resourceGroups/cyngular-{client_name}-rg/providers/Microsoft.Storage/storageAccounts/{storage_account_name}' could not be found." - taint the storage account suffix, and apply again: ```terraform taint module.onboarding.random_string.suffix``` or ```terraform state rm module.onboarding.random_string.suffix```.
+
 <!-- - If Service principle resource, seems to already exist, find it and delete it, as visiting the admin consent url prior to terraform apply will create the sp. -->
 
 [terraform_cli]: https://developer.hashicorp.com/terraform/install

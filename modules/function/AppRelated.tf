@@ -37,7 +37,7 @@ resource "azurerm_application_insights" "func_azure_insights" {
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
-  application_type    = "web"
+  application_type    = "other"
   retention_in_days = 60
 
   tags = merge(var.tags, {

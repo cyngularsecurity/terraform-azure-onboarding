@@ -10,10 +10,17 @@ resource "azurerm_storage_account" "cyngular_sa" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
+  # allow_nested_items_to_be_public        = false
+  # default_to_oauth_authentication         = false
+  # infrastructure_encryption_enabled   = true 
+
   # blob_properties {
   #   delete_retention_policy {
   #     days                     = 100
   #     permanent_delete_enabled = true
+  #   }
+  #   container_delete_retention_policy {
+  #     days = 7
   #   }
   # }
 

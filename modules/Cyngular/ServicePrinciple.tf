@@ -8,9 +8,9 @@ resource "azuread_service_principal" "client_sp" {
   owners    = [var.current_user_obj_id]
 }
 
-resource "azuread_service_principal_delegated_permission_grant" "admin" {
-  service_principal_object_id          = azuread_service_principal.client_sp.object_id
-  resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
-  claim_values                         = ["Directory.Read.All", "Group.Read.All", "User.Read.All", "AuditLog.Read.All", "UserAuthenticationMethod.Read.All"]
-  # user_object_id                       = azurerm_client_config.current.object_id
-}
+# resource "azuread_service_principal_delegated_permission_grant" "admin" {
+#   service_principal_object_id          = azuread_service_principal.client_sp.object_id
+#   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
+#   claim_values                         = ["Directory.Read.All", "Group.Read.All", "User.Read.All", "AuditLog.Read.All", "UserAuthenticationMethod.Read.All"]
+#   user_object_id                       = azurerm_client_config.current.object_id
+# }
