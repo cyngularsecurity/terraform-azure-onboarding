@@ -30,18 +30,18 @@ resource "azurerm_storage_account" "func_storage_account" {
   })
 }
 
-# resource "azurerm_log_analytics_workspace" "func_log_analytics" {
-#   name                = "cyngular-service-workspace-${var.client_name}"
-#   location            = var.main_location
-#   resource_group_name = var.cyngular_rg_name
+resource "azurerm_log_analytics_workspace" "func_log_analytics" {
+  name                = "cyngular-service-workspace-${var.client_name}"
+  location            = var.main_location
+  resource_group_name = var.cyngular_rg_name
 
-#   sku                 = "PerGB2018"
-#   retention_in_days   = 30
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 
-#   tags = merge(var.tags, {
-#     "RelatedFuncName": local.func_name
-#   })
-# }
+  tags = merge(var.tags, {
+    "RelatedFuncName": local.func_name
+  })
+}
 
 resource "azurerm_application_insights" "func_azure_insights" {
   count               = contains(var.app_insights_unsupported_locations, var.main_location) ? 0 : 1
@@ -52,7 +52,7 @@ resource "azurerm_application_insights" "func_azure_insights" {
 
   application_type    = "other"
   retention_in_days = 60
-  # workspace_id        = azurerm_log_analytics_workspace.func_log_analytics.id
+  workspace_id        = azurerm_log_analytics_workspace.func_log_analytics.id
 
   tags = merge(var.tags, {
     "RelatedFuncName": local.func_name
