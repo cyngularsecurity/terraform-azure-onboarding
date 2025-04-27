@@ -1,13 +1,13 @@
 module "main" {
   source = "./modules/Cyngular"
 
-  tags          = local.tags
   client_name   = var.client_name
-  main_location = local.main_location
   locations = var.locations
 
+  tags          = local.tags
+  main_location = local.main_location
   prefix    = local.resource_prefix
-  suffix    = random_string.suffix.result
+  suffix    = local.random_suffix
 
   application_id      = var.application_id
   msgraph_id          = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
@@ -36,16 +36,15 @@ module "cyngular_function" {
   source = "./modules/function"
 
   mgmt_group_id        = local.mgmt_group_id
-  subscription_ids = local.sub_ids
 
   tags             = local.tags
   client_name      = var.client_name
 
-  suffix = random_string.suffix.result
+  suffix = local.random_suffix
   main_subscription_id = var.main_subscription_id
 
   app_insights_unsupported_locations = local.app_insights_unsupported_locations
-  main_location    = local.cyngular_function_location
+  main_location    = local.main_location
   client_locations = var.locations
 
   local_os                       = var.local_os
@@ -67,10 +66,7 @@ module "audit_logs" {
   source = "./modules/audit_logs"
   count  = var.enable_audit_logs == true ? 1 : 0
 
-  locations = var.locations
-
-  subscription_ids = local.sub_ids
-  suffix = random_string.suffix.result
+  suffix = local.random_suffix
 
   tags             = local.tags
   main_location    = local.main_location

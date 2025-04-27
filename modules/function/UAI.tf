@@ -21,10 +21,7 @@ resource "azurerm_role_definition" "function_assignment_def" {
     ]
   }
 
-  assignable_scopes = concat(
-    [for sub in var.subscription_ids : "/subscriptions/${sub}"],
-    ["/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"]
-  )
+  assignable_scopes = ["/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"]
 }
 
 resource "azurerm_role_assignment" "func_assigment_custom_mgmt" {

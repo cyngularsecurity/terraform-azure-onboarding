@@ -25,7 +25,7 @@ resource "azurerm_storage_account" "cyngular_sa" {
   # }
 
   tags = merge( 
-    each.key == local.main_location ? local.main_storage_account_tags : local.common_storage_account_tags,
+    each.key == var.main_location ? local.main_storage_account_tags : local.common_storage_account_tags,
     var.tags
   )
 }

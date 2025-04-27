@@ -9,11 +9,6 @@ variable "client_name" {
   description = "name of the client"
 }
 
-variable "subscription_ids" {
-  description = "subscriptions names and ids"
-  type        = map(string)
-}
-
 variable "client_locations" {
   description = "List of locations the client operates in"
   type        = list(string)
