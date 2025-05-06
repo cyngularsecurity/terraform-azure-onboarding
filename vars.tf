@@ -27,7 +27,7 @@ variable "application_id" {
 variable "locations" {
   description = "List of locations that the clients operate in"
   type        = list(string)
-  
+
   validation {
     condition     = alltrue([for loc in var.locations : contains(local.valid_locations, loc)])
     error_message = "One or more locations are not supported. Please use valid locations from the predefined list."
@@ -36,12 +36,12 @@ variable "locations" {
 
 variable "main_location" {
   type        = string
-  description = "The Main location for Storage Account deployment, main sa will contain Audit & Activity logs"
+  description = "The Main location for Storage Account deployment, main sa will store Audit & Activity logs, OS and Visibility logs"
   default     = ""
 
   # validation {
   #   condition     = contains(var.locations, var.main_location)
-  #   error_message = "The main location must be one of the specified locations in the locations variable."
+  #   error_message = "The main location must be one of the locations specified in the locations variable."
   # }
 }
 
@@ -75,14 +75,20 @@ variable "enable_aks_logs" {
   default     = true
 }
 
-variable "local_os" {
-  type        = string
-  description = "the os of the client pc"
-  default     = "linux"
+variable "allow_function_logging" {
+  description = "allow function logging"
+  type        = bool
+  # default     = true
 }
 
-variable "root_management_group_name" {
-  type        = string
-  description = "the name of the root management group"
-  default     = "Tenant Root Group"
-}
+# variable "root_management_group_name" {
+#   type        = string
+#   description = "the name of the root management group"
+#   default     = "Tenant Root Group"
+# }
+
+# variable "local_os" {
+#   type        = string
+#   description = "the os of the client pc"
+#   default     = "linux"
+# }

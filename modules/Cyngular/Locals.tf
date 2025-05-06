@@ -1,5 +1,3 @@
-data "azuread_client_config" "current" {}
-
 locals {
   common_storage_account_tags = {
     cyngular-auditevents = var.enable_audit_events_logs

@@ -14,10 +14,14 @@ resource "azurerm_role_definition" "function_assignment_def" {
   permissions {
     actions = [
       "Microsoft.Resources/deployments/*",
+      "Microsoft.Insights/diagnosticSettings/read",
       "Microsoft.Insights/diagnosticSettings/write",
+
       "Microsoft.Network/networkWatchers/flowLogs/write",
       "Microsoft.Network/networkWatchers/write",
       "Microsoft.Network/networkSecurityGroups/write",
+
+      "Microsoft.Network/virtualNetworks/write"
     ]
   }
 
@@ -39,16 +43,16 @@ resource "azurerm_role_assignment" "func_assigment_reader_mgmt" {
 }
 
 resource "azurerm_role_assignment" "sa_contributor" {
-  for_each             = merge(var.default_storage_accounts, { app = azurerm_storage_account.func_storage_account.id })
-  scope                = each.value
+  for_each = merge(var.default_storage_accounts, { app = azurerm_storage_account.func_storage_account.id })
+  scope    = each.value
 
   role_definition_name = "Storage Account Contributor"
   principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id
 }
 
 resource "azurerm_role_assignment" "blob_contributor" {
-  for_each             = merge(var.default_storage_accounts, { app = azurerm_storage_account.func_storage_account.id })
-  scope                = each.value
+  for_each = merge(var.default_storage_accounts, { app = azurerm_storage_account.func_storage_account.id })
+  scope    = each.value
 
   role_definition_name = "Storage Blob Data Owner"
   principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id

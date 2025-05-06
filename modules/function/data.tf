@@ -15,5 +15,5 @@ data "http" "zip_file" {
 
 resource "local_sensitive_file" "zip_file" {
   content_base64 = data.http.zip_file.response_body_base64
-  filename = local.zip_file_path
+  filename       = local.zip_file_path
 }

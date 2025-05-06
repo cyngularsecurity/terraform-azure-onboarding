@@ -4,7 +4,7 @@ resource "azurerm_linux_function_app" "function_service" {
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
 
-  https_only                    = true
+  https_only = true
 
   service_plan_id            = azurerm_service_plan.main.id
   storage_account_name       = azurerm_storage_account.func_storage_account.name

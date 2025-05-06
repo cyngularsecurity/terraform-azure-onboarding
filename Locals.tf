@@ -8,7 +8,7 @@ locals {
     "Microsoft Sentinel Reader",
     "API Management Workspace Reader",
     "Reader and Data Access",
-    "Managed Applications Reader"
+    "Managed Application Publisher Operator"
   ]
   EOF
   ))
@@ -52,19 +52,11 @@ locals {
   ]
 
   resource_prefix = format("cyngular-%s", var.client_name)
-  random_suffix = random_string.suffix.result
+  random_suffix   = random_string.suffix.result
 
-  config = data.azuread_client_config.current
+  config        = data.azuread_client_config.current
   mgmt_group_id = local.config.tenant_id
 
-  subscriptions_data = { for i, sub in data.azurerm_subscriptions.available.subscriptions : i => {
-    id   = sub.subscription_id
-    name = lower(replace(sub.display_name, " ", "_"))
-    }
-  }
-  sub_ids       = { for i, sub in local.subscriptions_data : i => sub.id }
-
-  # main_location   = element(var.locations, 0)
   main_location = var.main_location != "" ? var.main_location : element(var.locations, 0)
 
   tags = {

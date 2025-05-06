@@ -1,9 +1,3 @@
-variable "main_subscription_id" {
-  description = "the clientt main subscription id, for azure resource manager provider auth"
-  type        = string
-  nullable    = false
-}
-
 variable "client_name" {
   type        = string
   description = "name of the client"
@@ -24,16 +18,6 @@ variable "cyngular_rg_name" {
   description = "cyngular rg name on the client side"
 }
 
-variable "cyngular_rg_id" {
-  type        = string
-  description = "cyngular rg id on the client side"
-}
-
-variable "cyngular_rg_location" {
-  type        = string
-  description = "cyngular rg location on the client side"
-}
-
 variable "tags" {
   type        = map(string)
   description = "A map of the tags to use for the resources that are deployed."
@@ -47,11 +31,6 @@ variable "suffix" {
 variable "default_storage_accounts" {
   description = "Map of default storage accounts by location"
   type        = map(string)
-}
-
-variable "local_os" {
-  type        = string
-  description = "the os of the client pc"
 }
 
 variable "enable_activity_logs" {
@@ -84,8 +63,33 @@ variable "app_insights_unsupported_locations" {
   default     = ["israelcentral"]
 }
 
+variable "allow_function_logging" {
+  description = "allow function logging"
+  type        = bool
+}
+
 variable "mgmt_group_id" {
   description = "management group root id"
   type        = string
-
 }
+
+# variable "main_subscription_id" {
+#   description = "the clientt main subscription id, for azure resource manager provider auth"
+#   type        = string
+#   nullable    = false
+# }
+
+# variable "cyngular_rg_id" {
+#   type        = string
+#   description = "cyngular rg id on the client side"
+# }
+
+# variable "cyngular_rg_location" {
+#   type        = string
+#   description = "cyngular rg location on the client side"
+# }
+
+# variable "local_os" {
+#   type        = string
+#   description = "the os of the client pc"
+# }

@@ -4,7 +4,7 @@ output "client_rg" {
 }
 
 output "sp_id" {
-  value     = azuread_service_principal.client_sp.object_id 
+  value     = azuread_service_principal.client_sp.object_id
   sensitive = true
 }
 

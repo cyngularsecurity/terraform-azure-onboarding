@@ -19,6 +19,6 @@ locals {
   ]
 
   aad_ds = {
-    name              = "cyngular-audit-logs-${var.client_name}"
+    name = "cyngular-audit-logs-${var.client_name}"
   }
 }
