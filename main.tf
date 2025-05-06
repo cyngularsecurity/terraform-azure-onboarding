@@ -7,7 +7,6 @@ module "main" {
   tags          = local.tags
   main_location = local.main_location
   prefix        = local.resource_prefix
-  suffix        = local.random_suffix
 
   application_id = var.application_id
   msgraph_id     = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
@@ -57,11 +56,6 @@ module "cyngular_function" {
 
   mgmt_group_id = local.mgmt_group_id
 
-  # local_os                       = var.local_os
-  # cyngular_rg_id           = module.main.client_rg.id
-  # cyngular_rg_location     = module.main.client_rg.location
-  # main_subscription_id = var.main_subscription_id
-
   depends_on = [module.main]
 }
 
@@ -73,8 +67,4 @@ module "audit_logs" {
   client_name   = var.client_name
 
   default_storage_accounts = module.main.storage_accounts_ids
-
-  # cyngular_rg_name         = module.main.client_rg.name
-  # suffix = local.random_suffix
-  # tags             = local.tags
 }

@@ -72,24 +72,3 @@ variable "mgmt_group_id" {
   description = "management group root id"
   type        = string
 }
-
-# variable "main_subscription_id" {
-#   description = "the clientt main subscription id, for azure resource manager provider auth"
-#   type        = string
-#   nullable    = false
-# }
-
-# variable "cyngular_rg_id" {
-#   type        = string
-#   description = "cyngular rg id on the client side"
-# }
-
-# variable "cyngular_rg_location" {
-#   type        = string
-#   description = "cyngular rg location on the client side"
-# }
-
-# variable "local_os" {
-#   type        = string
-#   description = "the os of the client pc"
-# }

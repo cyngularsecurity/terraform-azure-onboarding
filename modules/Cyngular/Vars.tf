@@ -29,11 +29,6 @@ variable "prefix" {
   type        = string
 }
 
-variable "suffix" {
-  description = "Suffix to include in resource names"
-  type        = string
-}
-
 variable "msgraph_id" {
   description = "microsoft graph enterprise application id"
   type        = string

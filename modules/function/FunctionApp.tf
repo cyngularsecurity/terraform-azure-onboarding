@@ -1,4 +1,3 @@
-
 resource "azurerm_linux_function_app" "function_service" {
   name                = local.func_name
   resource_group_name = var.cyngular_rg_name

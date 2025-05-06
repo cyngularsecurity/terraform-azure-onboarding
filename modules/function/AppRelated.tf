@@ -15,8 +15,7 @@ resource "azurerm_service_plan" "main" {
 }
 
 resource "azurerm_storage_account" "func_storage_account" {
-  # name = lower(substr("cyngularfunc${var.suffix}", 0, 23))
-  name = lower(substr("cyngular${var.client_name}func", 0, 23))
+  name = lower(substr("cyngularfunc${var.client_name}", 0, 23))
 
   resource_group_name = var.cyngular_rg_name
   location            = var.main_location
@@ -47,8 +46,7 @@ resource "azurerm_log_analytics_workspace" "func_log_analytics" {
 }
 
 resource "azurerm_application_insights" "func_azure_insights" {
-  name = "cyngular-func-insights-${var.client_name}"
-  # count               = contains(var.app_insights_unsupported_locations, var.main_location) ? 0 : 1
+  name  = "cyngular-func-insights-${var.client_name}"
   count = var.allow_function_logging ? 1 : 0
 
   resource_group_name = var.cyngular_rg_name

@@ -10,19 +10,6 @@ locals {
 
   zip_file_path = "${path.root}/cyngular_func.zip"
 
-  # deploy_script_path = "${path.module}/DeployFunctionCode.sh"
-
-  # deploy_script_env = {
-  #   ZIP_BLOB_URL     =  local.func_zip_url
-  #   ZIP_FILE_PATH     = local.zip_file_path
-
-  #   SUBSCRIPTION_ID = var.main_subscription_id
-  #   RESOURCE_GROUP  = var.cyngular_rg_name
-  #   FUNCTION_APP_NAME = local.func_name
-  # }
-
-  # sync_triggers_command = "az rest --method post --url \"https://management.azure.com/subscriptions/${var.main_subscription_id}/resourceGroups/${var.cyngular_rg_name}/providers/Microsoft.Web/sites/${local.func_name}/syncfunctiontriggers?api-version=2016-08-01\""
-
   func_env_vars = {
     "AzureWebJobsDisableHomepage" = true
 
@@ -41,7 +28,5 @@ locals {
     "enable_audit_events_logs" = var.enable_audit_events_logs
     "enable_flow_logs"         = var.enable_flow_logs
     "enable_aks_logs"          = var.enable_aks_logs
-
-    # "fake_subs_n"              = 0
   }
 }
