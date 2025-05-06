@@ -7,6 +7,7 @@ module "main" {
   tags          = local.tags
   main_location = local.main_location
   prefix        = local.resource_prefix
+  suffix        = local.random_suffix
 
   application_id = var.application_id
   msgraph_id     = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph

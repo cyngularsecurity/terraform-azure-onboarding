@@ -1,6 +1,7 @@
 resource "azurerm_storage_account" "cyngular_sa" {
   for_each = toset(var.locations)
-  name     = lower(substr("cyngular${var.client_name}${each.key}", 0, 23))
+  name     = lower(substr("cyngular${each.key}${var.suffix}", 0, 23))
+  # name     = lower(substr("cyngular${var.client_name}${each.key}", 0, 23))
 
   resource_group_name = azurerm_resource_group.cyngular_client.name
   location            = each.value
