@@ -51,8 +51,6 @@
       client_name    = "<company_name>"
       locations      = ["<location1>", "<location2>"]
 
-      root_management_group_name = "<root_management_group_name>"
-
       enable_audit_logs          = true
       enable_activity_logs       = true
       enable_aks_logs            = true

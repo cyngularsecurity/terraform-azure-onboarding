@@ -78,7 +78,7 @@ variable "enable_aks_logs" {
 variable "allow_function_logging" {
   description = "allow function logging"
   type        = bool
-  # default     = true
+  default     = false
 }
 
 # variable "root_management_group_name" {
