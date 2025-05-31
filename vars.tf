@@ -1,6 +1,8 @@
 variable "client_name" {
   description = "Company name"
   type        = string
+  nullable    = false
+
   validation {
     condition     = can(regex("^[a-z0-9]+$", var.client_name))
     error_message = "Company name must contain only lowercase letters and digits."
@@ -27,6 +29,7 @@ variable "application_id" {
 variable "locations" {
   description = "List of locations that the clients operate in"
   type        = list(string)
+  nullable    = false
 
   validation {
     condition     = alltrue([for loc in var.locations : contains(local.valid_locations, loc)])
@@ -76,7 +79,7 @@ variable "enable_aks_logs" {
 }
 
 variable "allow_function_logging" {
-  description = "allow function logging"
+  description = "set to true to enable creation of azure application insights backed by a log analytics workspace for function app logging"
   type        = bool
   default     = false
 }
