@@ -23,11 +23,17 @@ resource "azurerm_linux_function_app" "function_service" {
     application_insights_key               = try(azurerm_application_insights.func_azure_insights[0].instrumentation_key, null)
 
     application_stack {
-      python_version = "3.13"
+      python_version = "3.12"
     }
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags["hidden-link: /app-insights-resource-id"]
+    ]
+  }
 
   depends_on = [
     local_sensitive_file.zip_file,
