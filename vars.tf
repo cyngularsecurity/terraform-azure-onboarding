@@ -84,14 +84,8 @@ variable "allow_function_logging" {
   default     = false
 }
 
-# variable "root_management_group_name" {
-#   type        = string
-#   description = "the name of the root management group"
-#   default     = "Tenant Root Group"
-# }
-
-# variable "local_os" {
-#   type        = string
-#   description = "the os of the client pc"
-#   default     = "linux"
-# }
+variable "delete_retention_policy_days" {
+  description = "delete retention in days for Storage Accounts blob policy"
+  type        = number
+  default     = 90
+}

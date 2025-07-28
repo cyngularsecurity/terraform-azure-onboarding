@@ -73,3 +73,8 @@ variable "enable_aks_logs" {
   type        = bool
   default     = true
 }
+
+variable "delete_retention_policy_days" {
+  description = "delete retention policy days"
+  type        = number
+}

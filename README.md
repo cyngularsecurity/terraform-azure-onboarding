@@ -104,6 +104,7 @@ terraform apply --auto-approve
 
 ## Notice
 
+- **Note on Location Selection**: Only select Israel as your main deployment location if absolutely necessary, as this may result in higher costs for Function App service plans.
 - If not using a remote terraform backend, save terraform state for future managment, Run ```terraform state pull > cyngular_onboarding.tfstate``` .
 - To reuse it, Run ```terraform state push cyngular_onboarding.tfstate``` .
 

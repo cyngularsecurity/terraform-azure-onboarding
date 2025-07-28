@@ -10,6 +10,13 @@ resource "azurerm_storage_account" "cyngular_sa" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
 
+  blob_properties {
+    delete_retention_policy {
+      days                     = var.delete_retention_policy_days
+      permanent_delete_enabled = true
+    }
+  }
+
   tags = merge(
     each.key == var.main_location ? local.main_storage_account_tags : local.common_storage_account_tags,
     var.tags

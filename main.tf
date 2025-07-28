@@ -13,6 +13,7 @@ module "main" {
   msgraph_id     = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
 
   current_user_obj_id = local.config.object_id
+  delete_retention_policy_days = var.delete_retention_policy_days
 
   enable_audit_logs        = var.enable_audit_logs
   enable_activity_logs     = var.enable_activity_logs
@@ -56,7 +57,6 @@ module "cyngular_function" {
   allow_function_logging = var.allow_function_logging
 
   mgmt_group_id = local.mgmt_group_id
-
   depends_on = [module.main]
 }
 
