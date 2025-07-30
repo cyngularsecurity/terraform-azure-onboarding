@@ -89,3 +89,9 @@ variable "delete_retention_policy_days" {
   type        = number
   default     = 90
 }
+
+variable "caching_enabled" {
+  description = "enable caching"
+  type        = bool
+  default     = false
+}

@@ -11,9 +11,10 @@ locals {
   zip_file_path = "${path.root}/cyngular_func.zip"
 
   func_env_vars = {
+    "FUNCTIONS_WORKER_RUNTIME"       = "python"
+
     "AzureWebJobsDisableHomepage" = true
 
-    "FUNCTIONS_WORKER_RUNTIME"       = "python"
     "ENABLE_ORYX_BUILD"              = true
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
 
@@ -24,9 +25,12 @@ locals {
     "COMPANY_NAME" = var.client_name
     "UAI_ID"       = azurerm_user_assigned_identity.function_assignment_identity.client_id
 
-    "enable_activity_logs"     = var.enable_activity_logs
-    "enable_audit_events_logs" = var.enable_audit_events_logs
-    "enable_flow_logs"         = var.enable_flow_logs
-    "enable_aks_logs"          = var.enable_aks_logs
+    ENABLE_ACTIVITY_LOGS     = var.enable_activity_logs
+    ENABLE_AUDIT_EVENTS_LOGS = var.enable_audit_events_logs
+    ENABLE_FLOW_LOGS         = var.enable_flow_logs
+    ENABLE_AKS_LOGS          = var.enable_aks_logs
+
+    CACHING_ENABLED = var.caching_enabled
+    FAKE_SUBS_N = 0 // stresser - subscription multiplier
   }
 }

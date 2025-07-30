@@ -36,25 +36,21 @@ variable "default_storage_accounts" {
 variable "enable_activity_logs" {
   description = "create diagnostic settings for activity logs - on sub scope"
   type        = bool
-  default     = true
 }
 
 variable "enable_audit_events_logs" {
   description = "create diagnostic settings for audit events - on resources scope"
   type        = bool
-  default     = true
 }
 
 variable "enable_flow_logs" {
   description = "config flow logs for nsgs without - on nsgs scope"
   type        = bool
-  default     = true
 }
 
 variable "enable_aks_logs" {
   description = "config aks logs for aks clusters - on cluster scope"
   type        = bool
-  default     = true
 }
 
 variable "app_insights_unsupported_locations" {
@@ -71,4 +67,9 @@ variable "allow_function_logging" {
 variable "mgmt_group_id" {
   description = "management group root id"
   type        = string
+}
+
+variable "caching_enabled" {
+  description = "enable caching"
+  type        = bool
 }

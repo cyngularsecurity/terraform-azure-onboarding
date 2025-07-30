@@ -35,6 +35,8 @@ resource "azurerm_linux_function_app" "function_service" {
     ]
   }
 
+  # key_vault...
+
   depends_on = [
     local_sensitive_file.zip_file,
     azurerm_role_assignment.func_assigment_custom_mgmt,

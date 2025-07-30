@@ -21,7 +21,12 @@ resource "azurerm_role_definition" "function_assignment_def" {
       "Microsoft.Network/networkWatchers/write",
       "Microsoft.Network/networkSecurityGroups/write",
 
-      "Microsoft.Network/virtualNetworks/write"
+      "Microsoft.Network/virtualNetworks/write",
+
+      "Microsoft.Storage/storageAccounts/tableServices/tables/read",
+      "Microsoft.Storage/storageAccounts/tableServices/tables/write",
+      "Microsoft.Storage/storageAccounts/tableServices/tables/delete",
+      "Microsoft.Storage/storageAccounts/tableServices/tables/entities/*"
     ]
   }
 
@@ -55,5 +60,12 @@ resource "azurerm_role_assignment" "blob_contributor" {
   scope    = each.value
 
   role_definition_name = "Storage Blob Data Owner"
+  principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id
+}
+
+resource "azurerm_role_assignment" "table_contributor" {
+  scope    = var.default_storage_accounts[var.main_location]
+
+  role_definition_name = "Storage Table Data Contributor"
   principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id
 }

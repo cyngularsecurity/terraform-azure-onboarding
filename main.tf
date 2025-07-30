@@ -57,6 +57,9 @@ module "cyngular_function" {
   allow_function_logging = var.allow_function_logging
 
   mgmt_group_id = local.mgmt_group_id
+
+  caching_enabled = var.caching_enabled
+
   depends_on = [module.main]
 }
 
