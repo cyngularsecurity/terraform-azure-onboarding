@@ -7,8 +7,7 @@ locals {
     "Disk Snapshot Contributor",
     "Microsoft Sentinel Reader",
     "API Management Workspace Reader",
-    "Reader and Data Access",
-    # "Managed Application Publisher Operator"
+    "Reader and Data Access"
   ]
   EOF
   ))
