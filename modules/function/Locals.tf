@@ -11,7 +11,7 @@ locals {
   zip_file_path = "${path.root}/cyngular_func.zip"
 
   func_env_vars = {
-    "FUNCTIONS_WORKER_RUNTIME"       = "python"
+    "FUNCTIONS_WORKER_RUNTIME" = "python"
 
     "AzureWebJobsDisableHomepage" = true
 
@@ -31,6 +31,6 @@ locals {
     ENABLE_AKS_LOGS          = var.enable_aks_logs
 
     CACHING_ENABLED = var.caching_enabled
-    FAKE_SUBS_N = 0 // stresser - subscription multiplier
+    FAKE_SUBS_N     = 0 // stresser - subscription multiplier
   }
 }

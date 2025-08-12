@@ -13,15 +13,16 @@ resource "azurerm_role_definition" "function_assignment_def" {
 
   permissions {
     actions = [
-      "Microsoft.Resources/deployments/*",
+      # Creates/updates diagnostic settings on various scopes
       "Microsoft.Insights/diagnosticSettings/read",
       "Microsoft.Insights/diagnosticSettings/write",
 
-      "Microsoft.Network/networkWatchers/flowLogs/write",
-      "Microsoft.Network/networkWatchers/write",
-      "Microsoft.Network/networkSecurityGroups/write",
+      var.enable_flow_logs ? "Microsoft.Network/networkWatchers/flowLogs/write" : null,
+      var.enable_flow_logs ? "Microsoft.Network/networkWatchers/write" : null,
+      var.enable_flow_logs ? "Microsoft.Network/virtualNetworks/write" : null,
 
-      "Microsoft.Network/virtualNetworks/write"
+      # "Microsoft.Network/networkSecurityGroups/write",
+      # "Microsoft.Resources/deployments/*",
     ]
   }
 
@@ -35,6 +36,9 @@ resource "azurerm_role_assignment" "func_assigment_custom_mgmt" {
   role_definition_id = azurerm_role_definition.function_assignment_def.role_definition_resource_id
 }
 
+# Resource Graph queries for resource discovery
+# Listing subscriptions, resource groups, and resources
+# Finding existing Network Watchers
 resource "azurerm_role_assignment" "func_assigment_reader_mgmt" {
   scope = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
 
@@ -59,8 +63,8 @@ resource "azurerm_role_assignment" "cyngular_blob_owner" {
 }
 
 resource "azurerm_role_assignment" "cyngular_main_storage_table_contributor" {
-  count  = var.caching_enabled == true ? 1 : 0
-  scope    = var.default_storage_accounts[var.main_location]
+  count = var.caching_enabled == true ? 1 : 0
+  scope = var.default_storage_accounts[var.main_location]
 
   role_definition_name = "Storage Table Data Contributor"
   principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id

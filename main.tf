@@ -12,7 +12,7 @@ module "main" {
   application_id = var.application_id
   msgraph_id     = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
 
-  current_user_obj_id = local.config.object_id
+  current_user_obj_id          = local.config.object_id
   delete_retention_policy_days = var.delete_retention_policy_days
 
   enable_audit_logs        = var.enable_audit_logs
