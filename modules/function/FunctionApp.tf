@@ -41,7 +41,7 @@ resource "azurerm_linux_function_app" "function_service" {
     local_sensitive_file.zip_file,
     azurerm_role_assignment.func_assigment_custom_mgmt,
     azurerm_role_assignment.func_assigment_reader_mgmt,
-    azurerm_role_assignment.sa_contributor,
-    azurerm_role_assignment.blob_contributor
+    azurerm_role_assignment.cyngular_sa_contributor,
+    azurerm_role_assignment.cyngular_blob_owner
   ]
 }
