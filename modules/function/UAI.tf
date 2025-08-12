@@ -42,7 +42,7 @@ resource "azurerm_role_assignment" "func_assigment_reader_mgmt" {
   role_definition_name = "Reader"
 }
 
-resource "azurerm_role_assignment" "sa_contributor" {
+resource "azurerm_role_assignment" "cyngular_sa_contributor" {
   for_each = merge(var.default_storage_accounts, { app = azurerm_storage_account.func_storage_account.id })
   scope    = each.value
 
@@ -50,7 +50,7 @@ resource "azurerm_role_assignment" "sa_contributor" {
   principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id
 }
 
-resource "azurerm_role_assignment" "blob_contributor" {
+resource "azurerm_role_assignment" "cyngular_blob_owner" {
   for_each = merge(var.default_storage_accounts, { app = azurerm_storage_account.func_storage_account.id })
   scope    = each.value
 
@@ -58,7 +58,8 @@ resource "azurerm_role_assignment" "blob_contributor" {
   principal_id         = azurerm_user_assigned_identity.function_assignment_identity.principal_id
 }
 
-resource "azurerm_role_assignment" "main_storage_table_contributor" {
+resource "azurerm_role_assignment" "cyngular_main_storage_table_contributor" {
+  count  = var.caching_enabled == true ? 1 : 0
   scope    = var.default_storage_accounts[var.main_location]
 
   role_definition_name = "Storage Table Data Contributor"

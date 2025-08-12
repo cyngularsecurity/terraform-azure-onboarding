@@ -8,7 +8,7 @@ locals {
     "Microsoft Sentinel Reader",
     "API Management Workspace Reader",
     "Reader and Data Access",
-    "Managed Application Publisher Operator"
+    # "Managed Application Publisher Operator"
   ]
   EOF
   ))
