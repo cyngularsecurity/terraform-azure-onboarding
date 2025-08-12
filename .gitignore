@@ -166,7 +166,6 @@ Old/**
 
 
 .terragrunt-cache/*
-
 cyngular_func.zip
-
 CLAUDE.md
+specs/
