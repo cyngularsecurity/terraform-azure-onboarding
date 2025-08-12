@@ -58,6 +58,8 @@ locals {
 
   main_location = var.main_location != "" ? var.main_location : element(var.locations, 0)
 
+  creator_local_ip = data.http.local_ip.response_body
+
   tags = {
     Vendor = "Cyngular Security"
   }

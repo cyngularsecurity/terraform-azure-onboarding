@@ -25,6 +25,15 @@ resource "azurerm_linux_function_app" "function_service" {
     application_stack {
       python_version = "3.12"
     }
+
+    ip_restriction {
+      name       = "allow-creator-ip"
+      action     = "Allow"
+      priority   = 100
+      ip_address = "${var.creator_local_ip}/32"
+    }
+
+    scm_use_main_ip_restriction = true
   }
 
   tags = var.tags

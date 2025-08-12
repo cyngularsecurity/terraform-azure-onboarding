@@ -69,6 +69,11 @@ variable "mgmt_group_id" {
   type        = string
 }
 
+variable "creator_local_ip" {
+  description = "creator local ip"
+  type        = string
+}
+
 variable "caching_enabled" {
   description = "enable caching"
   type        = bool
