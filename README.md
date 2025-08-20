@@ -19,9 +19,11 @@
 
 - Make sure the user has access to the Root Management Group
    validate with command:
+
    ```bash
    az account management-group show --name $(az account show --query tenantId -o tsv)
    ```
+
 - Make sure the user has access to assign roles in Root Management Group Scope - ([Elevate access for a Global Administrator][azure_docs_url_1])
 
 **Step 3:** Configure Optional Log Collection Parameters  
@@ -130,4 +132,4 @@ terraform apply --auto-approve
 
 [azure_docs_url_1]: https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=azure-portal,entra-audit-logs#step-1-elevate-access-for-a-global-administrator
 
-[azure_func_cli]: https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos,isolated-process,node-v4,python-v2,http-trigger,container-apps&pivots=programming-language-python
+<!-- [azure_func_cli]: https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos,isolated-process,node-v4,python-v2,http-trigger,container-apps&pivots=programming-language-python -->

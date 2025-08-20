@@ -6,8 +6,7 @@ locals {
     "Data Operator for Managed Disks",
     "Disk Snapshot Contributor",
     "Microsoft Sentinel Reader",
-    "API Management Workspace Reader",
-    "Reader and Data Access"
+    "API Management Workspace Reader"
   ]
   EOF
   ))
