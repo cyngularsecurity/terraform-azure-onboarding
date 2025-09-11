@@ -162,7 +162,6 @@ Old/**
 *.tfstate
 *.tfstate.backup
 .terraform/
-.terraform.lock.hcl
 
 
 .terragrunt-cache/*

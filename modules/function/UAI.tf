@@ -17,9 +17,9 @@ resource "azurerm_role_definition" "function_assignment_def" {
       "Microsoft.Insights/diagnosticSettings/read",
       "Microsoft.Insights/diagnosticSettings/write",
 
-      var.enable_flow_logs ? "Microsoft.Network/networkWatchers/flowLogs/write" : null,
-      var.enable_flow_logs ? "Microsoft.Network/networkWatchers/write" : null,
-      var.enable_flow_logs ? "Microsoft.Network/virtualNetworks/write" : null,
+      var.enable_flow_logs ? "Microsoft.Network/networkWatchers/flowLogs/write" : "",
+      var.enable_flow_logs ? "Microsoft.Network/networkWatchers/write" : "",
+      var.enable_flow_logs ? "Microsoft.Network/virtualNetworks/write" : "",
 
       # "Microsoft.Network/networkSecurityGroups/write",
       # "Microsoft.Resources/deployments/*",
