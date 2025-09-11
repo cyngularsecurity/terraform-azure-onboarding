@@ -12,7 +12,7 @@ resource "azurerm_role_definition" "function_assignment_def" {
   description = "cyngular uai mgmt role"
 
   permissions {
-    actions = [
+    actions = compact([
       # Creates/updates diagnostic settings on various scopes
       "Microsoft.Insights/diagnosticSettings/read",
       "Microsoft.Insights/diagnosticSettings/write",
@@ -23,7 +23,7 @@ resource "azurerm_role_definition" "function_assignment_def" {
 
       # "Microsoft.Network/networkSecurityGroups/write",
       # "Microsoft.Resources/deployments/*",
-    ]
+    ])
   }
 
   assignable_scopes = ["/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"]
