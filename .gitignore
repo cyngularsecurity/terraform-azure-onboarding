@@ -163,8 +163,5 @@ Old/**
 *.tfstate.backup
 .terraform/
 
-
 .terragrunt-cache/*
 cyngular_func.zip
-CLAUDE.md
-specs/
