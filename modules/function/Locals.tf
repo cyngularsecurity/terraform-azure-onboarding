@@ -12,7 +12,7 @@ locals {
   zip_file_path = "${path.root}/cyngular_func.zip"
 
   func_env_vars = {
-    "FUNCTIONS_WORKER_RUNTIME" = "python"
+    # "FUNCTIONS_WORKER_RUNTIME" = "python"
 
     "AzureWebJobsDisableHomepage" = true
 
