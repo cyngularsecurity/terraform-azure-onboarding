@@ -13,10 +13,10 @@ locals {
 
   func_env_vars = {
     # "FUNCTIONS_WORKER_RUNTIME" = "python" // only for consumption function
-    "AzureWebJobsDisableHomepage" = true
+    # "ENABLE_ORYX_BUILD"              = true
+    # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
 
-    "ENABLE_ORYX_BUILD"              = true
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
+    "AzureWebJobsDisableHomepage" = true
 
     "STORAGE_ACCOUNT_MAP"   = jsonencode(var.default_storage_accounts)
     "COMPANY_LOCATIONS"     = jsonencode(var.client_locations)
