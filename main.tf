@@ -56,7 +56,7 @@ module "cyngular_function" {
 
   allow_function_logging = var.allow_function_logging
 
-  mgmt_group_id = local.mgmt_group_id
+  mgmt_group_id    = local.mgmt_group_id
   creator_local_ip = local.creator_local_ip
 
   caching_enabled = var.caching_enabled

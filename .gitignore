@@ -13,7 +13,7 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 
-override.tf
+override.tf 
 override.tf.json
 *_override.tf
 *_override.tf.json
@@ -165,3 +165,6 @@ Old/**
 
 .terragrunt-cache/*
 cyngular_func.zip
+
+specs/
+tfvars/

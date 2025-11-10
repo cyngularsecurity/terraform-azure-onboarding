@@ -4,7 +4,8 @@ locals {
   mgmt_group_id = var.mgmt_group_id
   func_name     = "cyngular-func-${var.client_name}-${var.suffix}"
 
-  func_sp_sku_name = contains(var.app_insights_unsupported_locations, var.main_location) ? "B2" : "Y1"
+  func_sp_sku_name        = contains(var.app_insights_unsupported_locations, var.main_location) ? "B2" : "FC1"
+  blobStorageAndContainer = "${azurerm_storage_account.func_storage_account.primary_blob_endpoint}deploymentpackage"
 
   func_zip_url = "https://cyngular-onboarding-templates.s3.us-east-1.amazonaws.com/azure/cyngular_func.zip"
 

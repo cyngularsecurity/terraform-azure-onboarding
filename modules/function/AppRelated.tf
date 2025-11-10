@@ -30,6 +30,12 @@ resource "azurerm_storage_account" "func_storage_account" {
   })
 }
 
+resource "azurerm_storage_container" "storageContainer" {
+  name                  = "deploymentpackage"
+  storage_account_id    = azurerm_storage_account.func_storage_account.id
+  container_access_type = "private"
+}
+
 resource "azurerm_log_analytics_workspace" "func_log_analytics" {
   name  = "cyngular-func-workspace-${var.client_name}"
   count = var.allow_function_logging ? 1 : 0
