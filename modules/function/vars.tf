@@ -78,3 +78,9 @@ variable "caching_enabled" {
   description = "enable caching"
   type        = bool
 }
+
+variable "use_cli_deployment" {
+  description = "Use Azure CLI for deployment instead of zip_deploy_file (recommended for Flex Consumption)"
+  type        = bool
+  default     = true
+}

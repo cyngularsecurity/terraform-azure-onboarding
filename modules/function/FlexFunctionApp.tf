@@ -5,7 +5,7 @@ resource "azurerm_function_app_flex_consumption" "function_service" {
 
   service_plan_id = azurerm_service_plan.main.id
 
-  zip_deploy_file = local.zip_file_path
+  zip_deploy_file = var.use_cli_deployment ? null : local.zip_file_path
 
   storage_container_type      = "blobContainer"
   storage_container_endpoint  = local.blobStorageAndContainer
@@ -47,4 +47,33 @@ resource "azurerm_function_app_flex_consumption" "function_service" {
     azurerm_role_assignment.cyngular_main_storage_table_contributor
   ]
 
+  # lifecycle {
+  #   ignore_changes = [
+  #     zip_deploy_file
+  #   ]
+  # }
+}
+
+resource "terraform_data" "deploy_function_cli" {
+  count = var.use_cli_deployment ? 1 : 0
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo "Deploying function code via Azure CLI..."
+      az functionapp deployment source config-zip \
+        --resource-group ${var.cyngular_rg_name} \
+        --name ${azurerm_function_app_flex_consumption.function_service.name} \
+        --src ${local.zip_file_path}
+    EOT
+  }
+
+  triggers_replace = {
+    zip_file_hash = filesha256(local.zip_file_path)
+    function_name = azurerm_function_app_flex_consumption.function_service.name
+  }
+
+  depends_on = [
+    azurerm_function_app_flex_consumption.function_service,
+    local_sensitive_file.zip_file
+  ]
 }
