@@ -90,7 +90,7 @@
    If audit logs are already configured, tag the storage account accordingly. [Refer to Step 3]  
    If enable_audit_logs is set to true, export Entra ID (AAD) diagnostic settings to the appropriately tagged storage account, specifying all log categories. (https://github.com/MicrosoftDocs/entra-docs/blob/main/docs/identity/monitoring-health/media/howto-configure-diagnostic-settings/diagnostic-settings-start.png) -->
 
-**Step 7:** Grant Admin Consent  
+**Step 7:** Grant Admin Consent
    The Terraform output will include an admin consent URL link. Open it and grant admin consent.
 
    <!-- In Entra ID, Navigate to Enterprise applications
@@ -98,4 +98,21 @@
    Find the Application by name "{Client Name} SP"
    click on Permissions under the Security section, and Grant Admin Consent for Default Directory -->
 
-## Source: [Terraform Module Registry | Cyngular Azure Onboarding](https://registry.terraform.io/modules/cyngularsecurity/onboarding/azure/latest)
+## Documentation
+
+For additional information and operational guidance, refer to the following documentation:
+
+- **[Operations Guide](docs/operations.md)** - Common operational tasks including function redeployment, state management, and post-deployment verification
+- **[Edge Cases and Troubleshooting](docs/edge_cases_fixes.md)** - Solutions to common issues, error messages, and troubleshooting steps
+
+## Source
+
+[Terraform Module Registry | Cyngular Azure Onboarding](https://registry.terraform.io/modules/cyngularsecurity/onboarding/azure/latest)
+
+---
+
+[terraform_cli]: https://developer.hashicorp.com/terraform/install
+[azure_cli]: https://learn.microsoft.com/en-us/cli/azure
+[curl_cli]: https://developers.greenwayhealth.com/developer-platform/docs/installing-curl
+[git_cli]: https://git-scm.com/
+[azure_docs_url_1]: https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=azure-portal,entra-audit-logs#step-1-elevate-access-for-a-global-administrator

@@ -53,11 +53,11 @@ variable "enable_aks_logs" {
   type        = bool
 }
 
-variable "app_insights_unsupported_locations" {
-  type        = list(string)
-  description = "list of locations that are not supported for app insights"
-  default     = ["israelcentral"]
-}
+# variable "app_insights_unsupported_locations" {
+#   type        = list(string)
+#   description = "list of locations that are not supported for app insights"
+#   default     = ["israelcentral"]
+# }
 
 variable "allow_function_logging" {
   description = "allow function logging"

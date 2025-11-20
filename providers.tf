@@ -9,24 +9,28 @@ terraform {
       source  = "hashicorp/azuread"
       version = "3.2.0"
     }
-
     random = {
       source  = "hashicorp/random"
       version = "3.7.1"
     }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.5.2"
-    }
-    http = {
-      source  = "hashicorp/http"
-      version = "3.4.5"
-    }
+    # local = {
+    #   source  = "hashicorp/local"
+    #   version = "2.5.2"
+    # }
+    # http = {
+    #   source  = "hashicorp/http"
+    #   version = "3.4.5"
+    # }
   }
 }
 
 provider "azurerm" {
   subscription_id = var.main_subscription_id
+
+  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#storage_use_azuread-1
+  ## prevents connection issues to storage accounts
+  storage_use_azuread = true
+
   features {
     application_insights {
       disable_generated_rule = true

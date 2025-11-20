@@ -41,9 +41,9 @@ module "cyngular_function" {
 
   suffix = local.random_suffix
 
-  app_insights_unsupported_locations = local.app_insights_unsupported_locations
-  main_location                      = local.main_location
-  client_locations                   = var.locations
+  # app_insights_unsupported_locations = local.app_insights_unsupported_locations
+  main_location    = local.main_location
+  client_locations = var.locations
 
   cyngular_rg_name = module.main.client_rg.name
 
@@ -59,7 +59,8 @@ module "cyngular_function" {
   mgmt_group_id    = local.mgmt_group_id
   creator_local_ip = local.creator_local_ip
 
-  caching_enabled = var.caching_enabled
+  caching_enabled    = var.caching_enabled
+  use_cli_deployment = var.use_cli_deployment
 
   depends_on = [module.main]
 }

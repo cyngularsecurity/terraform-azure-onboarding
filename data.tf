@@ -4,5 +4,5 @@ data "azuread_client_config" "current" {}
 data "azuread_application_published_app_ids" "well_known" {}
 
 data "http" "local_ip" {
-  url = "https://checkip.amazonaws.com"
+  url = "https://ipinfo.io/ip"
 }

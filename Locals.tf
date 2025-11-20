@@ -11,7 +11,7 @@ locals {
   EOF
   ))
 
-  app_insights_unsupported_locations = ["israelcentral"]
+  # app_insights_unsupported_locations = ["israelcentral"]
   valid_locations = [
     # Australia
     "australiacentral", "australiacentral2", "australiaeast", "australiasoutheast", "australiaeastfoundational",

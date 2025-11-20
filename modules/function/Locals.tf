@@ -4,7 +4,8 @@ locals {
   mgmt_group_id = var.mgmt_group_id
   func_name     = "cyngular-func-${var.client_name}-${var.suffix}"
 
-  func_sp_sku_name        = contains(var.app_insights_unsupported_locations, var.main_location) ? "B2" : "FC1"
+  # func_sp_sku_name        = contains(var.app_insights_unsupported_locations, var.main_location) ? "B2" : "FC1"
+  func_sp_sku_name        = "FC1"
   blobStorageAndContainer = "${azurerm_storage_account.func_storage_account.primary_blob_endpoint}deploymentpackage"
 
   func_zip_url = "https://cyngular-onboarding-templates.s3.us-east-1.amazonaws.com/azure/cyngular_func.zip"
@@ -12,10 +13,6 @@ locals {
   zip_file_path = "${path.root}/cyngular_func.zip"
 
   func_env_vars = {
-    # "FUNCTIONS_WORKER_RUNTIME" = "python" // only for consumption function
-    # "ENABLE_ORYX_BUILD"              = true
-    # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
-
     "AzureWebJobsDisableHomepage" = true
 
     "STORAGE_ACCOUNT_MAP"   = jsonencode(var.default_storage_accounts)
@@ -32,5 +29,10 @@ locals {
 
     CACHING_ENABLED = var.caching_enabled
     FAKE_SUBS_N     = 0 // stresser - subscription multiplier
+
+    // only for consumption function
+    # "FUNCTIONS_WORKER_RUNTIME" = "python"
+    # "ENABLE_ORYX_BUILD"              = true
+    # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
   }
 }
