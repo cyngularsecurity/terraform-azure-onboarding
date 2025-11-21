@@ -13,4 +13,14 @@ locals {
     cyngular-auditlogs    = var.enable_audit_logs
     cyngular-activitylogs = var.enable_activity_logs
   })
+
+
+  required_providers_registrations = toset([
+      "Microsoft.Storage",
+      "Microsoft.Web",
+      "Microsoft.OperationalInsights",
+      "Microsoft.ManagedIdentity",
+      "Microsoft.Authorization",
+      "Microsoft.Resources",
+    ])
 }

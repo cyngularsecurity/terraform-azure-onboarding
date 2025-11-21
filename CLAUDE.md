@@ -29,6 +29,27 @@ The infrastructure is organized into modules:
 
 ## Common Development Commands
 
+### Prerequisites Validation
+
+**CRITICAL: ALWAYS run validation before Terraform operations**
+
+```bash
+# Validate all prerequisites before starting
+./Scripts/validate_prerequisites.sh tfvars/{client}.tfvars
+
+# Register required Azure Resource Providers (if validation fails)
+bash /tmp/register_azure_providers.sh
+```
+
+The validation script checks:
+- Required CLI tools (Terraform, Azure CLI, curl, git)
+- Terraform version compatibility (>= 1.9.5)
+- Azure CLI authentication
+- Azure Resource Provider registration
+- Management group access
+- Required permissions
+- Terraform configuration and variables
+
 ### Terraform Operations
 
 ```bash
@@ -90,10 +111,12 @@ terraform state rm module.onboarding.random_string.suffix
 
 ### Authentication Flow
 
-1. Run `az login` for Azure authentication
-2. Deploy Terraform infrastructure
-3. Use output admin consent URL to grant permissions
-4. Service principal gets assigned predefined roles across management group scope
+1. Run prerequisites validation: `./Scripts/validate_prerequisites.sh tfvars/{client}.tfvars`
+2. Run `az login` for Azure authentication (if not already authenticated)
+3. Register required Azure Resource Providers (if needed): `bash /tmp/register_azure_providers.sh`
+4. Deploy Terraform infrastructure
+5. Use output admin consent URL to grant permissions
+6. Service principal gets assigned predefined roles across management group scope
 
 ## Storage Account Tagging
 
