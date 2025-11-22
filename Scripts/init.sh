@@ -176,3 +176,21 @@ EOF_INSTRUCTIONS
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
   bootstrap_terraform_files
 fi
+
+
+
+###### ----- start ops ----- ######
+
+required_providers=("Microsoft.Storage" "Microsoft.Web" "Microsoft.KeyVault" "Microsoft.ManagedIdentity" "Microsoft.Insights" "Microsoft.OperationalInsights" "Microsoft.Authorization" "Microsoft.Resources" "Microsoft.Network" "Microsoft.ContainerService")
+
+for provider in ${required_providers[@]}
+do
+  az provider register --namespace $provider
+done
+
+
+for provider in ${required_providers[@]}
+do
+  az provider show --namespace $provider --query "registrationState"
+done
+

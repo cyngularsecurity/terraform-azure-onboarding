@@ -1,11 +1,12 @@
 data "azurerm_role_assignments" "current_user" {
-  scope = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
+  # scope = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
+  scope = "/providers/Microsoft.Management/managementGroups/${local.mgmt_group_id}"
 }
 
 locals {
   has_required_role = anytrue([
     for assignment in data.azurerm_role_assignments.current_user.role_assignments :
-    contains(["Owner", "Contributor"], assignment.role_assignment_name)
+    contains(["Owner", "Contributor"], assignment.role_definition_name)
   ])
 }
 

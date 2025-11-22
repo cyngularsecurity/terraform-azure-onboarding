@@ -168,3 +168,5 @@ cyngular_func.zip
 
 specs/
 tfvars/
+
+.terraform.lock.hcl

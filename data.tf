@@ -5,7 +5,7 @@ data "azurerm_subscription" "current" {}
 data "azuread_application_published_app_ids" "well_known" {}
 
 data "http" "local_ip" {
-  url = "https://ipinfo.io/ip"
+  url = "https://checkip.amazonaws.com"
 
   request_headers = {
     Accept = "application/json"

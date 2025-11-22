@@ -22,5 +22,8 @@ locals {
       "Microsoft.ManagedIdentity",
       "Microsoft.Authorization",
       "Microsoft.Resources",
+
+      var.enable_flow_logs ? "Microsoft.Network" : null,
+      var.enable_aks_logs ? "Microsoft.ContainerService" : null
     ])
 }
