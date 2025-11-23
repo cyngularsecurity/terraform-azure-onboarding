@@ -7,6 +7,12 @@
 - [Curl][curl_cli]
 - [Git][git_cli]
 
+**Quickstart:**
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/cyngularsecurity/terraform-azure-onboarding/HEAD/Scripts/init.sh)"
+```
+
 **Step 1:** Ensure the Management Groups feature is enabled in your Azure subscription.
 
 **Step 2:** Set Required Permissions  

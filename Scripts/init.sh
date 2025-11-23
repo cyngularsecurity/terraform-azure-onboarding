@@ -164,7 +164,7 @@ Next steps:
        - main_subscription_id : Your main Azure subscription ID for ARM authentication.
        - application_id       : Application (client) ID of the multi-tenant service principal (UUID).
        - locations            : List of Azure regions where you operate.
-  3. (Optional) Review examples/main/main.tf to see how the module is wired.
+  3. (Optional) Review examples/base/main.tf to see how the module is wired.
   4. Run:
        terraform init
        terraform plan -var-file="terraform.tfvars"
@@ -172,25 +172,31 @@ Next steps:
 EOF_INSTRUCTIONS
 }
 
-# Run bootstrap step when this script is invoked directly (and not sourced)
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  bootstrap_terraform_files
-fi
-
-
-
 ###### ----- start ops ----- ######
 
-required_providers=("Microsoft.Storage" "Microsoft.Web" "Microsoft.KeyVault" "Microsoft.ManagedIdentity" "Microsoft.Insights" "Microsoft.OperationalInsights" "Microsoft.Authorization" "Microsoft.Resources" "Microsoft.Network" "Microsoft.ContainerService")
+# # Run bootstrap step when this script is invoked directly (and not sourced)
+# if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+#   bootstrap_terraform_files
+# fi
 
-for provider in ${required_providers[@]}
+providers_file="$(dirname "${BASH_SOURCE[0]}")/required_providers.txt"
+
+if [[ ! -f "$providers_file" ]]; then
+  abort "Required providers file not found: $providers_file"
+fi
+
+while IFS= read -r provider
 do
-  az provider register --namespace $provider
-done
+  [[ -z "$provider" ]] && continue
+  echo -e "registering provider: $provider\n"
+  az provider register --namespace "$provider"
+done < "$providers_file"
 
 
-for provider in ${required_providers[@]}
+while IFS= read -r provider
 do
-  az provider show --namespace $provider --query "registrationState"
-done
+  [[ -z "$provider" ]] && continue
+  echo -e "checking provider: $provider\n"
+  az provider show --namespace "$provider" --query "registrationState"
+done < "$providers_file"
 

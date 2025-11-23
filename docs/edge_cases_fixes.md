@@ -1,30 +1,5 @@
 # Edge Cases and Troubleshooting
 
-This document provides solutions to common issues and edge cases encountered during Azure onboarding deployment.
-
-## Important Notices
-
-### Location Selection
-**Note**: Only select Israel (`israelcentral`) as your main deployment location if absolutely necessary, as this may result in higher costs for Function App service plans due to regional pricing differences.
-
-### Terraform Version Requirements
-- Terraform CLI version `1.9.5` or compatible as specified in release `3.3`
-- Azure CLI is required for authentication
-
-### Resource Limits
-- **Diagnostic Settings Limit**: Maximum of 5 diagnostic settings per subscription. Ensure you do not exceed this limit when enabling log collection.
-
-### State Management (Non-Remote Backend)
-If not using a remote Terraform backend, save your Terraform state for future management:
-
-```bash
-# Save state
-terraform state pull > cyngular_onboarding.tfstate
-
-# Restore state
-terraform state push cyngular_onboarding.tfstate
-```
-
 ## Common Issues and Solutions
 
 ### Storage Account Creation Errors
@@ -80,6 +55,35 @@ or the scope is invalid. If access was recently granted, please refresh your cre
    az logout
    az login
    ```
+
+
+### auto service provider Registration attempts with access errors
+
+- tldr: make sure you have sufficient permissions as required in docs
+- running terraform plan get stuck or ahowing the folowing err:
+
+```shell
+terraform plan
+^C
+Interrupt received.
+Please wait for Terraform to exit or data loss may occur.
+Gracefully shutting down...
+
+Stopping operation...
+
+Error: Encountered an error whilst ensuring Resource Providers are registered.
+Terraform automatically attempts to register the Azure Resource Providers it supports, to
+ensure it is able to provision resources.
+If you don't have permission to register Resource Providers you may wish to disable this
+functionality ...
+
+│ waiting for Subscription Provider (Subscription: "xxxxxxxxxxxxxxxxxxxxxxxx"
+│ Provider Name: "Microsoft.DataProtection") to be registered: context canceled
+│
+│   with module.onboarding.provider["registry.terraform.io/hashicorp/azurerm"],
+│   on .terraform/modules/onboarding/providers.tf line 27, in provider "azurerm":
+│   27: provider "azurerm" {
+'''
 
 ### Duplicate Diagnostic Settings
 

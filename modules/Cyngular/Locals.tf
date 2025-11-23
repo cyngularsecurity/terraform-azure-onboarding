@@ -15,15 +15,15 @@ locals {
   })
 
 
-  required_providers_registrations = toset([
-      "Microsoft.Storage",
-      "Microsoft.Web",
-      "Microsoft.OperationalInsights",
-      "Microsoft.ManagedIdentity",
-      "Microsoft.Authorization",
-      "Microsoft.Resources",
+  # required_providers_registrations = toset([
+  #     "Microsoft.Storage",
+  #     "Microsoft.Web",
+  #     "Microsoft.OperationalInsights",
+  #     "Microsoft.ManagedIdentity",
+  #     "Microsoft.Authorization",
+  #     "Microsoft.Resources",
 
-      var.enable_flow_logs ? "Microsoft.Network" : null,
-      var.enable_aks_logs ? "Microsoft.ContainerService" : null
-    ])
+  #     var.enable_flow_logs ? "Microsoft.Network" : null,
+  #     var.enable_aks_logs ? "Microsoft.ContainerService" : null
+    # ])
 }
