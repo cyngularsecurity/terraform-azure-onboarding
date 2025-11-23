@@ -217,12 +217,14 @@ required_providers=(
 
 for provider in ${required_providers[@]}
 do
+  echo "Registering $provider..."
   az provider register --namespace $provider
 done
 
 
 for provider in ${required_providers[@]}
 do
+  echo "Checking $provider registration..."
   az provider show --namespace $provider --query "registrationState"
 done
 
