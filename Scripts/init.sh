@@ -175,11 +175,10 @@ EOF_INSTRUCTIONS
 
 ###### ----- start ops ----- ######
 
-# Run bootstrap step when this script is invoked directly (and not sourced)
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  bootstrap_terraform_files
-fi
-
+# # Run bootstrap step when this script is invoked directly (and not sourced)
+# if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+#   bootstrap_terraform_files
+# fi
 
 required_providers=(
   "Microsoft.Storage"
@@ -227,3 +226,4 @@ do
   az provider show --namespace $provider --query "registrationState"
 done
 
+bootstrap_terraform_files
