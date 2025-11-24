@@ -26,7 +26,7 @@ provider "azurerm" {
 
   # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#storage_use_azuread-1
   ## prevents connection issues to storage accounts
-  storage_use_azuread = true
+  # storage_use_azuread = true // well suited for local - not for cloud shell
 
   features {
     application_insights {

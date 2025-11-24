@@ -117,45 +117,66 @@ bootstrap_terraform_files() {
 
   # Files to fetch (paths are relative to repo root)
   local root_main_tf="main.tf"
-  local example_main_tf="examples/base/main.tf"
-  local example_tfvars="tfvars/avona.tfvars"
+  local outputs_tf="outputs.tf"
 
   # Do not clobber existing files unless FORCE_DOWNLOAD=1
   if [[ -f ${root_main_tf} && -z "${FORCE_DOWNLOAD:-}" ]]; then
     warn "${root_main_tf} already exists, skipping download (set FORCE_DOWNLOAD=1 to overwrite)."
   else
-    echo "Downloading root ${root_main_tf} from GitHub..."
+    echo "Downloading ${root_main_tf} from GitHub..."
     download_file "${repo_raw_base}/${root_main_tf}" "${root_main_tf}"
   fi
 
-  if [[ -f ${example_main_tf} && -z "${FORCE_DOWNLOAD:-}" ]]; then
-    warn "${example_main_tf} already exists, skipping download (set FORCE_DOWNLOAD=1 to overwrite)."
+  # Create outputs.tf for admin consent URL
+  if [[ -f ${outputs_tf} && -z "${FORCE_DOWNLOAD:-}" ]]; then
+    warn "${outputs_tf} already exists, skipping creation (set FORCE_DOWNLOAD=1 to overwrite)."
   else
-    mkdir -p "$(dirname "${example_main_tf}")"
-    echo "Downloading example ${example_main_tf} from GitHub..."
-    download_file "${repo_raw_base}/${example_main_tf}" "${example_main_tf}"
+    echo "Creating ${outputs_tf} with admin consent URL output..."
+    cat > ${outputs_tf} <<'EOF_OUTPUTS'
+output "admin_consent_url" {
+  description = "URL for tenant admin to grant consent to the service principal"
+  value       = module.onboarding.admin_consent_url
+  sensitive   = false
+}
+
+output "service_principal_object_id" {
+  description = "Object ID of the created service principal"
+  value       = module.onboarding.service_principal_object_id
+  sensitive   = false
+}
+
+output "storage_accounts" {
+  description = "Map of storage accounts created by location"
+  value       = module.onboarding.storage_accounts
+  sensitive   = false
+}
+EOF_OUTPUTS
   fi
 
-  # Prepare a terraform.tfvars based on the example tfvars, if available
+  # Create terraform.tfvars template
   if [[ -f terraform.tfvars && -z "${FORCE_DOWNLOAD:-}" ]]; then
     warn "terraform.tfvars already exists, leaving it untouched (set FORCE_DOWNLOAD=1 to overwrite)."
   else
-    if download_file "${repo_raw_base}/${example_tfvars}" "terraform.tfvars.tmp" 2>/dev/null; then
-      mv terraform.tfvars.tmp terraform.tfvars
-      echo "Created terraform.tfvars from example (${example_tfvars})."
-    else
-      warn "Could not download ${example_tfvars}. Creating a minimal terraform.tfvars template instead."
-      cat > terraform.tfvars <<'EOF_TFVARS'
+    echo "Creating terraform.tfvars template..."
+    cat > terraform.tfvars <<'EOF_TFVARS'
 # Required variables – fill these for your environment
-client_name         = ""
+client_name          = ""
 main_subscription_id = ""
-application_id      = ""
-locations           = ["westeurope"]
+application_id       = ""
+locations            = ["westeurope"]
+
+# Optional log collection toggles (default: true)
+# enable_audit_logs        = true
+# enable_activity_logs     = true
+# enable_audit_events_logs = true
+# enable_flow_logs         = true
+# enable_aks_logs          = true
 EOF_TFVARS
-    fi
   fi
 
   cat <<'EOF_INSTRUCTIONS'
+
+Bootstrap completed successfully!
 
 Next steps:
   1. Open terraform.tfvars in your editor.
@@ -164,11 +185,13 @@ Next steps:
        - main_subscription_id : Your main Azure subscription ID for ARM authentication.
        - application_id       : Application (client) ID of the multi-tenant service principal (UUID).
        - locations            : List of Azure regions where you operate.
-  3. (Optional) Review examples/main/main.tf to see how the module is wired.
-  4. Run:
+  3. Run Terraform commands:
        terraform init
        terraform plan -var-file="terraform.tfvars"
        terraform apply -var-file="terraform.tfvars"
+  4. After apply completes, use the admin_consent_url output to grant permissions.
+
+For more information, see the project README.md
 EOF_INSTRUCTIONS
 }
 
