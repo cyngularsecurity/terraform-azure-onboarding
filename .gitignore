@@ -163,10 +163,12 @@ Old/**
 *.tfstate.backup
 .terraform/
 
-.terragrunt-cache/*
 cyngular_func.zip
 
 specs/
 tfvars/
 
 .terraform.lock.hcl
+AGENTS.md
+.letta/
+.claude/
