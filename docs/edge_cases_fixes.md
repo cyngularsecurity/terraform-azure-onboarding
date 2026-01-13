@@ -57,11 +57,13 @@ or the scope is invalid. If access was recently granted, please refresh your cre
    ```
 
 
-### auto service provider Registration attempts with access errors
+### Resource Provider Registration Timeouts
 
-- tldr: make sure you have sufficient permissions as required in docs
-- running terraform plan get stuck or ahowing the folowing err:
+**Issue**: `terraform plan` hangs or fails with resource provider registration errors.
 
+**TL;DR**: Ensure you have sufficient permissions as required in the docs.
+
+**Error Message**:
 ```shell
 terraform plan
 ^C
@@ -83,7 +85,7 @@ functionality ...
 │   with module.onboarding.provider["registry.terraform.io/hashicorp/azurerm"],
 │   on .terraform/modules/onboarding/providers.tf line 27, in provider "azurerm":
 │   27: provider "azurerm" {
-'''
+```
 
 ### Duplicate Diagnostic Settings
 
@@ -99,7 +101,7 @@ already exists - to be managed via Terraform this resource needs to be imported 
 
 **Solution**: Import the existing resource into Terraform state:
 ```bash
-terraform import azurerm_monitor_aad_diagnostic_setting.audit_logs "/providers/Microsoft.AADIAM/diagnosticSettings/cyngular-audit-logs-{client}"
+terraform import 'module.onboarding.module.audit_logs[0].azurerm_monitor_aad_diagnostic_setting.cyngular_audit_logs' '/providers/Microsoft.AADIAM/diagnosticSettings/cyngular-audit-logs-<client name>'
 ```
 
 ## References

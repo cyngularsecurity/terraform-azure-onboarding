@@ -1,5 +1,5 @@
-
 locals {
+  is_windows = substr(pathexpand("~"), 0, 1) == "/" ? false : true
 
   mgmt_group_id = var.mgmt_group_id
   func_name     = "cyngular-func-${var.client_name}-${var.suffix}"

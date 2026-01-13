@@ -10,7 +10,7 @@ data "http" "local_ip" {
   request_headers = {
     Accept = "application/json"
   }
-} 
+}
 
 data "azurerm_management_group" "root" {
   name = data.azurerm_client_config.current.tenant_id

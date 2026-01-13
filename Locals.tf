@@ -60,7 +60,7 @@ locals {
   main_location = var.main_location != "" ? var.main_location : element(var.locations, 0)
 
   creator_local_ip = trimspace(data.http.local_ip.response_body)
-  root_mg_id = try(data.azurerm_management_group.root.id, null)
+  root_mg_id       = try(data.azurerm_management_group.root.id, null)
 
   tags = {
     Vendor = "Cyngular Security"
