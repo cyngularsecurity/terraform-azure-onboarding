@@ -87,7 +87,7 @@ variable "allow_function_logging" {
 variable "delete_retention_policy_days" {
   description = "delete retention in days for Storage Accounts blob policy"
   type        = number
-  default     = 90
+  default     = 1
 }
 
 variable "caching_enabled" {

@@ -84,3 +84,13 @@ variable "use_cli_deployment" {
   type        = bool
   default     = true
 }
+
+variable "deploy_configurations" {
+  description = "Configuration for deployment method"
+  type = object({
+    method = string
+  })
+  default = {
+    method = "CLI"
+  }
+}

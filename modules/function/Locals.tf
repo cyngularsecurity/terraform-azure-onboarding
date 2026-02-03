@@ -35,4 +35,13 @@ locals {
     # "ENABLE_ORYX_BUILD"              = true
     # "SCM_DO_BUILD_DURING_DEPLOYMENT" = true
   }
+
+  deployment_method = var.deploy_configurations.method
+
+  # Credentials for SCM deployment
+  # Note: Flex Consumption usually exposes site credentials. 
+  # If not directly available in some versions, we might need a data source, but trying resource export first.
+  scm_username = try(azurerm_function_app_flex_consumption.function_service.site_credential[0].name, "")
+  scm_password = try(azurerm_function_app_flex_consumption.function_service.site_credential[0].password, "")
+  scm_url      = "https://${local.func_name}.scm.azurewebsites.net/api/zipdeploy"
 }

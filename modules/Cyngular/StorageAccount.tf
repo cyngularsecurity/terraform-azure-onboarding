@@ -11,6 +11,8 @@ resource "azurerm_storage_account" "cyngular_sa" {
   min_tls_version          = "TLS1_2"
 
   blob_properties {
+    versioning_enabled = false
+
     delete_retention_policy {
       days                     = var.delete_retention_policy_days
       permanent_delete_enabled = true
@@ -21,6 +23,32 @@ resource "azurerm_storage_account" "cyngular_sa" {
     each.key == var.main_location ? local.main_storage_account_tags : local.common_storage_account_tags,
     var.tags
   )
+}
+
+resource "azurerm_storage_management_policy" "cyngular_sa_lifecycle" {
+  for_each = azurerm_storage_account.cyngular_sa
+  storage_account_id = azurerm_storage_account.cyngular_sa[each.key].id
+
+  rule {
+    name    = "delete-after-${var.delete_retention_policy_days}-days"
+    enabled = true
+    type    = "Lifecycle"
+
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = var.delete_retention_policy_days
+        # or: delete_after_days_since_creation_greater_than
+      }
+
+      snapshot {
+        delete_after_days_since_creation_greater_than = var.delete_retention_policy_days
+      }
+
+      version {
+        delete_after_days_since_creation_greater_than = var.delete_retention_policy_days
+      }
+    }
+  }
 }
 
 resource "azurerm_role_assignment" "sa_contributor" {

@@ -1,5 +1,5 @@
 resource "terraform_data" "deploy_function_cli_unix" {
-  count = var.use_cli_deployment && !local.is_windows ? 1 : 0
+  count = var.use_cli_deployment && local.deployment_method == "CLI" && !local.is_windows ? 1 : 0
 
 
   provisioner "local-exec" {
@@ -34,7 +34,7 @@ resource "terraform_data" "deploy_function_cli_unix" {
 }
 
 resource "terraform_data" "deploy_function_cli_windows" {
-  count = var.use_cli_deployment && local.is_windows ? 1 : 0
+  count = var.use_cli_deployment && local.deployment_method == "CLI" && local.is_windows ? 1 : 0
 
   provisioner "local-exec" {
     interpreter = ["PowerShell", "-Command"]
@@ -65,6 +65,82 @@ resource "terraform_data" "deploy_function_cli_windows" {
         Write-Error "Deployment failed with exit code $LASTEXITCODE"
         exit $LASTEXITCODE
       }
+    EOT
+  }
+
+  triggers_replace = {
+    function_name = azurerm_function_app_flex_consumption.function_service.name
+  }
+
+  depends_on = [
+    azurerm_function_app_flex_consumption.function_service,
+  ]
+}
+
+
+resource "terraform_data" "deploy_function_scm_unix" {
+  count = var.use_cli_deployment && local.deployment_method == "SCM_CREDENTIALS" && !local.is_windows ? 1 : 0
+
+  provisioner "local-exec" {
+    interpreter = ["bash", "-c"]
+    command     = <<-EOT
+      set -e
+      echo "Downloading function code from ${local.func_zip_url}"
+      curl -sL -f -o ${local.zip_file_path} ${local.func_zip_url}
+      echo "Download completed successfully"
+    EOT
+  }
+
+  provisioner "local-exec" {
+    interpreter = ["bash", "-c"]
+    command     = <<-EOT
+      set -e
+      echo "Deploying to function ${local.func_name} using SCM Credentials"
+      curl -X POST -u "${local.scm_username}:${local.scm_password}" \
+        --data-binary "@${local.zip_file_path}" \
+        "${local.scm_url}"
+    EOT
+  }
+
+  triggers_replace = {
+    function_name = azurerm_function_app_flex_consumption.function_service.name
+  }
+
+  depends_on = [
+    azurerm_function_app_flex_consumption.function_service,
+  ]
+}
+
+resource "terraform_data" "deploy_function_scm_windows" {
+  count = var.use_cli_deployment && local.deployment_method == "SCM_CREDENTIALS" && local.is_windows ? 1 : 0
+
+  provisioner "local-exec" {
+    interpreter = ["PowerShell", "-Command"]
+    command     = <<-EOT
+      $ErrorActionPreference = "Stop"
+      Write-Output "Downloading function code from ${local.func_zip_url}"
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest -Uri "${local.func_zip_url}" -OutFile "${local.zip_file_path}"
+      if (-not (Test-Path "${local.zip_file_path}")) { 
+        Write-Error "File not found after download"
+        exit 1 
+      }
+      Write-Output "Download completed successfully"
+    EOT
+  }
+
+  provisioner "local-exec" {
+    interpreter = ["PowerShell", "-Command"]
+    command     = <<-EOT
+      $ErrorActionPreference = "Stop"
+      Write-Output "Deploying to function ${local.func_name} using SCM Credentials"
+      
+      $pair = "${local.scm_username}:${local.scm_password}"
+      $bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
+      $base64 = [System.Convert]::ToBase64String($bytes)
+      $headers = @{ Authorization = "Basic $base64" }
+
+      Invoke-WebRequest -Uri "${local.scm_url}" -Method Post -InFile "${local.zip_file_path}" -Headers $headers -ContentType "application/zip"
     EOT
   }
 
