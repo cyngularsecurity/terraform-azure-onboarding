@@ -15,22 +15,17 @@
 
 **Step 1:** Ensure the Management Groups feature is enabled in your Azure subscription.
 
-**Step 2:** Set Required Permissions  
-   Ensure your Azure user has the following permission:
+**Step 2:** Set Required Permissions
+   Ensure your Azure user has **Owner** (or Contributor) on the Root Management Group scope.
+   This covers both management group and subscription-level operations.
 
-- `Microsoft.Authorization/roleAssignments/write` over the management group scope, (path `/providers/Microsoft.Management/managementGroups/{root management group ID}`).
-- `Microsoft.Authorization/roleAssignments/contributor`
-   over each Subscription scope, (path `/subscriptions/{subscription ID}`).
-   or over each Management Group scope, (path `/providers/Microsoft.Management/managementGroups/{management group ID}`).
-
-- Make sure the user has access to the Root Management Group
-   validate with command:
+- Validate access to the Root Management Group:
 
    ```bash
    az account management-group show --name $(az account show --query tenantId -o tsv)
    ```
 
-- Make sure the user has access to assign roles in Root Management Group Scope - ([Elevate access for a Global Administrator][azure_docs_url_1])
+- If needed, [elevate access for a Global Administrator][azure_docs_url_1] to gain Root Management Group permissions.
 
 **Step 3:** Configure Optional Log Collection Parameters  
 

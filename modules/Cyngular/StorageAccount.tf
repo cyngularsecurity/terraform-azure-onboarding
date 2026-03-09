@@ -49,6 +49,11 @@ resource "azurerm_storage_management_policy" "cyngular_sa_lifecycle" {
   }
 }
 
+# OPTIMIZATION OPTION: If hitting role assignment limits, consider assigning at Resource Group level
+# instead of per-storage-account. This would reduce from 2n assignments (2×n locations) to 2 total.
+# Change scope from: each.value.id to: azurerm_resource_group.cyngular_client.id
+# and remove for_each loops. Provides same access with fewer role assignments.
+
 resource "azurerm_role_assignment" "sa_contributor" {
   for_each = azurerm_storage_account.cyngular_sa
   scope    = each.value.id
