@@ -18,6 +18,7 @@ resource "terraform_data" "deploy_function_cli_unix" {
       set -e
       echo -e "Deploying to function ${local.func_name}"
       az functionapp deployment source config-zip \
+        --subscription ${var.subscription_id} \
         --resource-group ${var.cyngular_rg_name} \
         --name ${local.func_name} \
         --src ${local.zip_file_path}
@@ -57,6 +58,7 @@ resource "terraform_data" "deploy_function_cli_windows" {
       $ErrorActionPreference = "Stop"
       Write-Output "Deploying to function ${local.func_name}"
       az functionapp deployment source config-zip `
+        --subscription ${var.subscription_id} `
         --resource-group ${var.cyngular_rg_name} `
         --name ${local.func_name} `
         --src ${local.zip_file_path}
