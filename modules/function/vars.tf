@@ -18,6 +18,11 @@ variable "cyngular_rg_name" {
   description = "cyngular rg name on the client side"
 }
 
+variable "subscription_id" {
+  type        = string
+  description = "client subscription id to target for the az functionapp deployment"
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of the tags to use for the resources that are deployed."
